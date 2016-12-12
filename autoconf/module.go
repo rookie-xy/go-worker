@@ -13,16 +13,9 @@ import (
 )
 
 
-var DvrModules = []*DvrMoudleType{
-    &DvrCoreModule,
-    &DvrConfModule,
-    &DvrErrlogModule,
-    &DvrNetworkModule,
-    &DvrHttpModule,
-    //&DvrDefineModule,
-
-    &DvrNetworkCoreModule,
-    //&DvrHttpCoreModule,
-    //&DvrDefineCoreModule,
+var Modules = []*Moudle{
+    &CoreModule,
+    &LogModule,
+    &ConfigureYamlModule,
     nil,
-};
+}

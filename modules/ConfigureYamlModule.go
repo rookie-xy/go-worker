@@ -7,41 +7,40 @@ package modules
 
 
 import (
-	"fmt"
-//    . "unsafe"
-
-    . "devour/types"
+      "fmt"
+    . "unsafe"
+    . "worker/types"
 )
 
 
-var DvrInclude = DvrStrType{ DvrSizeof("Include") - 1, "Include" };
+var Include = String{ DvrSizeof("Include") - 1, "Include" };
 
 
-var DvrConfCommands = []DvrCommandType{
+var ConfigreCommands = []Command{
 
-    { DvrInclude,
-      DvrAnyConf|DvrConfTake1,
-      DvrConfInclude,
+    { Include,
+      AnyConf|ConfTake1,
+      ConfigureInclude,
       0,
       0,
       nil },
 
-      DvrNilCommand,
+      NilCommand,
 }
 
 
-var DvrConfModule = DvrMoudleType{
+var ConfigureModule = Moudle{
     0,
     0,
     nil,
-    DvrConfCommands,
+    ConfigreCommands,
     DVR_CONF_MODULE,
     nil,
     nil,
 }
 
 
-func DvrConfInclude(cf *DvrConfType, cmd *DvrCommandType, conf *DvrVoidType) string {
-    fmt.Println("Conf Module Conf Include Finish");
-    return DvrConfOk;
+func ConfigureInclude(cf *Configure, cmd *Command, conf *Void) string {
+    fmt.Println("Configure Module Include Command Finish");
+    return ConfigureOk;
 }

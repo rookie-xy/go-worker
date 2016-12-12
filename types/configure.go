@@ -4,12 +4,13 @@
  */
 
 
-package types 
+package types
 
 
 type Configure struct {
-    I      int
-    Action interface {
+    File    string
+
+    Action  interface {
         Set()
         Get()
         Parse()

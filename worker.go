@@ -12,13 +12,17 @@ import (
      // "fmt"
 
     . "worker/types"
-    . "worker/define"
-
+    . "worker/modules"
     /*
     . "worker/autoconf"
-    . "worker/modules"
     */
 )
+
+
+type cycle struct {
+    configure  *Configure
+    log        *Log
+}
 
 
 func wkrGetOption(argc int, argv []string) int {
