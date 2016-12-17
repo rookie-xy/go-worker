@@ -9,87 +9,45 @@ package main
 
 import (
       "os"
-     // "fmt"
+      "fmt"
 
     . "worker/types"
     . "worker/modules"
-    /*
-    . "worker/autoconf"
-    */
 )
 
 
-type cycle struct {
+type worker struct {
     configure  *Configure
     log        *Log
 }
 
 
-func wkrGetOption(argc int, argv []string) int {
-    var i int;
-
-    for i = 1; i < argc; i++ {
-
-	if argv[i][0] != '-' {
-	    return WkrError;
-	}
-
-        switch argv[i][1] {
-
-        case 'c':
-	    if argv[i + 1] == "" {
-	        return WkrError;
-	    }
-/*
-	    work.ConfFile.Data = argv[i + 1];
-	    workcycle.ConfFile.Len  = len(workcycle.ConfFile.Data.(string)) + 1;
-	    */
-
-            i++;
-
-            break;
-
-        case 't':
-	    //WkrDvrTestConfig = true;
-	    break;
-
-        default:
-            break;
-        }
-    }
-/*
-    if cycle.ConfFile.Data == nil {
-        cycle.ConfFile.Data = DvrConfPath;
-        cycle.ConfFile.Len  = len(DvrConfPath) + 1;
-    }
-
-
-    if DvrConfFullName(cycle, &cycle.ConfFile) == DvrError {
-	return WkrError;
-    }
-    */
-
-    return WkrOk;
+func (w *worker) main() {
 }
-
-
-func wkrSetOption(argc int, argv []string) int {
-    return WkrOk;
-}
-
-
 
 
 func main() {
 
+    if option := Modules.CoreInit(), ok != nil {
+        return
+    }
+
     argc := len(os.Args)
 
-    if wkrGetOption(argc, os.Args) == WkrError {
+    if option.Get(argc, os.Args) == Error {
         return;
     }
 
-    if wkrSetOption(argc, os.Args) == WkrError {
+    if option.Set(argc, os.Args) == Error {
         return;
     }
 
+    if cycle := Modules.SystemInit(option), ok != nil {
+    }
+
+    Modules.UserInit(cycle)
+
+    for {
+        go worker.main()
+    }
 }
