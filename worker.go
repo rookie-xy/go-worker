@@ -22,10 +22,6 @@ type worker struct {
 }
 
 
-func (w *worker) main() {
-}
-
-
 func main() {
 
     if option := Modules.CoreInit(), ok != nil {

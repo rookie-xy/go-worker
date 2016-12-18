@@ -34,7 +34,7 @@ var ConfigureModule = Moudle{
     0,
     nil,
     ConfigreCommands,
-    DVR_CONF_MODULE,
+    SYSTEM_MODULE,
     nil,
     nil,
 }

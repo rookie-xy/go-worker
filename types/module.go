@@ -8,46 +8,29 @@ package types
 
 
 var (
-    WkrOk    =  0
-    WkrError = -1
-    WkrAgain = -2
+    Ok    =  0
+    Error = -1
+    Again = -2
 )
 
 
-var (
-    LF   =  byte('\x0a')
-    CR   =  byte('\x0d')
-    CRLF =  "\x0d\x0a"
+const (
+    CORE_MODULE = 0x45524F43
+    SYSTEM_MODULE = 0x464E4F43
+    USER_MODULE = 0x464E4F43
 )
 
 
-type InitMoudleFunc func(cycle *DvrCycleType) uint;
-type InitProcessFunc func(cycle *DvrCycleType) uint;
-type CreateConfFunc func(cycle *DvrCycleType) DvrVoidType;
-type InitConfFunc func(cycle *DvrCycleType, conf *DvrVoidType) string;
-type SetFunc func(cf *DvrConfType, cmd *DvrCommandType, conf *DvrVoidType) string;
-
-
-type Context struct {
-}
-
-
-type Command struct {
-    Name    StrType;
-    Type    uint;
-    Set     SetFunc;
-    Conf    int;
-    Offset  uintptr;
-    Post    InterfType;
-};
+type InitMoudleFunc func(cycle *Cycle) uint;
+type InitRoutineFunc func(cycle *Cycle) uint;
 
 
 type Module struct {
     CtxIndex      uint;
     Index         uint;
-    Ctx          *CoreModule;
+    Context      *Context;
     Commands      []Command;
     Type          uint;
     InitMoudle   *InitMoudleFunc;
-    InitProcess  *InitProcessFunc;
+    InitRoutine  *InitRoutineFunc;
 }

@@ -30,8 +30,7 @@ var ErrorLogCommands = []Command{
 
 var ErrorLogContext = Context{
     ErrorLog,
-    nil,
-    nil,
+    nil
 };
 
 
@@ -40,7 +39,7 @@ var ErrorLogModule = Moudle{
     0,
     &ErrorLogContext,
     ErrorLogCommands,
-    DVR_CORE_MODULE,
+    SYSTEM_MODULE,
     nil,
     nil,
 };

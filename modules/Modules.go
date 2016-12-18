@@ -23,16 +23,24 @@ var Modules = []*Moudle{
 }
 
 
-func (m []*Module) CoreInit() *Option {
-    for i := 0; i < len; m[i] {
+func (modules []*Module) CoreInit() *Option {
+    var m  int
 
+    for m = 0; modules[m] != nil; m++ {
+
+        if modules[m].Type != CORE {
+            continue
+        }
+
+        modules[m].InitModule(cycle)
+        modules[m].InitRoutine(cycle)
     }
 }
 
 
-func (m []*Module) SystemInit(option *Option) *Cycle {
+func (modules []*Module) SystemInit(option *Option) *Cycle {
 }
 
 
-func (m []*Module) UserInit(cycle *Cycle) {
+func (modules []*Module) UserInit(cycle *Cycle) {
 }
