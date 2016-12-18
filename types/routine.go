@@ -9,10 +9,4 @@ package types
 
 type Routine struct {
     File    string
-
-    Action  interface {
-        Set()
-        Get()
-        Parse()
-    }
 }

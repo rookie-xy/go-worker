@@ -8,9 +8,9 @@ package types
 
 
 type String struct {
-    Len int;
-    Data String;
+    Len int
+    Data interface{} 
 }
 
 
-NilString = String{ 0, nil };
+var NilString = String{ 0, nil }

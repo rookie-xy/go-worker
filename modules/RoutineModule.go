@@ -8,28 +8,32 @@ package modules
 
 
 import (
-      "fmt"
-    . "unsafe"
+//      "fmt"
+//    . "unsafe"
 
     . "go-worker/types"
 )
 
 
+type RoutineImpl Routine
+
+
+var routine = String{ len("Routine"), "Routine" }
+var routineConf = RoutineImpl{ "Option" }
+
+
 var RoutineCommands = []Command{
-      NilCommand
-};
+      NilCommand,
+}
 
 
 var RoutineContext = Context{
-    Core,
-    Conf : interface {
-        Create,
-	Init
-    }
-};
+    routine,
+    routineConf,
+}
 
 
-var RoutineModule = Moudle{
+var RoutineModule = Module{
     0,
     0,
     &RoutineContext,
@@ -37,12 +41,12 @@ var RoutineModule = Moudle{
     CORE_MODULE,
     nil,
     nil,
-};
-
-
-func Create(cycle *Cycle) {
 }
 
 
-func Init(cycle *Cycle) {
+func (ri RoutineImpl) Create(cycle *Cycle) {
+}
+
+
+func (ri RoutineImpl) Init(cycle *Cycle) {
 }

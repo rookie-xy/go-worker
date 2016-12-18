@@ -7,7 +7,7 @@
 package types
 
 
-type SetFunc func(cf *Configure, cmd *Command, conf *Void) string;
+type SetFunc func(cf *Configure, cmd *Command, conf interface{}) string;
 
 
 type Command struct {
@@ -16,8 +16,8 @@ type Command struct {
     Set     SetFunc;
     Conf    int;
     Offset  uintptr;
-    Post    InterfType;
+    Post    interface{};
 };
 
 
-NilCommand = Command{ NilString, 0, nil, 0, 0, nil };
+var NilCommand = Command{ NilString, 0, nil, 0, 0, nil }

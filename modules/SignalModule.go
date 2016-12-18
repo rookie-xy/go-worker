@@ -8,41 +8,53 @@ package modules
 
 
 import (
-      "fmt"
+//      "fmt"
     . "unsafe"
 
     . "go-worker/types"
 )
 
 
-var SingalCommands = []Command{
-      NilCommand
-};
+var signal = String{ int(Sizeof("Signal")) - 1, "Signal" }
+//var conf = Signal{ "abc" }
 
 
-var SingalContext = Context{
-    Core,
-    Conf : interface {
-        Create,
-	Init
-    }
-};
+var SignalCommands = []Command{
+      NilCommand,
+}
 
 
-var SingalModule = Moudle{
+var SignalContext = Context{
+    signal,
+    nil,
+}
+
+
+var SignalModule = Module{
     0,
     0,
-    &SingalContext,
-    SingalCommands,
+    &SignalContext,
+    SignalCommands,
     CORE_MODULE,
     nil,
     nil,
-};
+}
 
-
-func Create(cycle *Cycle) {
+/*
+func (s *Signal) Create(cycle *Cycle) {
+    fmt.Println("abc")
 }
 
 
-func Init(cycle *Cycle) {
+func (s *Signal) Init(cycle *Cycle) {
+    fmt.Println("abc")
 }
+*/
+
+
+/*
+    interface {
+        SignalCreate
+	SignalInit
+    },
+    */

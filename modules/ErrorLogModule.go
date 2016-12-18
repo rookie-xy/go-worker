@@ -12,7 +12,7 @@ import (
 )
 
 
-var ErrorLog = String{ Sizeof("ErrorLog") - 1, "ErrorLog" };
+var ErrorLog = String{ len("ErrorLog"), "ErrorLog" }
 
 
 var ErrorLogCommands = []Command{
@@ -25,16 +25,16 @@ var ErrorLogCommands = []Command{
       nil },
 
       NilCommand,
-};
+}
 
 
 var ErrorLogContext = Context{
     ErrorLog,
-    nil
-};
+    nil,
+}
 
 
-var ErrorLogModule = Moudle{
+var ErrorLogModule = Module{
     0,
     0,
     &ErrorLogContext,
@@ -42,10 +42,10 @@ var ErrorLogModule = Moudle{
     SYSTEM_MODULE,
     nil,
     nil,
-};
+}
 
 
-func SetErrorLog(cf *Configure, cmd *Command, conf *Void) string {
-    fmt.Println("Configure Module Set Error log Finish");
-    return ConfigureOk;
+func SetErrorLog(cf *Configure, cmd *Command, conf interface{}) string {
+    fmt.Println("Configure Module Set Error log Finish")
+    return ""
 }

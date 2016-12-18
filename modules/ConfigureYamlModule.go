@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2016 Meng Shi
  */
@@ -8,15 +9,15 @@ package modules
 
 import (
       "fmt"
-    . "unsafe"
+
     . "go-worker/types"
 )
 
 
-var Include = String{ DvrSizeof("Include") - 1, "Include" };
+var Include = String{ len("Include"), "Include" }
 
 
-var ConfigreCommands = []Command{
+var ConfigreYamlCommands = []Command{
 
     { Include,
       AnyConf|ConfTake1,
@@ -29,18 +30,18 @@ var ConfigreCommands = []Command{
 }
 
 
-var ConfigureModule = Moudle{
+var ConfigureYamlModule = Module{
     0,
     0,
     nil,
-    ConfigreCommands,
+    ConfigreYamlCommands,
     SYSTEM_MODULE,
     nil,
     nil,
 }
 
 
-func ConfigureInclude(cf *Configure, cmd *Command, conf *Void) string {
-    fmt.Println("Configure Module Include Command Finish");
-    return ConfigureOk;
+func ConfigureInclude(cf *Configure, cmd *Command, conf interface{}) string {
+    fmt.Println("Configure Module Include Command Finish")
+    return ""
 }

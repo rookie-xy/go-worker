@@ -21,16 +21,16 @@ const (
 )
 
 
-type InitMoudleFunc func(cycle *Cycle) uint;
-type InitRoutineFunc func(cycle *Cycle) uint;
+type InitModuleFunc func(cycle *Cycle) uint
+type InitRoutineFunc func(cycle *Cycle) uint
 
 
 type Module struct {
-    CtxIndex      uint;
-    Index         uint;
-    Context      *Context;
-    Commands      []Command;
-    Type          uint;
-    InitMoudle   *InitMoudleFunc;
-    InitRoutine  *InitRoutineFunc;
+    CtxIndex      uint
+    Index         uint
+    Context      *Context
+    Commands      []Command
+    Type          uint
+    InitModule    InitModuleFunc
+    InitRoutine   InitRoutineFunc
 }

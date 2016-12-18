@@ -7,8 +7,8 @@
 package types
 
 
-type CreateConfFunc func(cycle *Cycle) Void;
-type InitConfFunc func(cycle *Cycle, conf *Void) string;
+//type CreateConfFunc func(cycle *Cycle) interface{};
+//type InitConfFunc func(cycle *Cycle, conf interface{}) string;
 
 
 type Context struct {
@@ -18,7 +18,8 @@ type Context struct {
         Create(cycle *Cycle)
         Init(cycle *Cycle)
     }
+}
 
     //CreateConf   CreateConfFunc
     //InitConf     InitConfFunc
-}
+

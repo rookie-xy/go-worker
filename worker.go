@@ -16,12 +16,6 @@ import (
 )
 
 
-type worker struct {
-    configure  *Configure
-    log        *Log
-}
-
-
 func main() {
 
     if option := Modules.CoreInit(), ok != nil {

@@ -8,28 +8,28 @@ package modules
 
 
 import (
-      "fmt"
-    . "unsafe"
+    //  "fmt"
+    //. "unsafe"
 
     . "go-worker/types"
 )
 
 
+var os = String{ len("Os"), "Os" }
+
+
 var OsCommands = []Command{
-      NilCommand
+      NilCommand,
 };
 
 
 var OsContext = Context{
-    Core,
-    Conf : interface {
-        Create,
-	Init
-    }
+    os,
+    nil,
 };
 
 
-var OsModule = Moudle{
+var OsModule = Module{
     0,
     0,
     &OsContext,
@@ -40,9 +40,11 @@ var OsModule = Moudle{
 };
 
 
+/*
 func Create(cycle *Cycle) {
 }
 
 
 func Init(cycle *Cycle) {
 }
+*/

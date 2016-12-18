@@ -4,7 +4,7 @@
  */
 
 
-package autoconf
+package modules
 
 
 import (
@@ -12,35 +12,41 @@ import (
 )
 
 
-var Modules = []*Moudle{
+var Modules = []*Module{
     &SignalModule,
     &OsModule,
     &RoutineModule,
     &OptionModule,
-    &LogModule,
+    &ErrorLogModule,
     &ConfigureYamlModule,
     nil,
 }
 
 
-func (modules []*Module) CoreInit() *Option {
+func CoreInit(modules []*Module) *Option {
+    var cycle *Cycle
     var m  int
 
     for m = 0; modules[m] != nil; m++ {
+        mod := modules[m]
 
-        if modules[m].Type != CORE {
+        if mod.Type != CORE_MODULE {
             continue
         }
 
-        modules[m].InitModule(cycle)
-        modules[m].InitRoutine(cycle)
+        mod.InitModule(cycle)
+
+        mod.InitRoutine(cycle)
     }
+
+    return nil
 }
 
 
-func (modules []*Module) SystemInit(option *Option) *Cycle {
+func SystemInit(option *Option) *Cycle {
+    return nil
 }
 
 
-func (modules []*Module) UserInit(cycle *Cycle) {
+func UserInit(cycle *Cycle) {
 }
