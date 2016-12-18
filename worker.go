@@ -11,8 +11,8 @@ import (
       "os"
       "fmt"
 
-    . "worker/types"
-    . "worker/modules"
+    . "go-worker/types"
+    . "go-worker/modules"
 )
 
 
@@ -37,7 +37,7 @@ func main() {
     if option.Set(argc, os.Args) == Error {
         return;
     }
-
+/*
     if cycle := Modules.SystemInit(option), ok != nil {
     }
 
@@ -46,4 +46,7 @@ func main() {
     for {
         go worker.main()
     }
+*/
+
+    return
 }

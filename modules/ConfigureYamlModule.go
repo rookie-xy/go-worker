@@ -9,7 +9,7 @@ package modules
 import (
       "fmt"
     . "unsafe"
-    . "worker/types"
+    . "go-worker/types"
 )
 
 

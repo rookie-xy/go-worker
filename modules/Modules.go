@@ -8,7 +8,7 @@ package autoconf
 
 
 import (
-    . "devour/types"
+    . "go-worker/types"
 )
 
 

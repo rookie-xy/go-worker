@@ -1,53 +1,77 @@
-func wkrGetOption(argc int, argv []string) int {
+
+/*
+ * Copyright (C) 2016 Meng Shi
+ */
+
+
+package modules
+
+
+import (
+      "fmt"
+    . "unsafe"
+
+    . "go-worker/types"
+)
+
+
+var OptionCommands = []Command{
+      NilCommand
+};
+
+
+var OptionContext = Context{
+    Core,
+    Conf : interface {
+        Create,
+	Init
+    }
+};
+
+
+var OptionModule = Moudle{
+    0,
+    0,
+    &OptionContext,
+    OptionCommands,
+    CORE_MODULE,
+    nil,
+    nil,
+};
+
+
+func Get(argc int, argv []string) int {
     var i int;
 
     for i = 1; i < argc; i++ {
 
 	if argv[i][0] != '-' {
-	    return WkrError;
+	    return Error;
 	}
 
         switch argv[i][1] {
 
         case 'c':
 	    if argv[i + 1] == "" {
-	        return WkrError;
+	        return Error;
 	    }
-/*
-	    work.ConfFile.Data = argv[i + 1];
-	    workcycle.ConfFile.Len  = len(workcycle.ConfFile.Data.(string)) + 1;
-	    */
 
             i++;
 
             break;
 
         case 't':
-	    //WkrDvrTestConfig = true;
 	    break;
 
         default:
             break;
         }
     }
-/*
-    if cycle.ConfFile.Data == nil {
-        cycle.ConfFile.Data = DvrConfPath;
-        cycle.ConfFile.Len  = len(DvrConfPath) + 1;
-    }
 
-
-    if DvrConfFullName(cycle, &cycle.ConfFile) == DvrError {
-	return WkrError;
-    }
-    */
-
-    return WkrOk;
+    return Ok;
 }
 
 
-func wkrSetOption(argc int, argv []string) int {
-    return WkrOk;
+func Set(argc int, argv []string) int {
+    return Ok;
 }
-
-

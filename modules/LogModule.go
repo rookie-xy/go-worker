@@ -8,7 +8,7 @@ package modules
 
 import (
       "fmt"
-    . "devour/types"
+    . "go-worker/types"
 )
 
 

@@ -11,7 +11,7 @@ import (
       "fmt"
     . "unsafe"
 
-    . "devour/types"
+    . "go-worker/types"
 )
 
 
