@@ -9,7 +9,7 @@ package main
 
 import (
       "os"
-      "fmt"
+//      "fmt"
 
     . "go-worker/types"
     . "go-worker/modules"
@@ -17,25 +17,28 @@ import (
 
 
 func main() {
+    //m := len(Modules)
 
-    if option := Modules.CoreInit(), ok != nil {
+    option, err := Modules[0].CoreInit(Modules)
+    if err != nil {
         return
     }
 
     argc := len(os.Args)
 
-    if option.Get(argc, os.Args) == Error {
-        return;
+    if option.Data.Get(argc, os.Args) == Error {
+        return
     }
 
-    if option.Set(argc, os.Args) == Error {
-        return;
+    if option.Data.Set(argc, os.Args) == Error {
+        return
     }
+
 /*
-    if cycle := Modules.SystemInit(option), ok != nil {
+    if cycle := Modules[m].SystemInit(option), ok != nil {
     }
 
-    Modules.UserInit(cycle)
+    Modules[m].UserInit(cycle)
 
     for {
         go worker.main()

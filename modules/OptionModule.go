@@ -14,11 +14,11 @@ import (
 )
 
 
-type OptionDefault Option
+type option Option
 
 
-var option = String{ len("Option"), "Option" }
-var optionConf = OptionDefault{ "Option" }
+var optionName = String{ len("Option"), "Option" }
+var optionConf = option{ "Option", option{} }
 
 
 var OptionCommands = []Command{
@@ -27,7 +27,7 @@ var OptionCommands = []Command{
 
 
 var OptionContext = Context{
-    option,
+    optionName,
     optionConf,
 }
 
@@ -43,18 +43,17 @@ var OptionModule = Module{
 }
 
 
-func (od OptionDefault) Create(cycle *Cycle) {
+func (o option) Create(cycle *Cycle) {
     fmt.Println("abc")
 }
 
 
-func (od OptionDefault) Init(cycle *Cycle) {
+func (o option) Init(cycle *Cycle) {
     fmt.Println("abc")
 }
 
 
-
-func Get(argc int, argv []string) int {
+func (o option) Get(argc int, argv []string) int {
     var i int
 
     for i = 1; i < argc; i++ {
@@ -86,6 +85,6 @@ func Get(argc int, argv []string) int {
 }
 
 
-func Set(argc int, argv []string) int {
+func (o option) Set(argc int, argv []string) int {
     return Ok;
 }

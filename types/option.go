@@ -7,26 +7,11 @@
 package types
 
 
-//import "fmt"
-
-
 type Option struct {
     File    string
-/*
-    Action  interface {
-        Set()
-        Get()
+
+    Data  interface {
+        Set(argc int, argv []string) int
+        Get(argc int, argv []string) int
     }
-    */
 }
-
-/*
-func (p *Option) Create(cycle *Cycle) {
-    fmt.Println("abc")
-}
-
-
-func (p *Option) Init(cycle *Cycle) {
-    fmt.Println("abc")
-}
-*/

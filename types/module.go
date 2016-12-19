@@ -34,3 +34,32 @@ type Module struct {
     InitModule    InitModuleFunc
     InitRoutine   InitRoutineFunc
 }
+
+
+func (i *Module) CoreInit(modules []*Module) (*Option, error) {
+    var cycle *Cycle
+    var m  int
+
+    for m = 0; modules[m] != nil; m++ {
+        mod := modules[m]
+
+        if mod.Type != CORE_MODULE {
+            continue
+        }
+
+        mod.InitModule(cycle)
+
+        mod.InitRoutine(cycle)
+    }
+
+    return nil, nil
+}
+
+
+func (i *Module) SystemInit(option *Option) *Cycle {
+    return nil
+}
+
+
+func (i *Module) UserInit(cycle *Cycle) {
+}
