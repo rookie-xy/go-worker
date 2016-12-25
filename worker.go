@@ -8,22 +8,31 @@ package main
 
 
 import (
-      "os"
+   //   "os"
 //      "fmt"
 
     . "go-worker/types"
     . "go-worker/modules"
+    //"fmt"
+    "os"
     "fmt"
 )
 
 
 func main() {
-    //m := len(Modules)
-fmt.Println("init finish")
-    option := CoreInit(Modules)
-    if option != nil {
+    if Modules == nil {
         return
     }
+
+    cycle, err := CoreInit(Modules)
+    if err != nil {
+        return
+    }
+
+    option := cycle.Option
+
+//    option.Create(nil)
+    fmt.Println(option.File)
 
     argc := len(os.Args)
 
@@ -34,7 +43,6 @@ fmt.Println("init finish")
     if option.Data.Set(argc, os.Args) == Error {
         return
     }
-
 
 
 /*

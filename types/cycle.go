@@ -8,6 +8,7 @@ package types
 
 
 type Cycle struct {
-    configure  *Configure
-    log        *Log
+    Option     *Option
+    Configure  *Configure
+    Log        *Log
 }

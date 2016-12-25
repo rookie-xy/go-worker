@@ -7,6 +7,11 @@
 package types
 
 
+import (
+    "os"
+)
+
+
 var (
     Ok    =  0
     Error = -1
@@ -21,8 +26,8 @@ const (
 )
 
 
-type InitModuleFunc func(cycle *Cycle) uint
-type InitRoutineFunc func(cycle *Cycle) uint
+type InitModuleFunc func(cycle *Cycle) int
+type InitRoutineFunc func(cycle *Cycle) int
 
 
 type Module struct {
@@ -36,9 +41,11 @@ type Module struct {
 }
 
 
-func CoreInit(modules []*Module) *Option {
+func CoreInit(modules []*Module) (*Cycle, error) {
     var cycle *Cycle
     var m  int
+
+    cycle = &Cycle{}
 
     for m = 0; modules[m] != nil; m++ {
         mod := modules[m]
@@ -48,17 +55,19 @@ func CoreInit(modules []*Module) *Option {
         }
 
         if mod.InitModule != nil {
-            mod.InitModule(cycle)
-            return nil
+            if mod.InitModule(cycle) == Error {
+                os.Exit(2)
+            }
         }
 
         if mod.InitRoutine != nil {
-	    mod.InitRoutine(cycle)
-            return nil
+	    if mod.InitRoutine(cycle) == Error {
+                os.Exit(2)
+            }
         }
     }
 
-    return &Option{}
+    return cycle, nil
 }
 
 

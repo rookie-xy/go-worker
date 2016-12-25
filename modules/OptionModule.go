@@ -8,9 +8,10 @@ package modules
 
 
 import (
-      "fmt"
+//      "fmt"
 
     . "go-worker/types"
+	"fmt"
 )
 
 
@@ -18,7 +19,7 @@ type option Option
 
 
 var optionName = String{ len("Option"), "Option" }
-var optionConf = option{ "Option", option{} }
+var optionConf = option{ "", option{} }
 
 
 var OptionCommands = []Command{
@@ -38,8 +39,19 @@ var OptionModule = Module{
     &OptionContext,
     OptionCommands,
     CORE_MODULE,
+    InitModule,
     nil,
-    nil,
+}
+
+
+func InitModule(cycle *Cycle) int {
+    var option *option = &option{ "", option{} }
+//	cycle.Option = option
+    cycle.Option = &Option{}
+//	option.File = cycle.Option.File
+	cycle.Option.File = option.File
+    cycle.Option.Data = option.Data
+    return Ok
 }
 
 
@@ -55,6 +67,7 @@ func (o option) Init(cycle *Cycle) {
 
 func (o option) Get(argc int, argv []string) int {
     var i int
+	o.File = "mengshi"
 
     for i = 1; i < argc; i++ {
 
