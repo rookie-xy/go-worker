@@ -13,14 +13,15 @@ import (
 
     . "go-worker/types"
     . "go-worker/modules"
+    "fmt"
 )
 
 
 func main() {
     //m := len(Modules)
-
-    option, err := Modules[0].CoreInit(Modules)
-    if err != nil {
+fmt.Println("init finish")
+    option := CoreInit(Modules)
+    if option != nil {
         return
     }
 
@@ -33,6 +34,8 @@ func main() {
     if option.Data.Set(argc, os.Args) == Error {
         return
     }
+
+
 
 /*
     if cycle := Modules[m].SystemInit(option), ok != nil {

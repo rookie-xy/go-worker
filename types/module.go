@@ -36,7 +36,7 @@ type Module struct {
 }
 
 
-func (i *Module) CoreInit(modules []*Module) (*Option, error) {
+func CoreInit(modules []*Module) *Option {
     var cycle *Cycle
     var m  int
 
@@ -47,19 +47,25 @@ func (i *Module) CoreInit(modules []*Module) (*Option, error) {
             continue
         }
 
-        mod.InitModule(cycle)
+        if mod.InitModule != nil {
+            mod.InitModule(cycle)
+            return nil
+        }
 
-        mod.InitRoutine(cycle)
+        if mod.InitRoutine != nil {
+	    mod.InitRoutine(cycle)
+            return nil
+        }
     }
 
-    return nil, nil
+    return &Option{}
 }
 
 
-func (i *Module) SystemInit(option *Option) *Cycle {
+func SystemInit(option *Option) *Cycle {
     return nil
 }
 
 
-func (i *Module) UserInit(cycle *Cycle) {
+func UserInit(cycle *Cycle) {
 }
