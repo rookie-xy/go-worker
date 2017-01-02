@@ -18,18 +18,47 @@ var SimpleOptionModule = Module{
     nil,
     nil,
     CORE_MODULE,
-    InitModule,
+    initSimpleOptionModule,
     nil,
 }
 
-func InitModule(cycle *AbstractCycle) int {
-    simpleOption := &SimpleOption{ cycle.GetOption() }
+func initSimpleOptionModule(cycle *AbstractCycle) int {
+    simpleOption := NewSimpleOption()
+
+    option := cycle.GetOption()
+    if option == nil {
+        return Error
+    }
+
+    if simpleOption.SetOption(option) == Error {
+        return Error
+    }
+
+    //simpleOption := &SimpleOption{ cycle.GetOption() }
 
     if simpleOption.Parse() == Error {
         return Error
     }
 
     return Ok
+}
+
+func NewSimpleOption() *SimpleOption {
+    return &SimpleOption{}
+}
+
+func (so *SimpleOption) SetOption(option *AbstractOption) int {
+    if option == nil {
+        return Error
+    }
+
+    so.AbstractOption = option
+
+    return Ok
+}
+
+func (so *SimpleOption) GetOption() *AbstractOption {
+    return so.AbstractOption
 }
 
 func (o *SimpleOption) Parse() int {

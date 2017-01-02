@@ -9,6 +9,10 @@ import (
     . "go-worker/types"
 )
 
+type YamlConfigure struct {
+    *AbstractConfigure
+}
+
 var Include = String{ len("Include"), "Include" }
 
 var ConfigreYamlCommands = []Command{
@@ -33,7 +37,7 @@ var YamlConfigureModule = Module{
     nil,
 }
 
-func ConfigureInclude(cf *Configure, cmd *Command, conf interface{}) string {
+func ConfigureInclude(cf *AbstractConfigure, cmd *Command, conf interface{}) string {
     fmt.Println("Configure Module Include Command Finish")
     return ""
 }

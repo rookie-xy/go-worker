@@ -84,6 +84,12 @@ func (w *worker) CoreInit(option *AbstractOption) int {
 }
 
 func (w *worker) SystemInit(configure *AbstractConfigure) int {
+    cycle := w.GetCycle()
+
+    if cycle.SetConfigure(configure) == Error {
+        return Error
+    }
+
     return Ok
 }
 

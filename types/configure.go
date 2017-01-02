@@ -28,7 +28,8 @@ const (
 )
 
 type AbstractConfigure struct {
-    File    string
+    file  string
+    name  string
 }
 
 type Configure interface {
@@ -39,4 +40,32 @@ type Configure interface {
 
 func NewConfigure() *AbstractConfigure {
     return &AbstractConfigure{}
+}
+
+func (c *AbstractConfigure) SetFile(file string) int {
+    if file == "" {
+        return Error
+    }
+
+    c.file = file
+
+    return Ok
+}
+
+func (c *AbstractConfigure) GetFile() string {
+    return c.file
+}
+
+func (c *AbstractConfigure) SetName(name string) int {
+    if name == "" {
+        return Error
+    }
+
+    c.name = name
+
+    return Ok
+}
+
+func (c *AbstractConfigure) GetName() string {
+    return c.name
 }
