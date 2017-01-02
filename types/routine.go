@@ -1,12 +1,13 @@
-
 /*
  * Copyright (C) 2016 Meng Shi
  */
 
-
 package types
 
-
-type Routine struct {
+type AbstractRoutine struct {
     File    string
+}
+
+type Routine interface {
+
 }

@@ -1,11 +1,8 @@
-
 /*
  * Copyright (C) 2016 Meng Shi
  */
 
-
 package types
-
 
 const (
     ConfNoargs = 0x00000001
@@ -30,13 +27,16 @@ const (
     DirectConf = 0x00010000
 )
 
-
-type Configure struct {
+type AbstractConfigure struct {
     File    string
+}
 
-    Action  interface {
-        Set()
-        Get()
-        Parse()
-    }
+type Configure interface {
+    Set()
+    Get()
+    Parse() int
+}
+
+func NewConfigure() *AbstractConfigure {
+    return &AbstractConfigure{}
 }

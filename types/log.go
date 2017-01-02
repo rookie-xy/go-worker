@@ -7,5 +7,5 @@
 package types
 
 
-type Log struct {
+type AbstractLog struct {
 }

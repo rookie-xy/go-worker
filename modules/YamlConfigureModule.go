@@ -1,21 +1,15 @@
-
 /*
  * Copyright (C) 2016 Meng Shi
  */
 
-
 package modules
-
 
 import (
       "fmt"
-
     . "go-worker/types"
 )
 
-
 var Include = String{ len("Include"), "Include" }
-
 
 var ConfigreYamlCommands = []Command{
 
@@ -29,8 +23,7 @@ var ConfigreYamlCommands = []Command{
       NilCommand,
 }
 
-
-var ConfigureYamlModule = Module{
+var YamlConfigureModule = Module{
     0,
     0,
     nil,
@@ -39,7 +32,6 @@ var ConfigureYamlModule = Module{
     nil,
     nil,
 }
-
 
 func ConfigureInclude(cf *Configure, cmd *Command, conf interface{}) string {
     fmt.Println("Configure Module Include Command Finish")

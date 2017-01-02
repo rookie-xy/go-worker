@@ -1,19 +1,13 @@
-
 /*
  * Copyright (C) 2016 Meng Shi
  */
 
-
 package types
 
+type AbstractSignal struct {
+    File  string
+}
 
-type Signal struct {
-    File    string
-/*
-    Action  interface {
-        Set()
-        Get()
-        Parse()
-    }
-    */
+type Signal interface {
+
 }

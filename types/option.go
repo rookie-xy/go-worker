@@ -1,66 +1,58 @@
-
 /*
  * Copyright (C) 2016 Meng Shi
  */
 
-
 package types
 
-//import "fmt"
+type AbstractOption struct {
+    argc    int
+    argv    []string
+    result  map[string]interface{}
+}
 
-type Option struct {
-    File  string
+type Option interface {
+    /*
+     * This is option interface, it is
+     * to be any impl
+     */
+    Parse() int
+}
 
-    Data  interface {
-        Set(argc int, argv []string) int
-        Get(argc int, argv []string) int
+func NewOption() *AbstractOption {
+    return &AbstractOption{
+        argc: -1,
+        argv: nil,
+        result: make(map[string]interface{}),
     }
 }
 
-/*
-func (o Option) Create(cycle *Cycle) {
-    fmt.Println("abc")
+func (ao *AbstractOption) GetArgc() int {
+    return ao.argc
 }
 
-
-func (o Option) Init(cycle *Cycle) {
-    fmt.Println("abc")
+func (ao *AbstractOption) GetArgv() []string {
+    return ao.argv
 }
 
-
-func (o Option) Get(argc int, argv []string) int {
-    var i int
-
-    for i = 1; i < argc; i++ {
-
-	if argv[i][0] != '-' {
-	    return Error
-	}
-
-        switch argv[i][1] {
-
-        case 'c':
-	    if argv[i + 1] == "" {
-	        return Error
-	    }
-
-            i++
-
-            break
-
-        case 't':
-	    break
-
-        default:
-            break
-        }
+func (ao *AbstractOption) SetArgs(argc int, argv []string) int {
+    if argc <= 0 || argv == nil {
+        return Error
     }
+
+    ao.argc = argc
+    ao.argv = argv
 
     return Ok
 }
 
-
-func (o Option) Set(argc int, argv []string) int {
-    return Ok;
+func (ao *AbstractOption) SetResult(k string, v interface{}) {
+    ao.result[k] = v
 }
-*/
+
+func (ao *AbstractOption) GetResult(k string) interface{} {
+    return ao.result[k]
+}
+
+func (ao *AbstractOption) Parse() int {
+    return Ok
+}

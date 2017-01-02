@@ -16,8 +16,8 @@ var Modules = []*Module{
     &SignalModule,
     &OsModule,
     &RoutineModule,
-    &OptionModule,
+    &SimpleOptionModule,
     &ErrorLogModule,
-    &ConfigureYamlModule,
+    &YamlConfigureModule,
     nil,
 }
