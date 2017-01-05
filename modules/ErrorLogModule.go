@@ -9,6 +9,10 @@ import (
     . "go-worker/types"
 )
 
+func init() {
+    Modules = append(Modules, &ErrorLogModule)
+}
+
 var ErrorLog = String{ len("ErrorLog"), "ErrorLog" }
 
 var ErrorLogCommands = []Command{

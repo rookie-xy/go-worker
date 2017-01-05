@@ -10,6 +10,8 @@ import (
     . "go-worker/types"
     . "go-worker/modules"
 
+  //  "fmt"
+    "fmt"
 )
 
 type worker struct {
@@ -98,6 +100,8 @@ func (w *worker) UserInit() int {
 }
 
 func main() {
+    Modules = append(Modules, nil)
+
     worker := NewWorker()
     if worker.SetModules(Modules) == Error {
        return
@@ -121,10 +125,9 @@ func main() {
         return
     }
 
-    //fmt.Println(worker.cycle.GetOption().GetResult("mengshi"))
+    fmt.Println(worker.cycle.GetOption().GetResult("mengshi"))
 
     configure := NewConfigure()
-
     if worker.SystemInit(configure) == Error {
         return
     }

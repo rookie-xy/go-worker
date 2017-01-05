@@ -1,11 +1,8 @@
-
 /*
  * Copyright (C) 2016 Meng Shi
  */
 
-
 package modules
-
 
 import (
     //  "fmt"
@@ -14,20 +11,20 @@ import (
     . "go-worker/types"
 )
 
+func init() {
+    Modules = append(Modules, &OsModule)
+}
 
 var os = String{ len("Os"), "Os" }
-
 
 var OsCommands = []Command{
       NilCommand,
 };
 
-
 var OsContext = Context{
     os,
     nil,
 };
-
 
 var OsModule = Module{
     0,
@@ -38,7 +35,6 @@ var OsModule = Module{
     nil,
     nil,
 };
-
 
 /*
 func Create(cycle *Cycle) {

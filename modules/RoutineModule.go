@@ -14,6 +14,10 @@ import (
 type SimpleRoutine struct {
     AbstractRoutine
 }
+
+func init() {
+    Modules = append(Modules, &RoutineModule)
+}
 /*
 var routine = String{ len("Routine"), "Routine" }
 var routineConf = SimpleRoutine{ AbstractRoutine: AbstractRoutine{} }

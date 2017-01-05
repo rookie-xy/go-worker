@@ -9,6 +9,10 @@ import (
     . "go-worker/types"
 )
 
+func init() {
+    Modules = append(Modules, &YamlConfigureModule)
+}
+
 type YamlConfigure struct {
     *AbstractConfigure
 }

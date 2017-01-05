@@ -14,6 +14,9 @@ import (
     . "go-worker/types"
 )
 
+func init() {
+    Modules = append(Modules, &SignalModule)
+}
 
 var signal = String{ int(Sizeof("Signal")) - 1, "Signal" }
 //var conf = Signal{ "abc" }

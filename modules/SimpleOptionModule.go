@@ -8,6 +8,10 @@ import (
     . "go-worker/types"
 )
 
+func init() {
+    Modules = append(Modules, &SimpleOptionModule)
+}
+
 type SimpleOption struct {
     *AbstractOption
 }
