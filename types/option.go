@@ -5,9 +5,9 @@
 package types
 
 type AbstractOption struct {
-    argc    int
-    argv    []string
-    result  map[string]interface{}
+    argc   int
+    argv   []string
+    items  map[string]interface{}
 }
 
 type Option interface {
@@ -20,9 +20,7 @@ type Option interface {
 
 func NewOption() *AbstractOption {
     return &AbstractOption{
-        argc: -1,
-        argv: nil,
-        result: make(map[string]interface{}),
+        items: make(map[string]interface{}),
     }
 }
 
@@ -45,12 +43,12 @@ func (ao *AbstractOption) SetArgs(argc int, argv []string) int {
     return Ok
 }
 
-func (ao *AbstractOption) SetResult(k string, v interface{}) {
-    ao.result[k] = v
+func (ao *AbstractOption) SetItem(k string, v interface{}) {
+    ao.items[k] = v
 }
 
-func (ao *AbstractOption) GetResult(k string) interface{} {
-    return ao.result[k]
+func (ao *AbstractOption) GetItem(k string) interface{} {
+    return ao.items[k]
 }
 
 func (ao *AbstractOption) Parse() int {

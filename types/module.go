@@ -22,7 +22,7 @@ type InitRoutineFunc func(cycle *AbstractCycle) int
 type Module struct {
     CtxIndex      uint
     Index         uint
-    Context      *Context
+    Context      *AbstractContext
     Commands      []Command
     Type          uint
     InitModule    InitModuleFunc

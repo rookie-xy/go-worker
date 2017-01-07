@@ -1,17 +1,35 @@
-
 /*
  * Copyright (C) 2016 Meng Shi
  */
 
-
 package types
 
+import (
+    "unsafe"
+    "fmt"
+)
 
-type Context struct {
-    Name  String
+type AbstractContext struct {
+    Name     String
+    Context  Context
+}
 
-    Data  interface {
-        Create(cycle *Cycle)
-        Init(cycle *Cycle)
+type Context interface {
+    Create(cycle *AbstractCycle) unsafe.Pointer
+    Init(cycle *AbstractCycle) string
+}
+
+func NewContext() *AbstractContext {
+    return &AbstractContext{
+        Context: &AbstractContext{},
     }
+}
+
+func (ac *AbstractContext) Create(cycle *AbstractCycle) unsafe.Pointer {
+	fmt.Println("bbbbbbbbbbbbbbbbbb")
+    return nil
+}
+
+func (ac *AbstractContext) Init(cycle *AbstractCycle) string {
+    return ""
 }
