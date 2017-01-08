@@ -65,6 +65,7 @@ func (c *AbstractConfigure) Override() Configure {
     return c.configure
 }
 
+// TODO Name of Set is not suitable, and think of batter name
 func (c *AbstractConfigure) Set(configre Configure) int {
     if configre == nil {
         return Error

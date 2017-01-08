@@ -70,24 +70,16 @@ func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
         fmt.Println("is right")
     }
 
-    fmt.Println("sssssssssssss")
+    //TODO open file, get file handle
 
     yc := NewYamlConfigure()
     if yc == nil {
         return nil
     }
 
-    fmt.Println("qqqqqqqqqqqqqqq")
     if configure.Set(yc) == Error {
         return nil
     }
-/*
-    if yc.Override() == Error {
-        return nil
-    }
-    */
-
-    fmt.Println("ooooooooooooooooooooo")
 
     return nil
 }
