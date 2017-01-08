@@ -4,11 +4,14 @@
 
 package types
 
+import "fmt"
+
 var ConfigureTypeName string = "configure_type_name"
 
 type AbstractConfigure struct {
     file       string
     type_name  string
+    configure  Configure
 }
 
 type Configure interface {
@@ -46,4 +49,28 @@ func (c *AbstractConfigure) SetTypeName(name string) int {
 
 func (c *AbstractConfigure) GetTypeName() string {
     return c.type_name
+}
+
+func (c *AbstractConfigure) Parse() int {
+    fmt.Println("configure parse")
+    return Ok
+}
+
+func (c *AbstractConfigure) ReadToken() int {
+    fmt.Println("configure read token")
+    return Ok
+}
+
+func (c *AbstractConfigure) Override() Configure {
+    return c.configure
+}
+
+func (c *AbstractConfigure) Set(configre Configure) int {
+    if configre == nil {
+        return Error
+    }
+
+    c.configure = configre
+
+    return Ok
 }

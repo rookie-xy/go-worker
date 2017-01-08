@@ -146,6 +146,12 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
         }
     }
 
+    config := configure.Override()
+    if config == nil {
+        return Error
+    }
+
+    config.Parse()
 
     return Ok
 }

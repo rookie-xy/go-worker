@@ -15,7 +15,17 @@ type yamlConfigure struct {
 }
 
 func NewYamlConfigure() *yamlConfigure {
-    return &yamlConfigure{ NewConfigure() }
+    return &yamlConfigure{}
+}
+
+func (yc *yamlConfigure) Parse() int {
+    fmt.Println("yaml configure parse")
+    return Ok
+}
+
+func (yc *yamlConfigure) ReadToken() int {
+    fmt.Println("yaml configure read token")
+    return Ok
 }
 
 type yamlConfigureContext struct {
@@ -23,24 +33,31 @@ type yamlConfigureContext struct {
 }
 
 var Yaml = String{ len("yaml"), "yaml" }
+var YamlContext = NewYamlConfigureContext()
 
 var YamlConfigureContext = AbstractContext{
     Yaml,
-    NewYamlConfigureContext().Context,
+    YamlContext.Override(),
 }
 
 func NewYamlConfigureContext() *yamlConfigureContext {
-    this := NewContext()
+    return &yamlConfigureContext{}
+}
 
+func (ycc *yamlConfigureContext) Override() Context {
+    this := NewContext()
     if this == nil {
         return nil
     }
 
-    this.Context = &yamlConfigureContext{}
+    this.Context = ycc
 
-    return &yamlConfigureContext{
-        AbstractContext: this,
-    }
+    return ycc.Set(this)
+}
+
+func (ycc *yamlConfigureContext) Set(context *AbstractContext) *yamlConfigureContext {
+    ycc.AbstractContext = context
+    return ycc
 }
 
 func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
@@ -54,6 +71,23 @@ func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
     }
 
     fmt.Println("sssssssssssss")
+
+    yc := NewYamlConfigure()
+    if yc == nil {
+        return nil
+    }
+
+    fmt.Println("qqqqqqqqqqqqqqq")
+    if configure.Set(yc) == Error {
+        return nil
+    }
+/*
+    if yc.Override() == Error {
+        return nil
+    }
+    */
+
+    fmt.Println("ooooooooooooooooooooo")
 
     return nil
 }
