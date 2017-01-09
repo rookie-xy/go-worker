@@ -4,10 +4,13 @@
 
 package types
 
+import "unsafe"
+
 type AbstractCycle struct {
     option     *AbstractOption
     configure  *AbstractConfigure
     log        *AbstractLog
+    context    []*unsafe.Pointer
 }
 
 type Cycle interface {
@@ -56,6 +59,23 @@ func (c *AbstractCycle) SetLog(log *AbstractLog) int {
     return Ok
 }
 
-func (c *AbstractCycle) GetSetLog() *AbstractLog {
+func (c *AbstractCycle) GetLog() *AbstractLog {
     return c.log
+}
+
+func (c *AbstractCycle) SetContext(index uint, pointer *unsafe.Pointer) int {
+    if index < 0 || pointer == nil {
+        return Error
+    }
+
+    c.context[index] = pointer
+    return Ok
+}
+
+func (c *AbstractCycle) GetContext(index uint) *unsafe.Pointer {
+    if index < 0 {
+        return nil
+    }
+
+    return c.context[index]
 }

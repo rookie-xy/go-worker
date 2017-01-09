@@ -65,20 +65,20 @@ func (w *worker) CoreInit(option *AbstractOption) int {
     }
 
     for m := 0; modules[m] != nil; m++ {
-        mod := modules[m]
+        module := modules[m]
 
-        if mod.Type != CORE_MODULE {
+        if module.Type != CORE_MODULE {
             continue
         }
 
-        if mod.InitModule != nil {
-            if mod.InitModule(cycle) == Error {
+        if module.InitModule != nil {
+            if module.InitModule(cycle) == Error {
                 os.Exit(2)
             }
         }
 
-        if mod.InitRoutine != nil {
-	    if mod.InitRoutine(cycle) == Error {
+        if module.InitRoutine != nil {
+	    if module.InitRoutine(cycle) == Error {
                 os.Exit(2)
             }
         }
@@ -143,6 +143,10 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
             if *(*string)(unsafe.Pointer(uintptr(context))) == "-1" {
                 return Error;
             }
+
+            if cycle.SetContext(module.Index, &context) == Error {
+                return Error
+            }
         }
     }
 
@@ -151,7 +155,30 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
         return Error
     }
 
-    config.Parse()
+    if config.Parse() == Error {
+        return Error
+    }
+
+    for m := 0; modules[m] != nil; m++ {
+        module := modules[m]
+        if module.Type != SYSTEM_MODULE {
+            continue
+        }
+
+	this := module.Context
+        if this == nil || this.Context == nil {
+            continue
+        } else {
+            fmt.Println(this.Name.Data)
+        }
+
+        // TODO module index init
+        context := cycle.GetContext(module.Index)
+
+        if this.Context.Init(cycle, context) == "-1" {
+            return Error
+        }
+    }
 
     return Ok
 }

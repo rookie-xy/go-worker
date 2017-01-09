@@ -16,7 +16,7 @@ type AbstractContext struct {
 
 type Context interface {
     Create(cycle *AbstractCycle) unsafe.Pointer
-    Init(cycle *AbstractCycle) string
+    Init(cycle *AbstractCycle, configure *unsafe.Pointer) string
 }
 
 func NewContext() *AbstractContext {
@@ -30,6 +30,6 @@ func (ac *AbstractContext) Create(cycle *AbstractCycle) unsafe.Pointer {
     return nil
 }
 
-func (ac *AbstractContext) Init(cycle *AbstractCycle) string {
+func (ac *AbstractContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {
     return ""
 }

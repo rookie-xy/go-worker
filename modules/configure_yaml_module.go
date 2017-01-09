@@ -84,8 +84,9 @@ func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
     return nil
 }
 
-func (ycc *yamlConfigureContext) Init(cycle *AbstractCycle) string {
-    return ""
+func (ycc *yamlConfigureContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {
+    fmt.Println("yaml configure init")
+    return "0"
 }
 
 var YamlConfigureModule = Module{
