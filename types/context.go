@@ -25,11 +25,11 @@ func NewContext() *AbstractContext {
     }
 }
 
-func (ac *AbstractContext) Create(cycle *AbstractCycle) unsafe.Pointer {
+func (c *AbstractContext) Create(cycle *AbstractCycle) unsafe.Pointer {
 	fmt.Println("bbbbbbbbbbbbbbbbbb")
     return nil
 }
 
-func (ac *AbstractContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {
+func (c *AbstractContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {
     return ""
 }

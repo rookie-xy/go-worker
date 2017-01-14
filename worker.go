@@ -150,7 +150,7 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
         }
     }
 
-    config := configure.Override()
+    config := configure.GetConfigure()
     if config == nil {
         return Error
     }

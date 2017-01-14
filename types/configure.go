@@ -6,15 +6,14 @@ package types
 
 import "fmt"
 
-var ConfigureTypeName string = "configure_type_name"
-
 type AbstractConfigure struct {
-    file       string
-    type_name  string
-    configure  Configure
+    *AbstractFile
+    typeName       string
+    configure      Configure
 }
 
 type Configure interface {
+    Get() int      // get file from local or remote
     Parse() int
     ReadToken() int
 }
@@ -28,13 +27,15 @@ func (c *AbstractConfigure) SetFile(file string) int {
         return Error
     }
 
-    c.file = file
+    if c.AbstractFile.SetName(file) == Error {
+        return Error
+    }
 
     return Ok
 }
 
 func (c *AbstractConfigure) GetFile() string {
-    return c.file
+    return c.AbstractFile.GetName()
 }
 
 func (c *AbstractConfigure) SetTypeName(name string) int {
@@ -42,13 +43,27 @@ func (c *AbstractConfigure) SetTypeName(name string) int {
         return Error
     }
 
-    c.type_name = name
+    c.typeName = name
 
     return Ok
 }
 
 func (c *AbstractConfigure) GetTypeName() string {
-    return c.type_name
+    return c.typeName
+}
+
+func (c *AbstractConfigure) GetConfigure() Configure {
+    return c.configure
+}
+
+func (c *AbstractConfigure) SetConfigure(configre Configure) int {
+    if configre == nil {
+        return Error
+    }
+
+    c.configure = configre
+
+    return Ok
 }
 
 func (c *AbstractConfigure) Parse() int {
@@ -61,17 +76,3 @@ func (c *AbstractConfigure) ReadToken() int {
     return Ok
 }
 
-func (c *AbstractConfigure) Override() Configure {
-    return c.configure
-}
-
-// TODO Name of Set is not suitable, and think of batter name
-func (c *AbstractConfigure) Set(configre Configure) int {
-    if configre == nil {
-        return Error
-    }
-
-    c.configure = configre
-
-    return Ok
-}

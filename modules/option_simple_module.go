@@ -46,6 +46,7 @@ func (o *simpleOption) Parse() int {
 	        return Error
 	    }
 
+            // file://path=/home/
             o.SetItem("configure", argv[i + 1])
             i++
             break
