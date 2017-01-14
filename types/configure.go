@@ -13,7 +13,6 @@ type AbstractConfigure struct {
 }
 
 type Configure interface {
-    Get() int      // get file from local or remote
     Parse() int
     ReadToken() int
 }
@@ -22,7 +21,7 @@ func NewConfigure() *AbstractConfigure {
     return &AbstractConfigure{}
 }
 
-func (c *AbstractConfigure) SetFile(file string) int {
+func (c *AbstractConfigure) SetName(file string) int {
     if file == "" {
         return Error
     }
@@ -34,7 +33,7 @@ func (c *AbstractConfigure) SetFile(file string) int {
     return Ok
 }
 
-func (c *AbstractConfigure) GetFile() string {
+func (c *AbstractConfigure) GetName() string {
     return c.AbstractFile.GetName()
 }
 
@@ -52,11 +51,24 @@ func (c *AbstractConfigure) GetTypeName() string {
     return c.typeName
 }
 
-func (c *AbstractConfigure) GetConfigure() Configure {
+func (c *AbstractConfigure) Get() Configure {
+    file := c.AbstractFile
+    if file == nil {
+        return nil
+    }
+
+    if file.Open() == Error {
+        return nil
+    }
+
+    if file.Read() == Error {
+        return nil
+    }
+
     return c.configure
 }
 
-func (c *AbstractConfigure) SetConfigure(configre Configure) int {
+func (c *AbstractConfigure) Set(configre Configure) int {
     if configre == nil {
         return Error
     }

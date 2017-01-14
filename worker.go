@@ -150,7 +150,7 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
         }
     }
 
-    config := configure.GetConfigure()
+    config := configure.Get()
     if config == nil {
         return Error
     }

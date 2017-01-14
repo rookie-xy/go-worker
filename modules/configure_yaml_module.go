@@ -9,7 +9,7 @@ import (
     "fmt"
     "unsafe"
 )
-
+// 解析器默认都从文件里读取
 type yamlConfigure struct {
     *AbstractConfigure
 }
@@ -37,14 +37,14 @@ var YamlContext = NewYamlConfigureContext()
 
 var YamlConfigureContext = AbstractContext{
     Yaml,
-    YamlContext.Override(),
+    YamlContext.Get(),
 }
 
 func NewYamlConfigureContext() *yamlConfigureContext {
     return &yamlConfigureContext{}
 }
 
-func (ycc *yamlConfigureContext) Override() Context {
+func (ycc *yamlConfigureContext) Get() Context {
     this := NewContext()
     if this == nil {
         return nil
@@ -56,7 +56,12 @@ func (ycc *yamlConfigureContext) Override() Context {
 }
 
 func (ycc *yamlConfigureContext) Set(context *AbstractContext) *yamlConfigureContext {
+    if context == nil {
+        return nil
+    }
+
     ycc.AbstractContext = context
+
     return ycc
 }
 
