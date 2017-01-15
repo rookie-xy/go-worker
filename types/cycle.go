@@ -5,6 +5,7 @@
 package types
 
 import "unsafe"
+import "fmt"
 
 type AbstractCycle struct {
     option     *AbstractOption
@@ -68,7 +69,10 @@ func (c *AbstractCycle) SetContext(index uint, pointer *unsafe.Pointer) int {
         return Error
     }
 
-    c.context[index] = pointer
+    // TODO BUG fix
+    c.context = append(c.context, pointer)
+    //c.context[index] = pointer
+    fmt.Println("eeeeeeeeeeeeeeeeeeeee")
     return Ok
 }
 

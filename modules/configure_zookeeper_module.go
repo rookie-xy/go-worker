@@ -89,7 +89,7 @@ func (zcc *zookeeperConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointe
         return nil
     }
 
-    return nil
+    return unsafe.Pointer(zc)
 }
 
 func (zcc *zookeeperConfigureContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {

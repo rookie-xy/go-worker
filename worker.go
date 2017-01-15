@@ -5,15 +5,13 @@
 package main
 
 import (
+      "fmt"
       "os"
-    "unsafe"
-	"strings"
-//      "fmt"
+      "unsafe"
+      "strings"
+
     . "go-worker/types"
     . "go-worker/modules"
-
-  //  "fmt"
-    "fmt"
 )
 
 type worker struct {
@@ -101,14 +99,12 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
     }
 
     file := item.(string)
-    /*
-    if configure.SetFile(file) == Error {
-        return Error
-    }
-    */
 
     fileType := file[0 : strings.Index(file, ":")]
-    //fmt.Println(fileType)
+    if fileType == "" {
+        return Error
+    }
+
     if configure.SetFileType(fileType) == Error {
         return Error
     }
@@ -146,9 +142,11 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
 
         if context := this.Context.Create(cycle); context != nil {
             if *(*string)(unsafe.Pointer(uintptr(context))) == "-1" {
+
                 return Error;
             }
 
+            fmt.Printf("set context: %d\n", module.Index)
             if cycle.SetContext(module.Index, &context) == Error {
                 return Error
             }
@@ -163,7 +161,7 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
     if config.Parse() == Error {
         return Error
     }
-/*
+
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
         if module.Type != SYSTEM_MODULE {
@@ -177,13 +175,16 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
             fmt.Println(this.Name.Data)
         }
 
+        fmt.Printf("get context: %d\n", module.Index)
         context := cycle.GetContext(module.Index)
+        if context == nil {
+            continue
+        }
 
         if this.Context.Init(cycle, context) == "-1" {
             return Error
         }
     }
-    */
 
     return Ok
 }
@@ -194,6 +195,10 @@ func (w *worker) UserInit() int {
 
 func main() {
     Modules = append(Modules, nil)
+    for m := 0; Modules[m] != nil; m++ {
+        Modules[m].Index++
+    }
+
     fmt.Println(len(Modules))
 
     worker := NewWorker()

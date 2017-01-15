@@ -8,6 +8,7 @@ import (
       "fmt"
       "unsafe"
       "strings"
+//      "gopkg.in/yaml.v2"
 
     . "go-worker/types"
 )
@@ -91,7 +92,7 @@ func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
         return nil
     }
 
-    return nil
+    return unsafe.Pointer(yc)
 }
 
 func (ycc *yamlConfigureContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {
