@@ -47,7 +47,17 @@ func (o *simpleOption) Parse() int {
 	    }
 
             // file://path=/home/
-            o.SetItem("configure", argv[i + 1])
+            o.SetItem("configure", "file://path=" + argv[i + 1])
+            i++
+            break
+
+        case 'z':
+	    if argv[i + 1] == "" {
+	        return Error
+	    }
+
+            // file://path=/home/
+            o.SetItem("configure", "zookeeper://path=" + argv[i + 1])
             i++
             break
 

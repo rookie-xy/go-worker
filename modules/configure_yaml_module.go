@@ -5,11 +5,13 @@
 package modules
 
 import (
+      "fmt"
+      "unsafe"
+      "strings"
+
     . "go-worker/types"
-    "fmt"
-    "unsafe"
 )
-// 解析器默认都从文件里读取
+
 type yamlConfigure struct {
     *AbstractConfigure
 }
@@ -71,11 +73,14 @@ func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
         return nil
     }
 
-    if configure.GetTypeName() == Yaml.Data {
-        fmt.Println("is right")
+    fileName := configure.GetFileName()
+    if fileName == "" {
+        return nil
     }
 
-    //TODO open file, get file handle
+    if !strings.HasSuffix(fileName, Yaml.Data.(string)) {
+        return nil
+    }
 
     yc := NewYamlConfigure()
     if yc == nil {

@@ -101,21 +101,26 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
     }
 
     file := item.(string)
-
+    /*
     if configure.SetFile(file) == Error {
         return Error
     }
+    */
 
-    name := file[strings.Index(file, ".") + 1 : ]
-    if name == "" {
+    fileType := file[0 : strings.Index(file, ":")]
+    //fmt.Println(fileType)
+    if configure.SetFileType(fileType) == Error {
         return Error
     }
 
-    if configure.SetTypeName(name) == Error {
+    fileName := file[strings.LastIndex(file, "/") + 1 : ]
+    if fileName == "" {
         return Error
     }
 
-    //fmt.Println(configure.GetTypeName())
+    if configure.SetFileName(fileName) == Error {
+        return Error
+    }
 
     if cycle.SetConfigure(configure) == Error {
         return Error
@@ -158,7 +163,7 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
     if config.Parse() == Error {
         return Error
     }
-
+/*
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
         if module.Type != SYSTEM_MODULE {
@@ -172,13 +177,13 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
             fmt.Println(this.Name.Data)
         }
 
-        // TODO module index init
         context := cycle.GetContext(module.Index)
 
         if this.Context.Init(cycle, context) == "-1" {
             return Error
         }
     }
+    */
 
     return Ok
 }

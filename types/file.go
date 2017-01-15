@@ -4,11 +4,13 @@
 
 package types
 
+import "fmt"
+
 type AbstractFile struct {
-    name     string
-    size     int64
-    content  []byte
-    file     File
+    name      string
+    size      int64
+    content   []byte
+    file      File
 }
 
 type File interface {
@@ -16,6 +18,10 @@ type File interface {
     Close() int
     Read() int
     Write() int
+}
+
+func NewFile() *AbstractFile {
+    return &AbstractFile{}
 }
 
 func (f *AbstractFile) SetName(name string) int {
@@ -75,6 +81,7 @@ func (f *AbstractFile) GetFile() File {
 }
 
 func (f *AbstractFile) Open() int {
+    fmt.Println("from file open")
     return Ok
 }
 
@@ -83,6 +90,7 @@ func (f *AbstractFile) Close() int {
 }
 
 func (f *AbstractFile) Read() int {
+	fmt.Println("from file read")
     return Ok
 }
 
