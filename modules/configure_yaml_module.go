@@ -8,9 +8,10 @@ import (
       "fmt"
       "unsafe"
       "strings"
-//      "gopkg.in/yaml.v2"
 
     . "go-worker/types"
+    "gopkg.in/yaml.v2"
+    "log"
 )
 
 type yamlConfigure struct {
@@ -22,7 +23,22 @@ func NewYamlConfigure() *yamlConfigure {
 }
 
 func (yc *yamlConfigure) Parse() int {
-    fmt.Println("yaml configure parse")
+    var data = `
+a: Easy!
+b:
+c: 2
+d: [3, 4]`
+
+    t := make(map[string]interface{})
+
+    err := yaml.Unmarshal([]byte(data), &t)
+    if err != nil {
+        log.Fatalf("error: %v", err)
+    }
+
+    a := t["d"].([]interface{})
+
+    fmt.Printf("yaml configure parse: %d\n", a[1])
     return Ok
 }
 

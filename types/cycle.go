@@ -5,13 +5,12 @@
 package types
 
 import "unsafe"
-import "fmt"
 
 type AbstractCycle struct {
-    option     *AbstractOption
-    configure  *AbstractConfigure
-    log        *AbstractLog
-    context    []*unsafe.Pointer
+    *AbstractOption
+    *AbstractConfigure
+    *AbstractLog
+    context  [1024]*unsafe.Pointer
 }
 
 type Cycle interface {
@@ -27,13 +26,13 @@ func (c *AbstractCycle) SetOption(option *AbstractOption) int {
         return Error
     }
 
-    c.option = option
+    c.AbstractOption = option
 
     return Ok
 }
 
 func (c *AbstractCycle) GetOption() *AbstractOption {
-    return c.option
+    return c.AbstractOption
 }
 
 func (c *AbstractCycle) SetConfigure(configure *AbstractConfigure) int {
@@ -41,13 +40,13 @@ func (c *AbstractCycle) SetConfigure(configure *AbstractConfigure) int {
         return Error
     }
 
-    c.configure = configure
+    c.AbstractConfigure = configure
 
     return Ok
 }
 
 func (c *AbstractCycle) GetConfigure() *AbstractConfigure {
-    return c.configure
+    return c.AbstractConfigure
 }
 
 func (c *AbstractCycle) SetLog(log *AbstractLog) int {
@@ -55,13 +54,13 @@ func (c *AbstractCycle) SetLog(log *AbstractLog) int {
         return Error
     }
 
-    c.log = log
+    c.AbstractLog = log
 
     return Ok
 }
 
 func (c *AbstractCycle) GetLog() *AbstractLog {
-    return c.log
+    return c.AbstractLog
 }
 
 func (c *AbstractCycle) SetContext(index uint, pointer *unsafe.Pointer) int {
@@ -69,10 +68,8 @@ func (c *AbstractCycle) SetContext(index uint, pointer *unsafe.Pointer) int {
         return Error
     }
 
-    // TODO BUG fix
-    c.context = append(c.context, pointer)
-    //c.context[index] = pointer
-    fmt.Println("eeeeeeeeeeeeeeeeeeeee")
+    c.context[index] = pointer
+
     return Ok
 }
 
