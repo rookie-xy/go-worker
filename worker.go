@@ -15,12 +15,15 @@ import (
 )
 
 type worker struct {
-    modules  []*Module
-    cycle      *AbstractCycle
+    *AbstractLog
+    *AbstractCycle
+     modules  []*Module
 }
 
-func NewWorker() *worker {
-    return &worker{}
+func NewWorker(log *AbstractLog) *worker {
+    return &worker{
+        AbstractLog:log,
+    }
 }
 
 func (w *worker) SetModules(m []*Module) int {
@@ -42,13 +45,13 @@ func (w *worker) SetCycle(cycle *AbstractCycle) int {
         return Error
     }
 
-    w.cycle = cycle
+    w.AbstractCycle = cycle
 
     return Ok
 }
 
 func (w *worker) GetCycle() *AbstractCycle {
-    return w.cycle
+    return w.AbstractCycle
 }
 
 func (w *worker) CoreInit(option *AbstractOption) int {
@@ -194,6 +197,9 @@ func (w *worker) UserInit() int {
 }
 
 func main() {
+    log := NewLog()
+
+    // TODO check modules number
     Modules = append(Modules, nil)
     for m := 0; Modules[m] != nil; m++ {
         Modules[m].Index++
@@ -201,24 +207,25 @@ func main() {
 
     fmt.Println(len(Modules))
 
-    worker := NewWorker()
+    worker := NewWorker(log)
     if worker.SetModules(Modules) == Error {
-       return
+        return
     }
 
-    option := NewOption()
+    option := NewOption(log)
     if option.SetArgs(len(os.Args), os.Args) == Error {
         return
     }
 
-    cycle := NewCycle()
-    if cycle.SetOption(option) == Error {
-        return
-    }
+    cycle := NewCycle(log)
+    cycle.AbstractOption = option
+    worker.AbstractCycle = cycle
 
+    /*
     if worker.SetCycle(cycle) == Error {
         return
     }
+    */
 
     if worker.CoreInit(option) == Error {
         return

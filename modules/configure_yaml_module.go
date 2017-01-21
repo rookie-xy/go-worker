@@ -8,10 +8,10 @@ import (
       "fmt"
       "unsafe"
       "strings"
+      "log"
+      "gopkg.in/yaml.v2"
 
     . "go-worker/types"
-    "gopkg.in/yaml.v2"
-    "log"
 )
 
 type yamlConfigure struct {

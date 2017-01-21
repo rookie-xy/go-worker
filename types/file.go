@@ -4,13 +4,17 @@
 
 package types
 
-import "fmt"
+import (
+    "fmt"
+    "os"
+)
 
 type AbstractFile struct {
-    name      string
-    size      int64
-    content   []byte
-    file      File
+     osFile   *os.File
+     name      string
+     size      int64
+     content   []byte
+     file      File
 }
 
 type File interface {
@@ -21,7 +25,9 @@ type File interface {
 }
 
 func NewFile() *AbstractFile {
-    return &AbstractFile{}
+    return &AbstractFile{
+        osFile : os.Stdout,
+    }
 }
 
 func (f *AbstractFile) SetName(name string) int {

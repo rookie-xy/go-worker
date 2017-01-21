@@ -13,7 +13,7 @@ type simpleOption struct {
 }
 
 func NewSimpleOption() *simpleOption {
-    return &simpleOption{ NewOption() }
+    return &simpleOption{ NewOption(nil) }
 }
 
 func (so *simpleOption) SetOption(option *AbstractOption) int {
@@ -31,6 +31,8 @@ func (so *simpleOption) GetOption() *AbstractOption {
 }
 
 func (o *simpleOption) Parse() int {
+    log := o.AbstractLog
+
     argv := o.GetArgv()
 
     for i := 1; i < o.GetArgc(); i++ {
@@ -45,6 +47,8 @@ func (o *simpleOption) Parse() int {
 	    if argv[i + 1] == "" {
 	        return Error
 	    }
+
+            log.Error("aaaaaaaaaaaaa")
 
             // file://path=/home/
             o.SetItem("configure", "file://path=" + argv[i + 1])
@@ -83,7 +87,10 @@ func initSimpleOptionModule(cycle *AbstractCycle) int {
         return Error
     }
 
+    log := option.AbstractLog
+
     if simpleOption.SetOption(option) == Error {
+        log.Error("set option error")
         return Error
     }
 

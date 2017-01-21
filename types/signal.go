@@ -5,9 +5,10 @@
 package types
 
 type AbstractSignal struct {
-    File  string
+    *AbstractFile
+    signal  Signal
 }
 
 type Signal interface {
-
+    Get() int
 }

@@ -10,15 +10,17 @@ type AbstractCycle struct {
     *AbstractOption
     *AbstractConfigure
     *AbstractLog
-    context  [1024]*unsafe.Pointer
+     context  [1024]*unsafe.Pointer
 }
 
 type Cycle interface {
     Get() int
 }
 
-func NewCycle() *AbstractCycle {
-    return &AbstractCycle{}
+func NewCycle(log *AbstractLog) *AbstractCycle {
+    return &AbstractCycle{
+        AbstractLog:log,
+    }
 }
 
 func (c *AbstractCycle) SetOption(option *AbstractOption) int {

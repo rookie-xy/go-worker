@@ -5,9 +5,10 @@
 package types
 
 type AbstractOption struct {
-    argc   int
-    argv   []string
-    items  map[string]interface{}
+    *AbstractLog
+     argc   int
+     argv   []string
+     items  map[string]interface{}
 }
 
 type Option interface {
@@ -18,8 +19,9 @@ type Option interface {
     Parse() int
 }
 
-func NewOption() *AbstractOption {
+func NewOption(log *AbstractLog) *AbstractOption {
     return &AbstractOption{
+        AbstractLog:log,
         items: make(map[string]interface{}),
     }
 }
