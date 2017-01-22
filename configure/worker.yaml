@@ -1,0 +1,17 @@
+log:
+    - name: simple
+    - level: info
+
+outputs:
+    - stdout:
+
+inputs:
+    - file:
+        codec: plain
+        pattern:
+            - .*trace.*\.log
+        type: MALL
+        dir: /data/logs
+
+filters:
+    - grok:

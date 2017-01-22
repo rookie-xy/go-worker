@@ -55,13 +55,9 @@ func (w *worker) GetCycle() *AbstractCycle {
 }
 
 func (w *worker) CoreInit(option *AbstractOption) int {
-    modules := w.GetModules()
-    if modules == nil {
-        return Error
-    }
+    modules, cycle := w.modules, w.AbstractCycle
 
-    cycle := w.GetCycle()
-    if cycle == nil {
+    if modules == nil || cycle == nil {
         return Error
     }
 
@@ -197,15 +193,19 @@ func (w *worker) UserInit() int {
 }
 
 func main() {
+    n   := 0
     log := NewLog()
 
-    // TODO check modules number
     Modules = append(Modules, nil)
-    for m := 0; Modules[m] != nil; m++ {
-        Modules[m].Index++
+    for /* nil */; Modules[n] != nil; n++ {
+        Modules[n].Index++
     }
 
     fmt.Println(len(Modules))
+
+    if n <= 0 {
+        log.Info("no module to load")
+    }
 
     worker := NewWorker(log)
     if worker.SetModules(Modules) == Error {
@@ -221,17 +221,11 @@ func main() {
     cycle.AbstractOption = option
     worker.AbstractCycle = cycle
 
-    /*
-    if worker.SetCycle(cycle) == Error {
-        return
-    }
-    */
-
     if worker.CoreInit(option) == Error {
         return
     }
 
-    configure := NewConfigure()
+    configure := NewConfigure(log)
     if worker.SystemInit(configure) == Error {
         return
     }

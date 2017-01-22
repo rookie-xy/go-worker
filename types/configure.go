@@ -7,9 +7,10 @@ package types
 import "fmt"
 
 type AbstractConfigure struct {
+    *AbstractLog
     *AbstractFile
-    fileName   string
-    configure  Configure
+     fileName   string
+     configure  Configure
 }
 
 type Configure interface {
@@ -17,9 +18,10 @@ type Configure interface {
     ReadToken() int
 }
 
-func NewConfigure() *AbstractConfigure {
+func NewConfigure(log *AbstractLog) *AbstractConfigure {
     return &AbstractConfigure{
-        AbstractFile : NewFile(),
+        AbstractLog  : log,
+        AbstractFile : NewFile(log),
     }
 }
 
@@ -73,20 +75,20 @@ func (c *AbstractConfigure) GetFileType() string {
     return ""
 }
 
-func (c *AbstractConfigure) SetFile(file File) int {
-    if file == nil {
+func (c *AbstractConfigure) SetFile(action Action) int {
+    if action == nil {
         return Error
     }
 
-    if c.AbstractFile.SetFile(file) == Error {
+    if c.AbstractFile.Set(action) == Error {
         return Error
     }
 
     return Ok
 }
 
-func (c *AbstractConfigure) GetFile() File {
-    if file := c.AbstractFile.GetFile(); file != nil {
+func (c *AbstractConfigure) GetFile() Action {
+    if file := c.AbstractFile.Get(); file != nil {
         return file
     }
 
@@ -94,12 +96,12 @@ func (c *AbstractConfigure) GetFile() File {
 }
 
 func (c *AbstractConfigure) Get() Configure {
-    file := c.AbstractFile.GetFile()
+    file := c.AbstractFile.Get()
     if file == nil {
-        file = NewFile()
+        file = NewFile(nil)
     }
 
-    if file.Open() == Error {
+    if file.Open(c.fileName) == Error {
         return nil
     }
 

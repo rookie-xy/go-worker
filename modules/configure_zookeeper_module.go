@@ -18,7 +18,7 @@ func NewZookeeperConfigure() *zookeeperConfigure {
     return &zookeeperConfigure{}
 }
 
-func (zc *zookeeperConfigure) Open() int {
+func (zc *zookeeperConfigure) Open(name string) int {
     fmt.Println("from zookeeper configure")
     return Ok
 }
