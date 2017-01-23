@@ -27,12 +27,12 @@ func NewYamlConfigure(configure *AbstractConfigure) *yamlConfigure {
 func (yc *yamlConfigure) Parse() int {
     //log := yc.AbstractLog.Get()
 
-    content := yc.AbstractFile.GetContent()
+    content := yc.AbstractConfigure.GetContent()
     if content == nil {
         //log.Info("hhhhhhhhhhhhhhhh:%d\n", 20)
         return Error
     }
-    fmt.Println(content)
+    fmt.Printf("%s", content)
     /*
     var data = `
 a: Easy!
