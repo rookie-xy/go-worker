@@ -5,7 +5,6 @@
 package types
 
 import (
-    "fmt"
     "os"
 )
 
@@ -13,7 +12,7 @@ type AbstractFile struct {
     *AbstractLog
      file     *os.File
      name      string
-     size      int64
+     size      int
      content   []byte
      action    Action
 }
@@ -23,6 +22,7 @@ type Action interface {
     Close() int
     Read() int
     Write() int
+    Type() *AbstractFile
 }
 
 func NewFile(log *AbstractLog) *AbstractFile {
@@ -46,7 +46,7 @@ func (f *AbstractFile) GetName() string {
     return f.name
 }
 
-func (f *AbstractFile) SetSize(size int64) int {
+func (f *AbstractFile) SetSize(size int) int {
     if size < 0 {
         return Error
     }
@@ -56,7 +56,7 @@ func (f *AbstractFile) SetSize(size int64) int {
     return Ok
 }
 
-func (f *AbstractFile) GetSize() int64 {
+func (f *AbstractFile) GetSize() int {
     return f.size
 }
 
@@ -91,15 +91,13 @@ func (f *AbstractFile) Get() Action {
 func (f *AbstractFile) Open(name string) int {
     log := f.AbstractLog.Get()
 
-    file, error := os.OpenFile(name, os.O_RDWR, 0666)
+    file, error := os.OpenFile(name, os.O_RDWR, 0777)
     if error != nil {
         log.Info("open file error: %s", error)
         return Error
     }
 
     f.file = file
-
-    log.Info("from file open")
 
     return Ok
 }
@@ -116,22 +114,25 @@ func (f *AbstractFile) Close() int {
 }
 
 func (f *AbstractFile) Read() int {
-    var b []byte
+    log := f.AbstractLog.Get()
+    var b []byte = make([]byte, 1024)
 
-    // TODO bugfix
     n, error := f.file.Read(b)
     if error != nil {
+        log.Error("file read error: %s", error)
         return Error
     }
-// TODO bugfix
+
     f.size = n
     f.content = b
-
-    fmt.Println("from file read")
 
     return Ok
 }
 
 func (f *AbstractFile) Write() int {
     return Ok
+}
+
+func (f *AbstractFile) Type() *AbstractFile {
+    return f
 }

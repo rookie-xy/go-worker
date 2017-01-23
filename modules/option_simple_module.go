@@ -48,10 +48,8 @@ func (o *simpleOption) Parse() int {
 	        return Error
 	    }
 
-            log.Error("aaaaaaaaaaaaa")
-
             // file://path=/home/
-            o.SetItem("configure", "file://path=" + argv[i + 1])
+            o.SetItem("configure", "file://resource=" + argv[i + 1])
             i++
             break
 
@@ -61,7 +59,7 @@ func (o *simpleOption) Parse() int {
 	    }
 
             // file://path=/home/
-            o.SetItem("configure", "zookeeper://path=" + argv[i + 1])
+            o.SetItem("configure", "zookeeper://resource=" + argv[i + 1])
             i++
             break
 
@@ -71,6 +69,7 @@ func (o *simpleOption) Parse() int {
 
         default:
             o.SetItem("invaild", "")
+            log.Info("not found any option")
             //o.result["error"] = "not found any option"
             break
         }

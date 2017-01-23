@@ -117,6 +117,15 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
         return Error
     }
 
+    resource := file[strings.Index(file, "=") + 1 : ]
+    if resource == "" {
+        return Error
+    }
+
+    if configure.SetResource(resource) == Error {
+        return Error
+    }
+
     if cycle.SetConfigure(configure) == Error {
         return Error
     }
@@ -195,6 +204,10 @@ func (w *worker) UserInit() int {
 func main() {
     n   := 0
     log := NewLog()
+
+    if log.Set(log) == Error {
+        return
+    }
 
     Modules = append(Modules, nil)
     for /* nil */; Modules[n] != nil; n++ {

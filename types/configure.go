@@ -4,11 +4,14 @@
 
 package types
 
-import "fmt"
+import (
+    "fmt"
+)
 
 type AbstractConfigure struct {
     *AbstractLog
     *AbstractFile
+     resource   string
      fileName   string
      configure  Configure
 }
@@ -95,18 +98,42 @@ func (c *AbstractConfigure) GetFile() Action {
     return nil
 }
 
-func (c *AbstractConfigure) Get() Configure {
-    file := c.AbstractFile.Get()
-    if file == nil {
-        file = NewFile(nil)
+func (c *AbstractConfigure) SetResource(resource string) int {
+    if resource == "" {
+        return Error
     }
 
-    if file.Open(c.fileName) == Error {
+    c.resource = resource
+
+    return Ok
+}
+
+func (c *AbstractConfigure) GetResource(resource string) string {
+    return c.resource
+}
+
+func (c *AbstractConfigure) Get() Configure {
+    log := c.AbstractLog.Get()
+
+    file := c.AbstractFile.Get()
+    if file == nil {
+        file = NewFile(c.AbstractLog)
+    }
+
+    if file.Open(c.resource) == Error {
+        log.Error("configure open file error")
         return nil
     }
 
     if file.Read() == Error {
+        log.Error("configure read file error")
         return nil
+    }
+
+    if content := file.Type().GetContent(); content != nil {
+        c.content = content
+    } else {
+        log.Warn("not found content: %d\n", 10)
     }
 
     return c.configure

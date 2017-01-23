@@ -4,7 +4,10 @@
 
 package types
 
-import "fmt"
+import (
+    "fmt"
+    "runtime"
+)
 
 type AbstractLog struct {
     *AbstractFile
@@ -13,10 +16,10 @@ type AbstractLog struct {
 }
 
 type Log interface {
-    Debug(d ...interface{})
-    Info(i ...interface{})
-    Warn(w ...interface{})
-    Error(e ...interface{})
+    Debug(format string, d ...interface{})
+    Info(format string, i ...interface{})
+    Warn(format string, w ...interface{})
+    Error(format string, e ...interface{})
 }
 
 var Level = [...]string{ "stderr", "emerg", "alert", "crit", "error",
@@ -43,22 +46,24 @@ func (l *AbstractLog) Get() Log {
     return l.log
 }
 
-func (l *AbstractLog) Debug(debug interface{}) {
-    fmt.Println("this is debug")
+func (l *AbstractLog) Debug(format string, d ...interface{}) {
+    fmt.Printf(format, d)
     return
 }
 
-func (l *AbstractLog) Info(i ...interface{}) {
-    fmt.Println("this is info")
+func (l *AbstractLog) Info(format string, i ...interface{}) {
+    fmt.Printf(format, i)
     return
 }
 
-func (l *AbstractLog) Warn(warn interface{}) {
-    fmt.Println("this is warn")
+func (l *AbstractLog) Warn(format string, w ...interface{}) {
+    funcName, file, line, _ := runtime.Caller(0)
+    fmts := format + runtime.FuncForPC(funcName).Name() + file + string(line)
+    fmt.Printf(fmts, w)
     return
 }
 
-func (l *AbstractLog) Error(error interface{}) {
-    fmt.Println("this is error")
+func (l *AbstractLog) Error(format string, e ...interface{}) {
+    fmt.Printf(format, e)
     return
 }

@@ -18,11 +18,21 @@ type yamlConfigure struct {
     *AbstractConfigure
 }
 
-func NewYamlConfigure() *yamlConfigure {
-    return &yamlConfigure{}
+func NewYamlConfigure(configure *AbstractConfigure) *yamlConfigure {
+    return &yamlConfigure{
+        AbstractConfigure:configure,
+    }
 }
 
 func (yc *yamlConfigure) Parse() int {
+    //log := yc.AbstractLog.Get()
+
+    content := yc.AbstractFile.GetContent()
+    if content == nil {
+        //log.Info("hhhhhhhhhhhhhhhh:%d\n", 20)
+        return Error
+    }
+    fmt.Println(content)
     /*
     var data = `
 a: Easy!
@@ -107,7 +117,7 @@ func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
         return nil
     }
 
-    yc := NewYamlConfigure()
+    yc := NewYamlConfigure(configure)
     if yc == nil {
         return nil
     }
