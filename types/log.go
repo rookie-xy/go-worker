@@ -52,7 +52,14 @@ func (l *AbstractLog) Debug(format string, d ...interface{}) {
 }
 
 func (l *AbstractLog) Info(format string, i ...interface{}) {
-    fmt.Printf(format, i)
+    file := l.AbstractFile.GetFile()
+    fmt.Fprintf(file, format, i)
+
+    // TODO
+    if file.Sync() != nil {
+        //
+    }
+
     return
 }
 

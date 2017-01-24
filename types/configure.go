@@ -127,6 +127,7 @@ func (c *AbstractConfigure) Get() Configure {
 
     if file.Read() == Error {
         log.Error("configure read file error")
+        goto JMP_CLOSE
         return nil
     }
 
@@ -134,6 +135,12 @@ func (c *AbstractConfigure) Get() Configure {
         c.content = content
     } else {
         log.Warn("not found content: %d\n", 10)
+    }
+
+JMP_CLOSE:
+    if file.Close() == Error {
+        log.Warn("file close error: %d\n", 10)
+        return nil
     }
 
     return c.configure

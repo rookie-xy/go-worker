@@ -12,7 +12,7 @@ type AbstractFile struct {
     *AbstractLog
      file     *os.File
      name      string
-     size      int
+     size      int64
      content   []byte
      action    Action
 }
@@ -46,7 +46,7 @@ func (f *AbstractFile) GetName() string {
     return f.name
 }
 
-func (f *AbstractFile) SetSize(size int) int {
+func (f *AbstractFile) SetSize(size int64) int {
     if size < 0 {
         return Error
     }
@@ -56,7 +56,7 @@ func (f *AbstractFile) SetSize(size int) int {
     return Ok
 }
 
-func (f *AbstractFile) GetSize() int {
+func (f *AbstractFile) GetSize() int64 {
     return f.size
 }
 
@@ -72,6 +72,20 @@ func (f *AbstractFile) SetContent(content []byte) int {
 
 func (f *AbstractFile) GetContent() []byte {
     return f.content
+}
+
+func (f *AbstractFile) SetFile(file *os.File) int {
+    if file == nil {
+        return Error
+    }
+
+    f.file = file
+
+    return Ok
+}
+
+func (f *AbstractFile) GetFile() *os.File {
+    return f.file
 }
 
 func (f *AbstractFile) Set(action Action) int {
@@ -97,7 +111,14 @@ func (f *AbstractFile) Open(name string) int {
         return Error
     }
 
+    stat, error := file.Stat()
+    if error != nil {
+        log.Info("stat file error: %s", error)
+        return Error
+    }
+
     f.file = file
+    f.size = stat.Size()
 
     return Ok
 }
@@ -115,16 +136,23 @@ func (f *AbstractFile) Close() int {
 
 func (f *AbstractFile) Read() int {
     log := f.AbstractLog.Get()
-    var b []byte = make([]byte, 1024)
 
-    n, error := f.file.Read(b)
+    var char []byte
+
+    if size := f.size; size <= 0 {
+        log.Error("file size is: %d\n", size)
+        return Error
+    } else {
+        char = make([]byte, size)
+    }
+
+    _, error := f.file.Read(char)
     if error != nil {
         log.Error("file read error: %s", error)
         return Error
     }
 
-    f.size = n
-    f.content = b
+    f.content = char
 
     return Ok
 }

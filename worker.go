@@ -117,6 +117,7 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
         return Error
     }
 
+    // TODO
     resource := file[strings.Index(file, "=") + 1 : ]
     if resource == "" {
         return Error
@@ -144,17 +145,15 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
 	this := module.Context
         if this == nil || this.Context == nil {
             continue
-        } else {
+        }/* else {
             fmt.Println(this.Name.Data)
-        }
+        }*/
 
         if context := this.Context.Create(cycle); context != nil {
             if *(*string)(unsafe.Pointer(uintptr(context))) == "-1" {
-
                 return Error;
             }
 
-            fmt.Printf("set context: %d\n", module.Index)
             if cycle.SetContext(module.Index, &context) == Error {
                 return Error
             }
@@ -179,11 +178,10 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
 	this := module.Context
         if this == nil || this.Context == nil {
             continue
-        } else {
+        }/* else {
             fmt.Println(this.Name.Data)
-        }
+        }*/
 
-        fmt.Printf("get context: %d\n", module.Index)
         context := cycle.GetContext(module.Index)
         if context == nil {
             continue
