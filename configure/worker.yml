@@ -4,10 +4,11 @@ log:
     path: /data/logs/error.log
 
 inputs:
-    - stdin:
+    stdin: on
 
 channal:
-    - memory: 1024
+    type: memory
+    size: 2048
 
 outputs:
-    - stdout:
+    stdout: on
