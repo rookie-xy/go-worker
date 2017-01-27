@@ -11,7 +11,7 @@ import (
 //      "log"
 //      "gopkg.in/yaml.v2"
 
-    . "go-worker/types"
+    . "worker/types"
     "gopkg.in/yaml.v2"
 )
 

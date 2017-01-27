@@ -7,7 +7,7 @@ package modules
 import (
       "unsafe"
       "fmt"
-    . "go-worker/types"
+    . "worker/types"
 )
 
 type zookeeperConfigure struct {

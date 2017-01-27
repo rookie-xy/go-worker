@@ -8,7 +8,7 @@ import (
 //      "fmt"
 //    . "unsafe"
 
-    . "go-worker/types"
+    . "worker/types"
 )
 
 type SimpleRoutine struct {

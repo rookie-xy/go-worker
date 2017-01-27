@@ -5,7 +5,7 @@
 package modules
 
 import (
-    . "go-worker/types"
+    . "worker/types"
 )
 
 var ErrorLogName = String{ len("ErrorLog"), "ErrorLog" }

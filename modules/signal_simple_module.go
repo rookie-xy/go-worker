@@ -5,7 +5,7 @@
 package modules
 
 import (
-    . "go-worker/types"
+    . "worker/types"
 )
 
 var SimpleSignalCommands = []Command{

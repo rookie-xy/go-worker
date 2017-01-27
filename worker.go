@@ -10,8 +10,8 @@ import (
       "unsafe"
       "strings"
 
-    . "go-worker/types"
-    . "go-worker/modules"
+    . "worker/types"
+    . "worker/modules"
 )
 
 type worker struct {
