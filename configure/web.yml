@@ -1,0 +1,9 @@
+log:
+    name: log
+    level: info
+    path: /data/logs/error.log
+
+inputs:
+    web:
+        listen: 192.168.1.1
+        location: /static/

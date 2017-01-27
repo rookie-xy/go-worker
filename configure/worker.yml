@@ -1,0 +1,13 @@
+log:
+    name: simple
+    level: info
+    path: /data/logs/error.log
+
+inputs:
+    - stdin:
+
+channal:
+    - memory: 1024
+
+outputs:
+    - stdout:
