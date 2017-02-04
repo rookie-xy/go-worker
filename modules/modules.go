@@ -4,8 +4,4 @@
 
 package modules
 
-import (
-    . "worker/types"
-)
-
-var Modules = []*Module{}
+var MODULE_VER = "0.1.0"

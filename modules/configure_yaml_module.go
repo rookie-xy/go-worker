@@ -208,7 +208,6 @@ func (ycc *yamlConfigureContext) Set(context *AbstractContext) *yamlConfigureCon
 }
 
 func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
-
     configure := cycle.GetConfigure()
     if configure == nil {
         return nil

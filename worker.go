@@ -233,7 +233,7 @@ func main() {
         Modules[n].Index++
     }
 
-    fmt.Println(len(Modules))
+    fmt.Println(len(Modules), MODULE_VER)
 
     if n <= 0 {
         log.Info("no module to load")

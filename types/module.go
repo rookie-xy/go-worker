@@ -29,4 +29,4 @@ type Module struct {
     InitRoutine   InitRoutineFunc
 }
 
-//var Modules = []*Module{}
+var Modules = []*Module{}
