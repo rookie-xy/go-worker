@@ -5,9 +5,11 @@
 package types
 
 type AbstractRoutine struct {
-    File  string
+    name    string
+    number  int
 }
 
 type Routine interface {
-
+    Manage() int
+    Status() int
 }

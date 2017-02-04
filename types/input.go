@@ -5,8 +5,8 @@
 package types
 
 type AbstractInput struct {
-    *AbstractRoutine
-    name  string
+    *AbstractCycle
+     name  string
 }
 
 type Input interface {

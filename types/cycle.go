@@ -7,14 +7,18 @@ package types
 import "unsafe"
 
 type AbstractCycle struct {
+    *AbstractLog
+    *AbstractRoutine
     *AbstractOption
     *AbstractConfigure
-    *AbstractLog
+
      context  [1024]*unsafe.Pointer
+     cycle    Cycle
 }
 
 type Cycle interface {
-    Get() int
+    Start() int
+    Stop() int
 }
 
 func NewCycle(log *AbstractLog) *AbstractCycle {
@@ -81,4 +85,32 @@ func (c *AbstractCycle) GetContext(index uint) *unsafe.Pointer {
     }
 
     return c.context[index]
+}
+
+func (c *AbstractCycle) Start() int {
+    if cycle := c.cycle; cycle != nil {
+        if cycle.Start() == Error {
+            return Error
+        }
+
+        return Ok
+    }
+
+    // TODO default logic
+
+    return Ok
+}
+
+func (c *AbstractCycle) Stop() int {
+    if cycle := c.cycle; cycle != nil {
+        if cycle.Stop() == Error {
+            return Error
+        }
+
+        return Ok
+    }
+
+    // TODO default logic
+
+    return Ok
 }

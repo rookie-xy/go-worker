@@ -208,6 +208,7 @@ func (ycc *yamlConfigureContext) Set(context *AbstractContext) *yamlConfigureCon
 }
 
 func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
+
     configure := cycle.GetConfigure()
     if configure == nil {
         return nil
@@ -221,6 +222,7 @@ func (ycc *yamlConfigureContext) Create(cycle *AbstractCycle) unsafe.Pointer {
     if !strings.HasSuffix(fileName, Yaml.Data.(string)) {
         return nil
     }
+
 
     yc := NewYamlConfigure(configure)
     if yc == nil {

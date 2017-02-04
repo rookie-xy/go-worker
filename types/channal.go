@@ -5,7 +5,7 @@
 package types
 
 type AbstractChannal struct {
-    *AbstractRoutine
+    *AbstractCycle
     name string
 }
 

@@ -160,12 +160,7 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
         }
     }
 
-    config := configure.Get()
-    if config == nil {
-        return Error
-    }
-
-    if config.Parse() == Error {
+    if configure.Parse() == Error {
         return Error
     }
 
@@ -196,6 +191,32 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
 }
 
 func (w *worker) UserInit() int {
+    return Ok
+}
+
+func (w *worker) Start() int {
+    // TODO other need init
+
+    if cycle := w.AbstractCycle; cycle != nil {
+        if cycle.Start() == Error {
+            return Error
+        }
+    }
+
+    return Ok
+}
+
+func (w *worker) Stop() int {
+    if cycle := w.AbstractCycle; cycle != nil {
+        if cycle.Stop() == Error {
+            return Error
+        }
+    }
+
+    return Ok
+}
+
+func (w *worker) Monitor() int {
     return Ok
 }
 
@@ -242,6 +263,16 @@ func main() {
     }
 
     if worker.UserInit() == Error {
+        return
+    }
+
+    if worker.Start() == Error {
+        return
+    }
+
+    worker.Monitor()
+
+    if worker.Stop() == Error {
         return
     }
 

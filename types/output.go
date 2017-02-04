@@ -5,8 +5,8 @@
 package types
 
 type AbstractOutput struct {
-    *AbstractRoutine
-    name string
+    *AbstractCycle
+     name string
 }
 
 type Output interface {

@@ -115,6 +115,7 @@ func (c *AbstractConfigure) GetResource(resource string) string {
 func (c *AbstractConfigure) Get() Configure {
     log := c.AbstractLog.Get()
 
+
     file := c.AbstractFile.Get()
     if file == nil {
         file = NewFile(c.AbstractLog)
@@ -157,7 +158,17 @@ func (c *AbstractConfigure) Set(configre Configure) int {
 }
 
 func (c *AbstractConfigure) Parse() int {
-    fmt.Println("configure parse")
+    if configure := c.Get(); configure != nil {
+        if configure.Parse() == Error {
+            return Error
+        }
+
+        return Ok
+    }
+
+    // TODO default process
+
+    fmt.Println("default configure parse")
     return Ok
 }
 
