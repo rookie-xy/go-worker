@@ -96,7 +96,6 @@ func (c *AbstractCycle) Start() int {
         return Ok
     }
 
-    // TODO default logic
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
 
@@ -117,7 +116,13 @@ func (c *AbstractCycle) Stop() int {
         return Ok
     }
 
-    // TODO default logic
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+
+        if main := module.Main; main != nil {
+            main.Stop()
+        }
+    }
 
     return Ok
 }

@@ -11,9 +11,14 @@ type AbstractRoutine struct {
 
 type Routine interface {
     Start() int
+    Stop() int
 }
 
 func (f MainFunc) Start() int {
     go f(nil)
+    return Ok
+}
+
+func (f MainFunc) Stop() int {
     return Ok
 }
