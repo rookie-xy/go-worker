@@ -6,7 +6,7 @@ package types
 
 import (
     "unsafe"
-    "strings"
+//    "strings"
 )
 
 type AbstractOutput struct {
@@ -74,10 +74,11 @@ func (oc *outputContext) Create(cycle *AbstractCycle) unsafe.Pointer {
     if fileName == "" {
         return nil
     }
-
+/*
     if !strings.HasSuffix(fileName, Stdin.Data.(string)) {
         return nil
     }
+    */
 
     o := NewOutput()
     if o == nil {

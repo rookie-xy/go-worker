@@ -6,7 +6,7 @@ package types
 
 import (
     "unsafe"
-    "strings"
+//    "strings"
 )
 
 type AbstractChannal struct {
@@ -74,10 +74,11 @@ func (cc *channalContext) Create(cycle *AbstractCycle) unsafe.Pointer {
     if fileName == "" {
         return nil
     }
-
+/*
     if !strings.HasSuffix(fileName, Stdin.Data.(string)) {
         return nil
     }
+    */
 
     c := NewChannal()
     if c == nil {

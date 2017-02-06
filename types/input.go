@@ -6,7 +6,7 @@ package types
 
 import (
     "unsafe"
-	"fmt"
+    "fmt"
 )
 
 type AbstractInput struct {
@@ -28,14 +28,11 @@ type inputContext struct {
     *AbstractContext
 }
 
-var (
-    User = String{ len("user"), "user" }
-    InputContext = NewInputContext()
-)
+var user = String{ len("user"), "user" }
 
-var InputStdinContext = AbstractContext{
-    User,
-    InputContext.Get(),
+var inputStdinContext = &AbstractContext{
+    user,
+    NewInputContext().Get(),
 }
 
 func NewInputContext() *inputContext {
@@ -90,13 +87,13 @@ func (i *inputContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) str
 }
 
 var (
-    Stdin = String{ len("stdin"), "stdin" }
+    stdin = String{ len("stdin"), "stdin" }
     input AbstractInput
 )
 
-var InputCommands = []Command{
+var inputCommands = []Command{
 
-    { Stdin,
+    { stdin,
       0,
       configureSetFlag,
       0,
@@ -110,21 +107,21 @@ func configureSetFlag(cf *AbstractConfigure, command *Command, conf interface{})
     return ""
 }
 
-var InputModule = Module{
+var inputModule = Module{
     0,
     0,
-    &InputStdinContext,
-    InputCommands,
+    inputStdinContext,
+    inputCommands,
     USER_MODULE,
-    initInputModule,
-    routineInputModule,
+    inputInit,
+    inputMain,
 }
 
-func initInputModule(cycle *AbstractCycle) int {
+func inputInit(cycle *AbstractCycle) int {
     return Ok
 }
 
-func routineInputModule(cycle *AbstractCycle) int {
+func inputMain(cycle *AbstractCycle) int {
 
     for ;; {
         fmt.Println("aaaaaaaaaaa")
@@ -134,5 +131,5 @@ func routineInputModule(cycle *AbstractCycle) int {
 }
 
 func init() {
-    Modules = append(Modules, &InputModule)
+    Modules = append(Modules, &inputModule)
 }
