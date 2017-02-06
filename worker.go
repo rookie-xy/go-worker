@@ -231,6 +231,14 @@ func (w *worker) Stop() int {
 }
 
 func (w *worker) Monitor() int {
+    if cycle := w.AbstractCycle; cycle != nil {
+        if routine := cycle.AbstractRoutine; routine != nil {
+            if routine.Monitor() == Error {
+                return Error
+            }
+        }
+    }
+
     return Ok
 }
 

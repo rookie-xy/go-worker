@@ -12,6 +12,8 @@ type AbstractRoutine struct {
 type Routine interface {
     Start() int
     Stop() int
+
+    Monitor() int
 }
 
 func (f MainFunc) Start() int {
@@ -20,5 +22,9 @@ func (f MainFunc) Start() int {
 }
 
 func (f MainFunc) Stop() int {
+    return Ok
+}
+
+func (r *AbstractRoutine) Monitor() int {
     return Ok
 }
