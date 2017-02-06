@@ -108,8 +108,8 @@ func configureSetFlag(cf *AbstractConfigure, command *Command, conf interface{})
 }
 
 var inputModule = Module{
-    0,
-    0,
+    MODULE_V1,
+    CONTEXT_V1,
     inputStdinContext,
     inputCommands,
     USER_MODULE,

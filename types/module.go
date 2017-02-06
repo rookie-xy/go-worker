@@ -11,6 +11,9 @@ var (
 )
 
 const (
+    MODULE_V1 = 0
+    CONTEXT_V1 = 0
+
     CORE_MODULE = 0x45524F43
     SYSTEM_MODULE = 0x464E4F43
     USER_MODULE = 0x464E4F43
