@@ -10,6 +10,10 @@ type AbstractRoutine struct {
 }
 
 type Routine interface {
-    Manage() int
-    Status() int
+    Start() int
+}
+
+func (f MainFunc) Start() int {
+    go f(nil)
+    return Ok
 }

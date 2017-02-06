@@ -68,14 +68,14 @@ func (w *worker) CoreInit(option *AbstractOption) int {
             continue
         }
 
-        if module.InitModule != nil {
-            if module.InitModule(cycle) == Error {
+        if module.Init != nil {
+            if module.Init(cycle) == Error {
                 os.Exit(2)
             }
         }
 
-        if module.InitRoutine != nil {
-	    if module.InitRoutine(cycle) == Error {
+        if module.Main != nil {
+	    if module.Main(cycle) == Error {
                 os.Exit(2)
             }
         }
@@ -195,7 +195,21 @@ func (w *worker) UserInit() int {
 }
 
 func (w *worker) Start() int {
-    // TODO other need init
+    modules, cycle := w.modules, w.AbstractCycle
+
+    if modules == nil && cycle == nil {
+        return Error
+    }
+
+    for m := 0; modules[m] != nil; m++ {
+        module := modules[m]
+
+        if init := module.Init; init != nil {
+            if init(cycle) == Error {
+                return Error
+            }
+        }
+    }
 
     if cycle := w.AbstractCycle; cycle != nil {
         if cycle.Start() == Error {

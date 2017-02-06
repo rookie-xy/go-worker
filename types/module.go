@@ -16,17 +16,17 @@ const (
     USER_MODULE = 0x464E4F43
 )
 
-type InitModuleFunc func(cycle *AbstractCycle) int
-type InitRoutineFunc func(cycle *AbstractCycle) int
+type InitFunc func(cycle *AbstractCycle) int
+type MainFunc func(cycle *AbstractCycle) int
 
 type Module struct {
-    CtxIndex      uint
-    Index         uint
-    Context      *AbstractContext
-    Commands      []Command
-    Type          uint
-    InitModule    InitModuleFunc
-    InitRoutine   InitRoutineFunc
+    CtxIndex   uint
+    Index      uint
+    Context   *AbstractContext
+    Commands   []Command
+    Type       uint
+    Init       InitFunc
+    Main       MainFunc
 }
 
 var Modules = []*Module{}
