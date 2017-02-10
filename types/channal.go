@@ -6,7 +6,6 @@ package types
 
 import (
     "unsafe"
-//    "strings"
 )
 
 type AbstractChannal struct {
@@ -16,95 +15,33 @@ type AbstractChannal struct {
      channal  Channal
 }
 
-type Channal interface {
-    Parse()
-}
+type Channal interface {}
 
 func NewChannal() *AbstractChannal {
     return &AbstractChannal{}
 }
 
-type channalContext struct {
-    *AbstractContext
+var memory = String{ len("memory"), "memory" }
+var channalMemoryContext = &AbstractContext{
+    memory,
+    channalContextCreate,
+    channalContextInit,
 }
 
-var Memory = String{ len("memory"), "memory" }
-var ChannalContext = NewChannalContext()
-
-var ChannalMemoryContext = AbstractContext{
-    Memory,
-    ChannalContext.Get(),
+func channalContextCreate(cycle *AbstractCycle) unsafe.Pointer {
+    return nil
 }
 
-func NewChannalContext() *channalContext {
-    return &channalContext{}
-}
-
-func (cc *channalContext) Get() Context {
-    this := NewContext()
-    if this == nil {
-        return nil
-    }
-
-    this.Context = cc
-
-    return cc.Set(this)
-}
-
-func (cc *channalContext) Set(context *AbstractContext) *channalContext {
-    if context == nil {
-        return nil
-    }
-
-    cc.AbstractContext = context
-
-    return cc
-}
-
-func (cc *channalContext) Create(cycle *AbstractCycle) unsafe.Pointer {
-    log := cycle.GetLog()
-
-    configure := cycle.GetConfigure()
-    if configure == nil {
-        log.Info("aaa")
-        return nil
-    }
-
-    fileName := configure.GetFileName()
-    if fileName == "" {
-        return nil
-    }
-/*
-    if !strings.HasSuffix(fileName, Stdin.Data.(string)) {
-        return nil
-    }
-    */
-
-    c := NewChannal()
-    if c == nil {
-        return nil
-    }
-
-    /*
-    if configure.Set(yc) == Error {
-        return nil
-    }
-    */
-
-    return unsafe.Pointer(c)
-}
-
-func (cc *channalContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {
-    //fmt.Println("input init for stdin")
-    return "0"
+func channalContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
+    return ""
 }
 
 var ChannalModule = Module{
-    0,
-    0,
-    &ChannalMemoryContext,
+    MODULE_V1,
+    CONTEXT_V1,
+    unsafe.Pointer(channalMemoryContext),
     nil,
-    USER_MODULE,
+    CONFIG_MODULE,
     nil,
     nil,
 }

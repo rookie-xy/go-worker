@@ -5,13 +5,13 @@
 package main
 
 import (
-      "fmt"
       "os"
       "unsafe"
       "strings"
 
     . "worker/types"
-    . "worker/modules"
+    //. "worker/modules"
+    "fmt"
 )
 
 type worker struct {
@@ -64,7 +64,7 @@ func (w *worker) CoreInit(option *AbstractOption) int {
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
 
-        if module.Type != CORE_MODULE {
+        if module.Type != SYSTEM_MODULE {
             continue
         }
 
@@ -138,23 +138,21 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
 
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
-        if module.Type != SYSTEM_MODULE {
+        if module.Type != CONFIG_MODULE {
             continue
         }
 
-	this := module.Context
-        if this == nil || this.Context == nil {
+        context := (*AbstractContext)(unsafe.Pointer(module.Context))
+	if context == nil {
             continue
-        }/* else {
-            fmt.Println(this.Name.Data)
-        }*/
+        }
 
-        if context := this.Context.Create(cycle); context != nil {
-            if *(*string)(unsafe.Pointer(uintptr(context))) == "-1" {
+        if this := context.Create(cycle); this != nil {
+            if *(*string)(unsafe.Pointer(uintptr(this))) == "-1" {
                 return Error;
             }
 
-            if cycle.SetContext(module.Index, &context) == Error {
+            if cycle.SetContext(module.Index, &this) == Error {
                 return Error
             }
         }
@@ -166,31 +164,27 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
 
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
-        if module.Type != SYSTEM_MODULE {
+        if module.Type != CONFIG_MODULE {
             continue
         }
 
-	this := module.Context
-        if this == nil || this.Context == nil {
+        this := (*AbstractContext)(unsafe.Pointer(module.Context))
+	if this == nil {
             continue
-        }/* else {
-            fmt.Println(this.Name.Data)
-        }*/
+        }
 
         context := cycle.GetContext(module.Index)
         if context == nil {
             continue
         }
 
-        if this.Context.Init(cycle, context) == "-1" {
-            return Error
+        if init := this.Init; init != nil {
+            if init(cycle, context) == "-1" {
+                return Error
+            }
         }
     }
 
-    return Ok
-}
-
-func (w *worker) UserInit() int {
     return Ok
 }
 
@@ -255,7 +249,8 @@ func main() {
         Modules[n].Index++
     }
 
-    fmt.Println(len(Modules), MODULE_VER)
+//    fmt.Println(len(Modules), MODULE_VER)
+    fmt.Println(len(Modules))
 
     if n <= 0 {
         log.Info("no module to load")
@@ -281,10 +276,6 @@ func main() {
 
     configure := NewConfigure(log)
     if worker.SystemInit(configure) == Error {
-        return
-    }
-
-    if worker.UserInit() == Error {
         return
     }
 

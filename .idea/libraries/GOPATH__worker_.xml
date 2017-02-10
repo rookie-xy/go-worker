@@ -34,6 +34,7 @@
       <root url="file://$PROJECT_DIR$/../code.google.com" />
       <root url="file://$PROJECT_DIR$/../srcbak" />
       <root url="file://$PROJECT_DIR$/../auth-sdk-golang" />
+      <root url="file://$PROJECT_DIR$/../worker_bak" />
       <root url="file://$PROJECT_DIR$/../logrelayclient" />
       <root url="file://$PROJECT_DIR$/../sqllite" />
       <root url="file://$PROJECT_DIR$/../utils" />
@@ -100,6 +101,7 @@
       <root url="file://$PROJECT_DIR$/../code.google.com" />
       <root url="file://$PROJECT_DIR$/../srcbak" />
       <root url="file://$PROJECT_DIR$/../auth-sdk-golang" />
+      <root url="file://$PROJECT_DIR$/../worker_bak" />
       <root url="file://$PROJECT_DIR$/../logrelayclient" />
       <root url="file://$PROJECT_DIR$/../sqllite" />
       <root url="file://$PROJECT_DIR$/../utils" />

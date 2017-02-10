@@ -4,6 +4,8 @@
 
 package types
 
+import "unsafe"
+
 var (
     Ok    =  0
     Error = -1
@@ -14,9 +16,8 @@ const (
     MODULE_V1 = 0
     CONTEXT_V1 = 0
 
-    CORE_MODULE = 0x45524F43
-    SYSTEM_MODULE = 0x464E4F43
-    USER_MODULE = 0x464E4F43
+    SYSTEM_MODULE = 0x4D4554535953
+    CONFIG_MODULE = 0x4749464E4F43
 )
 
 type InitFunc func(cycle *AbstractCycle) int
@@ -25,7 +26,7 @@ type MainFunc func(cycle *AbstractCycle) int
 type Module struct {
     CtxIndex   uint
     Index      uint
-    Context   *AbstractContext
+    Context    unsafe.Pointer
     Commands   []Command
     Type       uint
     Init       InitFunc

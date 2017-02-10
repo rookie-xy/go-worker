@@ -6,30 +6,13 @@ package types
 
 import (
     "unsafe"
-    "fmt"
 )
 
+type ContextCreateFunc func(cycle *AbstractCycle) unsafe.Pointer
+type ContextInitFunc func(cycle *AbstractCycle, configure *unsafe.Pointer) string
+
 type AbstractContext struct {
-    Name     String
-    Context  Context
-}
-
-type Context interface {
-    Create(cycle *AbstractCycle) unsafe.Pointer
-    Init(cycle *AbstractCycle, configure *unsafe.Pointer) string
-}
-
-func NewContext() *AbstractContext {
-    return &AbstractContext{
-        Context: &AbstractContext{},
-    }
-}
-
-func (c *AbstractContext) Create(cycle *AbstractCycle) unsafe.Pointer {
-    fmt.Println("bbbbbbbbbbbbbbbbbb")
-    return nil
-}
-
-func (c *AbstractContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {
-    return ""
+    Name    String
+    Create  ContextCreateFunc
+    Init    ContextInitFunc
 }
