@@ -3,12 +3,21 @@ log:
     level: info
     path: /data/logs/error.log
 
-inputs:
-    stdin: on
+location:
+    html: /data/service/html
+    timeout: 10
 
-channal:
-    type: memory
-    size: 2048
+inputs:
+    - stdin:
+          status: on
+          channal: test
+
+channals:
+    - memory:
+          name: test
+          size: 2048
 
 outputs:
-    stdout: on
+    - stdout:
+          status: on
+          channal: test

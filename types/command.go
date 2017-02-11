@@ -18,7 +18,7 @@ var (
     ANY_CONF     =    0x0F000000
 )
 
-type SetFunc func(cf *AbstractConfigure, cmd *Command, conf interface{}) string
+type SetFunc func(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string
 
 type Command struct {
     Name    String

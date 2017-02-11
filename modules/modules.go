@@ -4,4 +4,4 @@
 
 package modules
 
-//var MODULE_VER = "0.1.0"
+var MODULE_VER = "0.1.0"

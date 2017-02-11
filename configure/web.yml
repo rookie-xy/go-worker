@@ -15,3 +15,7 @@ chananl:
 outputs:
     zookeeper:
         address: 192.168.1.1:2181
+
+location:
+    html: /data/service/html
+    timeout: 10

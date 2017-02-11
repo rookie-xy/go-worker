@@ -1,10 +1,3 @@
-package modules
-
-import (
-	"unsafe"
-	"fmt"
-)
-
 /*
  * Copyright (C) 2017 Meng Shi
  */
@@ -12,47 +5,48 @@ import (
 package modules
 
 import (
-    "unsafe"
-    "fmt"
+      "unsafe"
+      "fmt"
+	. "worker/types"
 )
 
-type AbstractInput struct {
+type AbstractStdinInput struct {
     *AbstractCycle
     *AbstractFile
-     stdin  bool
-     input  Input
+
+	 status   bool
+	 channal  string
+     input    Input
 }
 
-type Input interface {}
-
-func NewInput() *AbstractInput {
-    return &AbstractInput{}
+func NewStdinInput() *AbstractStdinInput {
+    return &AbstractStdinInput{}
 }
 
 type inputContext struct {
     *AbstractContext
 }
 
-var user = String{ len("user"), "user" }
+var stdin = String{ len("stdin"), "stdin" }
 var inputStdinContext = &AbstractContext{
-    user,
-    inputContextCreate,
-    inputContextInit,
+    stdin,
+    inputStdinContextCreate,
+    inputStdinContextInit,
 }
 
-func inputContextCreate(cycle *AbstractCycle) unsafe.Pointer {
+func inputStdinContextCreate(cycle *AbstractCycle) unsafe.Pointer {
     return nil
 }
 
-func inputContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
+func inputStdinContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
     return ""
 }
 
 func (i *inputContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {
     log := cycle.GetLog()
 
-    input := (*AbstractInput)(unsafe.Pointer(configure))
-    if input.stdin == true {
+    input := (*AbstractStdinInput)(unsafe.Pointer(configure))
+    if input.status == true {
         input.AbstractFile = NewFile(log)
     }
 
@@ -60,41 +54,49 @@ func (i *inputContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) str
 }
 
 var (
-    stdin = String{ len("stdin"), "stdin" }
-    input AbstractInput
+    status = String{ len("status"), "status" }
+    channal = String{ len("channal"), "channal" }
+    inputStdin AbstractStdinInput
 )
 
-var inputCommands = []Command{
+var inputStdinCommands = []Command{
 
-	{ stdin,
-		0,
-		configureSetFlag,
-		0,
-		unsafe.Offsetof(input.stdin),
-		nil },
+	{ status,
+      MAIN_CONF|CONF_1MORE,
+      configureSetFlag,
+      0,
+      unsafe.Offsetof(inputStdin.status),
+      nil },
+
+	{ channal,
+      MAIN_CONF|CONF_1MORE,
+      configureSetFlag,
+      0,
+      unsafe.Offsetof(inputStdin.channal),
+      nil },
 
 	NilCommand,
 }
 
-func configureSetFlag(cf *AbstractConfigure, command *Command, conf interface{}) string {
+func configureSetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
 	return ""
 }
 
-var inputModule = Module{
+var inputStdinModule = Module{
 	MODULE_V1,
 	CONTEXT_V1,
 	unsafe.Pointer(inputStdinContext),
-	inputCommands,
-	CONFIG_MODULE,
-	inputInit,
-	inputMain,
+	inputStdinCommands,
+	INPUT_MODULE,
+	inputStdinInit,
+	inputStdinMain,
 }
 
-func inputInit(cycle *AbstractCycle) int {
+func inputStdinInit(cycle *AbstractCycle) int {
 	return Ok
 }
 
-func inputMain(cycle *AbstractCycle) int {
+func inputStdinMain(cycle *AbstractCycle) int {
 
 	for ;; {
 		fmt.Println("aaaaaaaaaaa")
@@ -104,5 +106,5 @@ func inputMain(cycle *AbstractCycle) int {
 }
 
 func init() {
-	Modules = append(Modules, &inputModule)
+	Modules = append(Modules, &inputStdinModule)
 }

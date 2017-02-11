@@ -18,6 +18,10 @@ const (
 
     SYSTEM_MODULE = 0x4D4554535953
     CONFIG_MODULE = 0x4749464E4F43
+
+    INPUT_MODULE = 0x4749464E4F43
+    CHANNAL_MODULE = 0x4749464E4F43
+    OUTPUT_MODULE = 0x4749464E4F43
 )
 
 type InitFunc func(cycle *AbstractCycle) int
@@ -28,7 +32,7 @@ type Module struct {
     Index      uint
     Context    unsafe.Pointer
     Commands   []Command
-    Type       uint
+    Type       int64
     Init       InitFunc
     Main       MainFunc
 }

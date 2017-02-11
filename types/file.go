@@ -14,9 +14,10 @@ type AbstractFile struct {
      name      string
      size      int64
      content   []byte
-     action    Action
+     action    IO
 }
 
+/*
 type Action interface {
     Open(name string) int
     Close() int
@@ -24,6 +25,7 @@ type Action interface {
     Write() int
     Type() *AbstractFile
 }
+*/
 
 func NewFile(log *AbstractLog) *AbstractFile {
     return &AbstractFile{
@@ -88,7 +90,7 @@ func (f *AbstractFile) GetFile() *os.File {
     return f.file
 }
 
-func (f *AbstractFile) Set(action Action) int {
+func (f *AbstractFile) Set(action IO) int {
     if action == nil {
         return Error
     }
@@ -98,7 +100,7 @@ func (f *AbstractFile) Set(action Action) int {
     return Ok
 }
 
-func (f *AbstractFile) Get() Action {
+func (f *AbstractFile) Get() IO {
     return f.action
 }
 

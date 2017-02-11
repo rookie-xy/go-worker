@@ -10,7 +10,7 @@ import (
       "strings"
 
     . "worker/types"
-    //. "worker/modules"
+    . "worker/modules"
     "fmt"
 )
 
@@ -143,7 +143,7 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
         }
 
         context := (*AbstractContext)(unsafe.Pointer(module.Context))
-	if context == nil {
+	    if context == nil {
             continue
         }
 
@@ -169,7 +169,7 @@ func (w *worker) SystemInit(configure *AbstractConfigure) int {
         }
 
         this := (*AbstractContext)(unsafe.Pointer(module.Context))
-	if this == nil {
+	    if this == nil {
             continue
         }
 
@@ -249,7 +249,7 @@ func main() {
         Modules[n].Index++
     }
 
-//    fmt.Println(len(Modules), MODULE_VER)
+    fmt.Println(len(Modules), MODULE_VER)
     fmt.Println(len(Modules))
 
     if n <= 0 {
