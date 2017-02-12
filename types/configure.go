@@ -78,7 +78,7 @@ func (c *AbstractConfigure) GetFileType() string {
     return ""
 }
 
-func (c *AbstractConfigure) SetFile(action Action) int {
+func (c *AbstractConfigure) SetFile(action IO) int {
     if action == nil {
         return Error
     }
@@ -90,7 +90,7 @@ func (c *AbstractConfigure) SetFile(action Action) int {
     return Ok
 }
 
-func (c *AbstractConfigure) GetFile() Action {
+func (c *AbstractConfigure) GetFile() IO {
     if file := c.AbstractFile.Get(); file != nil {
         return file
     }

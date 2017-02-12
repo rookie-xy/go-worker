@@ -54,7 +54,7 @@ func (w *worker) GetCycle() *AbstractCycle {
     return w.AbstractCycle
 }
 
-func (w *worker) CoreInit(option *AbstractOption) int {
+func (w *worker) SystemInit(option *AbstractOption) int {
     modules, cycle := w.modules, w.AbstractCycle
 
     if modules == nil || cycle == nil {
@@ -75,7 +75,7 @@ func (w *worker) CoreInit(option *AbstractOption) int {
         }
 
         if module.Main != nil {
-	    if module.Main(cycle) == Error {
+	        if module.Main(cycle) == Error {
                 os.Exit(2)
             }
         }
@@ -84,7 +84,7 @@ func (w *worker) CoreInit(option *AbstractOption) int {
     return Ok
 }
 
-func (w *worker) SystemInit(configure *AbstractConfigure) int {
+func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
     cycle := w.GetCycle()
 
     option := cycle.GetOption()
@@ -250,7 +250,6 @@ func main() {
     }
 
     fmt.Println(len(Modules), MODULE_VER)
-    fmt.Println(len(Modules))
 
     if n <= 0 {
         log.Info("no module to load")
@@ -270,12 +269,12 @@ func main() {
     cycle.AbstractOption = option
     worker.AbstractCycle = cycle
 
-    if worker.CoreInit(option) == Error {
+    if worker.SystemInit(option) == Error {
         return
     }
 
     configure := NewConfigure(log)
-    if worker.SystemInit(configure) == Error {
+    if worker.ConfigureInit(configure) == Error {
         return
     }
 

@@ -1,16 +1,17 @@
 log:
-    name: simple
     level: info
-    path: /data/logs/error.log
-
-location:
-    html: /data/service/html
-    timeout: 10
+    path: /data/logs/worker.log
 
 inputs:
     - stdin:
           status: on
           channal: test
+
+#    - http:
+#          listen: 127.0.0.1:8900
+#          location:
+#              document: /data/service/html
+#              timeout: 10
 
 channals:
     - memory:

@@ -23,10 +23,6 @@ func NewStdinInput() *AbstractStdinInput {
     return &AbstractStdinInput{}
 }
 
-type inputContext struct {
-    *AbstractContext
-}
-
 var stdin = String{ len("stdin"), "stdin" }
 var inputStdinContext = &AbstractContext{
     stdin,
@@ -39,10 +35,6 @@ func inputStdinContextCreate(cycle *AbstractCycle) unsafe.Pointer {
 }
 
 func inputStdinContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
-    return ""
-}
-
-func (i *inputContext) Init(cycle *AbstractCycle, configure *unsafe.Pointer) string {
     log := cycle.GetLog()
 
     input := (*AbstractStdinInput)(unsafe.Pointer(configure))
