@@ -131,7 +131,7 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
         return Error
     }
 
-    modules := w.GetModules()
+    modules := w.modules
     if modules == nil {
         return Error
     }
@@ -144,13 +144,17 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
 
         context := (*AbstractContext)(unsafe.Pointer(module.Context))
 	    if context == nil {
+
             continue
         }
 
-        if this := context.Create(cycle); this != nil {
+        if handle := context.Create; handle != nil {
+			this := handle(cycle)
+			/*
             if *(*string)(unsafe.Pointer(uintptr(this))) == "-1" {
                 return Error;
             }
+            */
 
             if cycle.SetContext(module.Index, &this) == Error {
                 return Error
@@ -158,7 +162,7 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
         }
     }
 
-    if configure.Parse() == Error {
+    if configure.Parse(cycle) == Error {
         return Error
     }
 
@@ -272,6 +276,7 @@ func main() {
     if worker.SystemInit(option) == Error {
         return
     }
+
 
     configure := NewConfigure(log)
     if worker.ConfigureInit(configure) == Error {

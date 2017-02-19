@@ -1,10 +1,10 @@
-log:
-    level: info
-    path: /data/logs/worker.log
+#log:
+#    level: info
+#    path: /data/logs/worker.log
 
 inputs:
     - stdin:
-          status: on
+          status: off
           channal: test
 
 #    - http:

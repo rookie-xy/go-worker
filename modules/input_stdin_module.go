@@ -6,72 +6,91 @@ package modules
 
 import (
       "unsafe"
-      "fmt"
 	. "worker/types"
 )
 
-type AbstractStdinInput struct {
-    *AbstractCycle
-    *AbstractFile
+const (
+    STDIN_MODULE = 0x0002
+)
 
-	 status   bool
-	 channal  string
-     input    Input
-}
-
-func NewStdinInput() *AbstractStdinInput {
-    return &AbstractStdinInput{}
+var stdinModule = String{ len("stdin_module"), "stdin_module" }
+var inputStdinContext = &AbstractContext{
+    stdinModule,
+    nil,
+    nil,
 }
 
 var stdin = String{ len("stdin"), "stdin" }
-var inputStdinContext = &AbstractContext{
-    stdin,
-    inputStdinContextCreate,
-    inputStdinContextInit,
-}
-
-func inputStdinContextCreate(cycle *AbstractCycle) unsafe.Pointer {
-    return nil
-}
-
-func inputStdinContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
-    log := cycle.GetLog()
-
-    input := (*AbstractStdinInput)(unsafe.Pointer(configure))
-    if input.status == true {
-        input.AbstractFile = NewFile(log)
-    }
-
-    return "0"
-}
-
-var (
-    status = String{ len("status"), "status" }
-    channal = String{ len("channal"), "channal" }
-    inputStdin AbstractStdinInput
-)
-
 var inputStdinCommands = []Command{
 
-	{ status,
+	{ stdin,
       MAIN_CONF|CONF_1MORE,
-      configureSetFlag,
+      stdinBlock,
       0,
-      unsafe.Offsetof(inputStdin.status),
-      nil },
-
-	{ channal,
-      MAIN_CONF|CONF_1MORE,
-      configureSetFlag,
       0,
-      unsafe.Offsetof(inputStdin.channal),
       nil },
 
 	NilCommand,
 }
 
-func configureSetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
-	return ""
+func stdinBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
+	for m := 0; Modules[m] != nil; m++ {
+		module := Modules[m]
+		if module.Type != STDIN_MODULE {
+			continue
+		}
+
+		context := (*AbstractContext)(unsafe.Pointer(module.Context))
+		if context == nil {
+			continue
+		}
+
+		if handle := context.Create; handle != nil {
+			this := handle(cycle)
+			/*
+			if *(*string)(unsafe.Pointer(uintptr(this))) == "-1" {
+				return "0";
+			}
+			*/
+
+			if cycle.SetContext(module.Index, &this) == Error {
+				return "0"
+			}
+		}
+	}
+
+	if configure.SetModuleType(STDIN_MODULE) == Error {
+		return "0"
+	}
+
+	if configure.Parse(cycle) == Error {
+		return "0"
+	}
+
+	for m := 0; Modules[m] != nil; m++ {
+		module := Modules[m]
+		if module.Type != STDIN_MODULE {
+			continue
+		}
+
+		this := (*AbstractContext)(unsafe.Pointer(module.Context))
+		if this == nil {
+			continue
+		}
+
+		context := cycle.GetContext(module.Index)
+		if context == nil {
+			continue
+		}
+
+		if init := this.Init; init != nil {
+			if init(cycle, context) == "-1" {
+				return "0"
+			}
+		}
+	}
+
+	return "0"
 }
 
 var inputStdinModule = Module{
@@ -80,21 +99,8 @@ var inputStdinModule = Module{
 	unsafe.Pointer(inputStdinContext),
 	inputStdinCommands,
 	INPUT_MODULE,
-	inputStdinInit,
-	inputStdinMain,
-}
-
-func inputStdinInit(cycle *AbstractCycle) int {
-	return Ok
-}
-
-func inputStdinMain(cycle *AbstractCycle) int {
-
-	for ;; {
-		fmt.Println("aaaaaaaaaaa")
-	}
-
-	return Ok
+	nil,
+	nil,
 }
 
 func init() {

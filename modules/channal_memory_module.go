@@ -5,90 +5,102 @@
 package modules
 
 import (
-	  "unsafe"
-	. "worker/types"
-	"fmt"
+      "unsafe"
+    . "worker/types"
 )
 
-type AbstractMemoryChannal struct {
-	*AbstractChannal
-	*AbstractCycle
+const (
+	MEMORY_MODULE = 0x0003
+)
 
-	name     string
-	size     int
-	channal  Channal
-}
-
-func NewMemoryChannal() *AbstractMemoryChannal {
-	return &AbstractMemoryChannal{}
-}
-
-var memory = String{ len("memory"), "memory" }
+var memoryModule = String{ len("memory_module"), "memory_module" }
 var channalMemoryContext = &AbstractContext{
-	memory,
-	channalContextCreate,
-	channalContextInit,
+	memoryModule,
+	nil,
+	nil,
 }
 
-func channalContextCreate(cycle *AbstractCycle) unsafe.Pointer {
-	return nil
-}
-
-func channalContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
-	return ""
-}
-
-var (
-	name = String{ len("name"), "name" }
-	size = String{ len("size"), "size" }
-
-	memoryChannal AbstractMemoryChannal
-)
-
+var	memory = String{ len("memory"), "memory" }
 var channalMemoryCommands = []Command{
 
-	{ name,
+	{ memory,
       MAIN_CONF|CONF_1MORE,
-      configureSetFlag,
+      memoryBlock,
       0,
-      unsafe.Offsetof(memoryChannal.name),
-      nil },
-
-	{ size,
-      MAIN_CONF|CONF_1MORE,
-      configureSetNumber,
       0,
-      unsafe.Offsetof(memoryChannal.size),
       nil },
 
 	NilCommand,
 }
 
-func configureSetNumber(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
-	return ""
+func memoryBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
+	for m := 0; Modules[m] != nil; m++ {
+		module := Modules[m]
+		if module.Type != MEMORY_MODULE {
+			continue
+		}
+
+		context := (*AbstractContext)(unsafe.Pointer(module.Context))
+		if context == nil {
+			continue
+		}
+
+		if handle := context.Create; handle != nil {
+			this := handle(cycle)
+			/*
+			if *(*string)(unsafe.Pointer(uintptr(this))) == "-1" {
+				return "0";
+			}
+			*/
+
+			if cycle.SetContext(module.Index, &this) == Error {
+				return "0"
+			}
+		}
+	}
+
+	if configure.SetModuleType(MEMORY_MODULE) == Error {
+		return "0"
+	}
+
+	if configure.Parse(cycle) == Error {
+		return "0"
+	}
+
+	for m := 0; Modules[m] != nil; m++ {
+		module := Modules[m]
+		if module.Type != MEMORY_MODULE {
+			continue
+		}
+
+		this := (*AbstractContext)(unsafe.Pointer(module.Context))
+		if this == nil {
+			continue
+		}
+
+		context := cycle.GetContext(module.Index)
+		if context == nil {
+			continue
+		}
+
+		if init := this.Init; init != nil {
+			if init(cycle, context) == "-1" {
+				return "0"
+			}
+		}
+	}
+
+	return "0"
 }
 
 var channalMemoryModule = Module{
-	MODULE_V1,
-	CONTEXT_V1,
-	unsafe.Pointer(channalMemoryContext),
-	channalMemoryCommands,
-	CHANNAL_MODULE,
-	channalMemoryInit,
-	channalMemoryMain,
-}
-
-func channalMemoryInit(cycle *AbstractCycle) int {
-	return Ok
-}
-
-func channalMemoryMain(cycle *AbstractCycle) int {
-
-	for ;; {
-		fmt.Println("aaaaaaaaaaa")
-	}
-
-	return Ok
+    MODULE_V1,
+    CONTEXT_V1,
+    unsafe.Pointer(channalMemoryContext),
+    channalMemoryCommands,
+    CHANNAL_MODULE,
+    nil,
+	nil,
 }
 
 func init() {

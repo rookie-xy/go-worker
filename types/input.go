@@ -4,7 +4,9 @@
 
 package types
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 type AbstractInput struct {
     *AbstractCycle
@@ -51,10 +53,13 @@ func inputsBlock(configure *AbstractConfigure, command *Command, cycle *Abstract
 			continue
 		}
 
-		if this := context.Create(cycle); this != nil {
+		if handle := context.Create; handle != nil {
+			this := handle(cycle)
+			/*
 			if *(*string)(unsafe.Pointer(uintptr(this))) == "-1" {
 				return "0";
 			}
+			*/
 
 			if cycle.SetContext(module.Index, &this) == Error {
 				return "0"
@@ -62,7 +67,11 @@ func inputsBlock(configure *AbstractConfigure, command *Command, cycle *Abstract
 		}
 	}
 
-	if configure.Parse() == Error {
+	if configure.SetModuleType(INPUT_MODULE) == Error {
+		return "0"
+	}
+
+	if configure.Parse(cycle) == Error {
 		return "0"
 	}
 

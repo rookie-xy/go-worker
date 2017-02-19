@@ -50,10 +50,13 @@ func channalsBlock(configure *AbstractConfigure, command *Command, cycle *Abstra
 			continue
 		}
 
-		if this := context.Create(cycle); this != nil {
+		if handle := context.Create; handle != nil {
+			this := handle(cycle)
+			/*
 			if *(*string)(unsafe.Pointer(uintptr(this))) == "-1" {
 				return "0";
 			}
+			*/
 
 			if cycle.SetContext(module.Index, &this) == Error {
 				return "0"
@@ -61,7 +64,11 @@ func channalsBlock(configure *AbstractConfigure, command *Command, cycle *Abstra
 		}
 	}
 
-	if configure.Parse() == Error {
+	if configure.SetModuleType(CHANNAL_MODULE) == Error {
+		return "0"
+	}
+
+	if configure.Parse(cycle) == Error {
 		return "0"
 	}
 

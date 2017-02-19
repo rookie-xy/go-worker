@@ -98,6 +98,14 @@ func (o *AbstractOption) Parse() int {
 }
 
 func initOptionModule(cycle *AbstractCycle) int {
+	option := cycle.GetOption()
+	if option == nil {
+		return Error
+	}
+
+	if option.Parse() == Error {
+		return Error
+	}
 	/*
 	simpleOption := NewOption(cycle.log)
 
