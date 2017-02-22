@@ -23,7 +23,7 @@ type Log interface {
 }
 
 var Level = [...]string{ "stderr", "emerg", "alert", "crit", "error",
-            "warn", "notice", "info", "debug" }
+                         "warn", "notice", "info", "debug" }
 
 func NewLog() *AbstractLog {
     return &AbstractLog{

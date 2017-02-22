@@ -11,7 +11,3 @@ type IO interface {
     Write() int
     Type() *AbstractFile
 }
-
-func a() {
-    close(aa);
-}
