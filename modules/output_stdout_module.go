@@ -15,9 +15,9 @@ const (
 
 var stdoutModule = String{ len("stdout_module"), "stdout_module" }
 var outputStdoutContext = &AbstractContext{
-   	stdoutModule,
-   	nil,
-   	nil,
+    stdoutModule,
+    nil,
+    nil,
 }
 
 var	stdout = String{ len("stdout"), "stdout" }
@@ -34,58 +34,58 @@ var outputStdoutCommands = []Command{
 }
 
 func stdoutBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
-for m := 0; Modules[m] != nil; m++ {
-module := Modules[m]
-if module.Type != STDOUT_MODULE {
-continue
-}
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != STDOUT_MODULE {
+            continue
+        }
 
-context := (*AbstractContext)(unsafe.Pointer(module.Context))
-if context == nil {
-continue
-}
+        context := (*AbstractContext)(unsafe.Pointer(module.Context))
+        if context == nil {
+								    continue
+        }
 
-if handle := context.Create; handle != nil {
-this := handle(cycle)
+        if handle := context.Create; handle != nil {
+								    this := handle(cycle)
 
-if cycle.SetContext(module.Index, &this) == Error {
-return "0"
-}
-}
-}
+            if cycle.SetContext(module.Index, &this) == Error {
+                return "0"
+            }
+        }
+    }
 
-	   if configure.SetModuleType(STDOUT_MODULE) == Error {
-				    return "0"
-	   }
+    if configure.SetModuleType(STDOUT_MODULE) == Error {
+        return "0"
+    }
 
-   	if configure.Parse(cycle) == Error {
-      		return "0"
-	   }
+    if configure.Parse(cycle) == Error {
+        return "0"
+    }
 
-	   for m := 0; Modules[m] != nil; m++ {
-		      module := Modules[m]
-		      if module.Type != STDOUT_MODULE {
-			         continue
-		      }
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != STDOUT_MODULE {
+            continue
+        }
 
-		      this := (*AbstractContext)(unsafe.Pointer(module.Context))
-		      if this == nil {
-				        continue
-				    }
+        this := (*AbstractContext)(unsafe.Pointer(module.Context))
+        if this == nil {
+            continue
+        }
 
-		      context := cycle.GetContext(module.Index)
-		      if context == nil {
-			         continue
-		      }
+        context := cycle.GetContext(module.Index)
+        if context == nil {
+            continue
+        }
 
-  		    if init := this.Init; init != nil {
-    		 	    if init(cycle, context) == "-1" {
- 				           return "0"
- 			        }
- 		     }
-	   }
+        if init := this.Init; init != nil {
+            if init(cycle, context) == "-1" {
+                return "0"
+            }
+        }
+    }
 
-   	return "0"
+    return "0"
 }
 
 var outputStdoutModule = Module{
