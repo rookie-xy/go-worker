@@ -6,7 +6,7 @@ package modules
 
 import (
       "unsafe"
-	. "worker/types"
+    . "worker/types"
 )
 
 const (
@@ -23,14 +23,14 @@ var inputStdinContext = &AbstractContext{
 var stdin = String{ len("stdin"), "stdin" }
 var inputStdinCommands = []Command{
 
-	{ stdin,
+    { stdin,
       MAIN_CONF|CONF_1MORE,
       stdinBlock,
       0,
       0,
       nil },
 
-	NilCommand,
+    NilCommand,
 }
 
 func stdinBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
