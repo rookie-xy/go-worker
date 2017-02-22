@@ -20,7 +20,7 @@ var outputStdoutContext = &AbstractContext{
     nil,
 }
 
-var	stdout = String{ len("stdout"), "stdout" }
+var stdout = String{ len("stdout"), "stdout" }
 var outputStdoutCommands = []Command{
 
     { stdout,

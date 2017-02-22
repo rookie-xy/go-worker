@@ -10,27 +10,27 @@ import (
 )
 
 const (
-	MEMORY_MODULE = 0x0003
+    MEMORY_MODULE = 0x0003
 )
 
 var memoryModule = String{ len("memory_module"), "memory_module" }
 var channalMemoryContext = &AbstractContext{
-	memoryModule,
-	nil,
-	nil,
+    memoryModule,
+    nil,
+    nil,
 }
 
 var	memory = String{ len("memory"), "memory" }
 var channalMemoryCommands = []Command{
 
-	{ memory,
+    { memory,
       MAIN_CONF|CONF_1MORE,
       memoryBlock,
       0,
       0,
       nil },
 
-	NilCommand,
+    NilCommand,
 }
 
 func memoryBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
@@ -100,9 +100,9 @@ var channalMemoryModule = Module{
     channalMemoryCommands,
     CHANNAL_MODULE,
     nil,
-	nil,
+    nil,
 }
 
 func init() {
-	Modules = append(Modules, &channalMemoryModule)
+    Modules = append(Modules, &channalMemoryModule)
 }
