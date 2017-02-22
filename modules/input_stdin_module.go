@@ -94,15 +94,15 @@ func stdinBlock(configure *AbstractConfigure, command *Command, cycle *AbstractC
 }
 
 var inputStdinModule = Module{
-	MODULE_V1,
-	CONTEXT_V1,
-	unsafe.Pointer(inputStdinContext),
-	inputStdinCommands,
-	INPUT_MODULE,
-	nil,
-	nil,
+    MODULE_V1,
+    CONTEXT_V1,
+    unsafe.Pointer(inputStdinContext),
+    inputStdinCommands,
+    INPUT_MODULE,
+    nil,
+    nil,
 }
 
 func init() {
-	Modules = append(Modules, &inputStdinModule)
+    Modules = append(Modules, &inputStdinModule)
 }
