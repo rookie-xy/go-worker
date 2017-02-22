@@ -5,9 +5,9 @@
 package modules
 
 import (
-	"unsafe"
-	. "worker/types"
-	"fmt"
+      "unsafe"
+      "fmt"
+    . "worker/types"
 )
 
 type AbstractMemoryCore struct {
@@ -47,7 +47,7 @@ var coreMemoryCommands = []Command{
 
     { name,
       MAIN_CONF|CONF_1MORE,
-				  configureSetFlag,
+      configureSetFlag,
       0,
       unsafe.Offsetof(coreMemory.name),
       nil },
