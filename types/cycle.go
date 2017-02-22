@@ -11,9 +11,6 @@ type AbstractCycle struct {
     *AbstractRoutine
     *AbstractOption
     *AbstractConfigure
-
-	Name string
-
      context  [1024]*unsafe.Pointer
      cycle    Cycle
 }

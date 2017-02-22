@@ -41,62 +41,55 @@ var inputCommands = []Command{
 }
 
 func inputsBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != INPUT_MODULE {
+            continue
+        }
 
-	for m := 0; Modules[m] != nil; m++ {
-		module := Modules[m]
-		if module.Type != INPUT_MODULE {
-			continue
-		}
+        context := (*AbstractContext)(unsafe.Pointer(module.Context))
+        if context == nil {
+            continue
+        }
 
-		context := (*AbstractContext)(unsafe.Pointer(module.Context))
-		if context == nil {
-			continue
-		}
+        if handle := context.Create; handle != nil {
+            this := handle(cycle)
+            if cycle.SetContext(module.Index, &this) == Error {
+                return "0"
+            }
+        }
+    }
 
-		if handle := context.Create; handle != nil {
-			this := handle(cycle)
-			/*
-			if *(*string)(unsafe.Pointer(uintptr(this))) == "-1" {
-				return "0";
-			}
-			*/
+    if configure.SetModuleType(INPUT_MODULE) == Error {
+        return "0"
+    }
 
-			if cycle.SetContext(module.Index, &this) == Error {
-				return "0"
-			}
-		}
-	}
+    if configure.Parse(cycle) == Error {
+        return "0"
+    }
 
-	if configure.SetModuleType(INPUT_MODULE) == Error {
-		return "0"
-	}
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != INPUT_MODULE {
+            continue
+        }
 
-	if configure.Parse(cycle) == Error {
-		return "0"
-	}
+        this := (*AbstractContext)(unsafe.Pointer(module.Context))
+        if this == nil {
+            continue
+        }
 
-	for m := 0; Modules[m] != nil; m++ {
-		module := Modules[m]
-		if module.Type != INPUT_MODULE {
-			continue
-		}
+        context := cycle.GetContext(module.Index)
+        if context == nil {
+            continue
+        }
 
-		this := (*AbstractContext)(unsafe.Pointer(module.Context))
-		if this == nil {
-			continue
-		}
-
-		context := cycle.GetContext(module.Index)
-		if context == nil {
-			continue
-		}
-
-		if init := this.Init; init != nil {
-			if init(cycle, context) == "-1" {
-				return "0"
-			}
-		}
-	}
+        if init := this.Init; init != nil {
+            if init(cycle, context) == "-1" {
+                return "0"
+            }
+        }
+    }
 
     return "0"
 }
