@@ -42,11 +42,11 @@ func stdoutBlock(configure *AbstractConfigure, command *Command, cycle *Abstract
 
         context := (*AbstractContext)(unsafe.Pointer(module.Context))
         if context == nil {
-								    continue
+            continue
         }
 
         if handle := context.Create; handle != nil {
-								    this := handle(cycle)
+            this := handle(cycle)
 
             if cycle.SetContext(module.Index, &this) == Error {
                 return "0"
