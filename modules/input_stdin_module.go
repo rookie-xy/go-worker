@@ -48,7 +48,7 @@ func stdinBlock(configure *AbstractConfigure, command *Command, cycle *AbstractC
         if handle := context.Create; handle != nil {
             this := handle(cycle)
             if cycle.SetContext(module.Index, &this) == Error {
-												    return "0"
+                return "0"
             }
         }
     }
