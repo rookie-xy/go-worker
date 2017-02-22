@@ -34,7 +34,7 @@
         <entry file="file://$PROJECT_DIR$/modules/output_stdout_module.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
-              <caret line="40" column="10" selection-start-line="40" selection-start-column="10" selection-end-line="40" selection-end-column="10" />
+              <caret line="40" column="8" selection-start-line="40" selection-start-column="8" selection-end-line="40" selection-end-column="8" />
               <folding>
                 <element signature="e#56#102#0" expanded="true" />
               </folding>
@@ -753,7 +753,7 @@
       <workItem from="1486619965800" duration="8505000" />
       <workItem from="1486776120199" duration="16473000" />
       <workItem from="1487474836748" duration="21956000" />
-      <workItem from="1487737973661" duration="3098000" />
+      <workItem from="1487737973661" duration="3329000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <created>1487744082353</created>
@@ -773,7 +773,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="145039000" />
+    <option name="totallyTimeSpent" value="145270000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1301" height="744" extended-state="6" />
@@ -1167,7 +1167,7 @@
     <entry file="file://$PROJECT_DIR$/modules/output_stdout_module.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="40" column="10" selection-start-line="40" selection-start-column="10" selection-end-line="40" selection-end-column="10" />
+          <caret line="40" column="8" selection-start-line="40" selection-start-column="8" selection-end-line="40" selection-end-column="8" />
           <folding>
             <element signature="e#56#102#0" expanded="true" />
           </folding>
