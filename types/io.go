@@ -13,5 +13,5 @@ type IO interface {
 }
 
 func a() {
-				abcd();
+	close(aa);
 }
