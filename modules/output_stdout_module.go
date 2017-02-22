@@ -15,9 +15,9 @@ const (
 
 var stdoutModule = String{ len("stdout_module"), "stdout_module" }
 var outputStdoutContext = &AbstractContext{
-    	stdoutModule,
-    	nil,
-    	nil,
+   	stdoutModule,
+   	nil,
+   	nil,
 }
 
 var	stdout = String{ len("stdout"), "stdout" }
