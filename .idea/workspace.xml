@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="853bc1fb-26fc-4ea0-a681-3f5931106827" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/types/io.go" afterPath="$PROJECT_DIR$/types/io.go" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -35,7 +34,7 @@
         <entry file="file://$PROJECT_DIR$/modules/output_stdout_module.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
-              <caret line="40" column="14" selection-start-line="40" selection-start-column="14" selection-end-line="40" selection-end-column="14" />
+              <caret line="40" column="10" selection-start-line="40" selection-start-column="10" selection-end-line="40" selection-end-column="10" />
               <folding>
                 <element signature="e#56#102#0" expanded="true" />
               </folding>
@@ -56,8 +55,8 @@
       <file leaf-file-name="io.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/types/io.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="15" column="11" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
+            <state relative-caret-position="273">
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -754,7 +753,7 @@
       <workItem from="1486619965800" duration="8505000" />
       <workItem from="1486776120199" duration="16473000" />
       <workItem from="1487474836748" duration="21956000" />
-      <workItem from="1487737973661" duration="2954000" />
+      <workItem from="1487737973661" duration="3098000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <created>1487744082353</created>
@@ -774,7 +773,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="144895000" />
+    <option name="totallyTimeSpent" value="145039000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1301" height="744" extended-state="6" />
@@ -1168,7 +1167,7 @@
     <entry file="file://$PROJECT_DIR$/modules/output_stdout_module.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="40" column="14" selection-start-line="40" selection-start-column="14" selection-end-line="40" selection-end-column="14" />
+          <caret line="40" column="10" selection-start-line="40" selection-start-column="10" selection-end-line="40" selection-end-column="10" />
           <folding>
             <element signature="e#56#102#0" expanded="true" />
           </folding>
@@ -1185,8 +1184,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/types/io.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="15" column="11" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
+        <state relative-caret-position="273">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding />
         </state>
       </provider>
