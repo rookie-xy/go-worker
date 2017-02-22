@@ -6,8 +6,7 @@ package types
 
 import (
     "fmt"
-	"gopkg.in/yaml.v2"
-//	"log"
+    "gopkg.in/yaml.v2"
 )
 
 type AbstractConfigure struct {
@@ -15,9 +14,9 @@ type AbstractConfigure struct {
     *AbstractFile
      resource   string
      fileName   string
-	 commandType  int64
-	 moduleType   int64
-	 value         interface{}
+     commandType  int64
+     moduleType   int64
+     value         interface{}
      configure  Configure
 }
 
@@ -183,7 +182,7 @@ func (c *AbstractConfigure) SetCommandType(commandType int64) int {
 }
 
 func (c *AbstractConfigure) GetValue() interface{} {
-	return c.value
+   return c.value
 }
 
 func (c *AbstractConfigure) Parse(cycle *AbstractCycle) int {
