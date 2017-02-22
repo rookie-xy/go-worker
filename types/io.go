@@ -5,11 +5,11 @@
 package types
 
 type IO interface {
- 			Open(name string) int
-    Close() int
-    Read() int
-    Write() int
-    Type() *AbstractFile
+	Open(name string) int
+	Close() int
+	Read() int
+	Write() int
+	Type() *AbstractFile
 }
 
 func a() {
