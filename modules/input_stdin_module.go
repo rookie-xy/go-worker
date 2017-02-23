@@ -7,6 +7,7 @@ package modules
 import (
       "unsafe"
     . "worker/types"
+    "fmt"
 )
 
 const (
@@ -33,7 +34,16 @@ var inputStdinCommands = []Command{
     NilCommand,
 }
 
-func stdinBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
+func stdinBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != STDIN_MODULE {
+            continue
+        }
+
+        module.CtxIndex++
+    }
+
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
         if module.Type != STDIN_MODULE {
@@ -47,6 +57,7 @@ func stdinBlock(configure *AbstractConfigure, command *Command, cycle *AbstractC
 
         if handle := context.Create; handle != nil {
             this := handle(cycle)
+            fmt.Println(module.Index)
             if cycle.SetContext(module.Index, &this) == Error {
                 return "0"
             }

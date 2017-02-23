@@ -62,7 +62,7 @@ var coreMemoryCommands = []Command{
     NilCommand,
 }
 
-func configureSetNumber(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
+func configureSetNumber(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
     value := configure.GetValue()
     fmt.Println(value)
     return ""

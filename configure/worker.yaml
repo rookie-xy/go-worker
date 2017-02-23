@@ -4,7 +4,7 @@
 
 inputs:
     - stdin:
-          status: off
+          status: on
           channal: test
 
 #    - http:
@@ -13,12 +13,12 @@ inputs:
 #              document: /data/service/html
 #              timeout: 10
 
-channals:
-    - memory:
-          name: test
-          size: 2048
+#channals:
+#    - memory:
+#          name: test
+#          size: 2048
 
-outputs:
-    - stdout:
-          status: on
-          channal: test
+#outputs:
+#    - stdout:
+#          status: on
+#          channal: test

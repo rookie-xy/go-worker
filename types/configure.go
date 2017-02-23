@@ -263,8 +263,12 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
 
                     //log.Error("directive \"%s\" is not allowed here", name)
                     //					flag = Error
+
+                    context := cycle.GetContext(module.Index)
+                    fmt.Printf("context: %s, %d\n", name, module.Index)
+
                     c.value = value
-                    command.Set(c, nil, cycle)
+                    command.Set(c, &command, cycle, context)
                     break;
                 }
 

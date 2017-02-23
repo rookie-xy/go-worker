@@ -143,19 +143,15 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
         }
 
         context := (*AbstractContext)(unsafe.Pointer(module.Context))
-	    if context == nil {
+        if context == nil {
 
             continue
         }
 
         if handle := context.Create; handle != nil {
-			this := handle(cycle)
-			/*
-            if *(*string)(unsafe.Pointer(uintptr(this))) == "-1" {
-                return Error;
-            }
-            */
+            this := handle(cycle)
 
+            fmt.Println(module.Index)
             if cycle.SetContext(module.Index, &this) == Error {
                 return Error
             }
@@ -173,7 +169,7 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
         }
 
         this := (*AbstractContext)(unsafe.Pointer(module.Context))
-	    if this == nil {
+        if this == nil {
             continue
         }
 
@@ -250,7 +246,7 @@ func main() {
 
     Modules = append(Modules, nil)
     for /* nil */; Modules[n] != nil; n++ {
-        Modules[n].Index++
+        Modules[n].Index = uint(n)
     }
 
     fmt.Println(len(Modules), MODULE_VER)

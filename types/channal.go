@@ -38,7 +38,7 @@ var channalCommands = []Command{
     NilCommand,
 }
 
-func channalsBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
+func channalsBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
         if module.Type != CHANNAL_MODULE {

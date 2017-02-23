@@ -33,7 +33,7 @@ var channalMemoryCommands = []Command{
     NilCommand,
 }
 
-func memoryBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
+func memoryBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
         if module.Type != MEMORY_MODULE {

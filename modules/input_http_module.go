@@ -67,7 +67,7 @@ var inputHttpCommands = []Command{
 	NilCommand,
 }
 
-func locationBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
+func locationBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
 	return ""
 }
 

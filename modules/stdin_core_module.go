@@ -30,7 +30,14 @@ var coreStdinContext = &AbstractContext{
 }
 
 func coreStdinContextCreate(cycle *AbstractCycle) unsafe.Pointer {
-    return nil
+    stdinCore := NewStdinCore()
+    if stdinCore == nil {
+        return nil
+    }
+
+    fmt.Println("core stdin")
+
+    return unsafe.Pointer(&stdinCore)
 }
 
 func coreStdinContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
@@ -69,9 +76,29 @@ var coreStdinCommands = []Command{
     NilCommand,
 }
 
-func configureSetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
-    value := configure.GetValue()
-    fmt.Println(value)
+func configureSetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+    p := config
+    fp := (*bool)(unsafe.Pointer(uintptr(*p) + command.Offset))
+
+    flag := configure.GetValue()
+    if flag == true {
+        fmt.Println("mengshiiiiiiiiiiiiiiiii")
+        *fp = true
+    } else if flag == false {
+        fmt.Println("zhangyueeeeeeeeeeeeeeeeeeee")
+        *fp = false
+    } else {
+        fmt.Println("eeeeeeeeeeeeeeeeeeeeeeee")
+        return "-1"
+    }
+
+    /*
+    if command.Post != nil {
+        post := command.Post.(DvrConfPostType);
+        post.Handler(cf, post, *p);
+    }
+    */
+
     return ""
 }
 
@@ -86,6 +113,8 @@ var coreStdinModule = Module{
 }
 
 func coreStdinInit(cycle *AbstractCycle) int {
+    fmt.Println("yyyyyyyyyyyyyyyyyyyyyyfdsafdsf")
+    fmt.Println(coreStdin.status)
     return Ok
 }
 

@@ -4,6 +4,8 @@
 
 package types
 
+import "unsafe"
+
 var (
     CONF_ARGS_NUMBER = 0x000000ff
     CONF_BLOCK  =     0x00000100
@@ -18,7 +20,7 @@ var (
     ANY_CONF     =    0x0F000000
 )
 
-type SetFunc func(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string
+type SetFunc func(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string
 
 type Command struct {
     Name    String

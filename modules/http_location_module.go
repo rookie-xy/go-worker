@@ -50,7 +50,7 @@ var httpLocationCommands = []Command{
 	NilCommand,
 }
 
-func httpLocationSet(configure *AbstractConfigure, command *Command, cycle *AbstractCycle) string {
+func httpLocationSet(configure *AbstractConfigure, command *Command, cycle *AbstractCycle,config *unsafe.Pointer ) string {
 	return ""
 }
 
