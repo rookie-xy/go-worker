@@ -35,18 +35,21 @@ func coreStdinContextCreate(cycle *AbstractCycle) unsafe.Pointer {
         return nil
     }
 
-    fmt.Println("core stdin")
+    stdinCore.status = false
+    stdinCore.channal = "mengshi"
 
-    return unsafe.Pointer(&stdinCore)
+    return unsafe.Pointer(stdinCore)
 }
 
 func coreStdinContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
+/*
     log := cycle.GetLog()
 
     core := (*AbstractStdinCore)(unsafe.Pointer(configure))
     if core.status == true {
         core.AbstractFile = NewFile(log)
     }
+    */
 
     return "0"
 }
@@ -68,7 +71,7 @@ var coreStdinCommands = []Command{
 
     { channal,
       MAIN_CONF|CONF_1MORE,
-      configureSetFlag,
+      configureSetString,
       0,
       unsafe.Offsetof(coreStdin.channal),
       nil },
@@ -78,7 +81,10 @@ var coreStdinCommands = []Command{
 
 func configureSetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
     p := config
+fmt.Println(p)
     fp := (*bool)(unsafe.Pointer(uintptr(*p) + command.Offset))
+    fmt.Println("meililiiiiiiiiiiiiiiiiiiii", *fp)
+    fmt.Println(command.Offset)
 
     flag := configure.GetValue()
     if flag == true {
@@ -102,6 +108,16 @@ func configureSetFlag(configure *AbstractConfigure, command *Command, cycle *Abs
     return ""
 }
 
+func configureSetString(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+    p := config
+    fp := (*string)(unsafe.Pointer(uintptr(*p) + command.Offset))
+    fmt.Printf("stringggggggggggggggggggggg: %s\n", *fp)
+    *fp = "hahahahha"
+    fmt.Println(command.Offset)
+
+    return "0"
+}
+
 var coreStdinModule = Module{
     MODULE_V1,
     CONTEXT_V1,
@@ -114,7 +130,9 @@ var coreStdinModule = Module{
 
 func coreStdinInit(cycle *AbstractCycle) int {
     fmt.Println("yyyyyyyyyyyyyyyyyyyyyyfdsafdsf")
-    fmt.Println(coreStdin.status)
+    c := cycle.GetContext(10)
+k := (*AbstractStdinCore)(unsafe.Pointer(uintptr(*c)))
+    fmt.Println(k.channal)
     return Ok
 }
 

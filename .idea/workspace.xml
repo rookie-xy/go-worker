@@ -3,20 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="853bc1fb-26fc-4ea0-a681-3f5931106827" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/configure/worker.yaml" afterPath="$PROJECT_DIR$/configure/worker.yaml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/channal_memory_module.go" afterPath="$PROJECT_DIR$/modules/channal_memory_module.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/http_location_module.go" afterPath="$PROJECT_DIR$/modules/http_location_module.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/input_http_module.go" afterPath="$PROJECT_DIR$/modules/input_http_module.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/input_stdin_module.go" afterPath="$PROJECT_DIR$/modules/input_stdin_module.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/memory_core_module.go" afterPath="$PROJECT_DIR$/modules/memory_core_module.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/output_stdout_module.go" afterPath="$PROJECT_DIR$/modules/output_stdout_module.go" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/stdin_core_module.go" afterPath="$PROJECT_DIR$/modules/stdin_core_module.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/types/channal.go" afterPath="$PROJECT_DIR$/types/channal.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/types/command.go" afterPath="$PROJECT_DIR$/types/command.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/types/configure.go" afterPath="$PROJECT_DIR$/types/configure.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/types/input.go" afterPath="$PROJECT_DIR$/types/input.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/types/output.go" afterPath="$PROJECT_DIR$/types/output.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/worker.go" afterPath="$PROJECT_DIR$/worker.go" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -48,7 +35,17 @@
         <entry file="file://$PROJECT_DIR$/modules/stdin_core_module.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="189">
-              <caret line="85" column="17" selection-start-line="85" selection-start-column="17" selection-end-line="85" selection-end-column="17" />
+              <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="print.go" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/local/go/src/fmt/print.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="517" column="0" selection-start-line="517" selection-start-column="0" selection-end-line="517" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -148,8 +145,8 @@
         <option value="$PROJECT_DIR$/modules/input_stdin_module.go" />
         <option value="$PROJECT_DIR$/worker.go" />
         <option value="$PROJECT_DIR$/types/configure.go" />
-        <option value="$PROJECT_DIR$/modules/stdin_core_module.go" />
         <option value="$PROJECT_DIR$/configure/worker.yaml" />
+        <option value="$PROJECT_DIR$/modules/stdin_core_module.go" />
       </list>
     </option>
   </component>
@@ -881,7 +878,7 @@
       <workItem from="1486619965800" duration="8505000" />
       <workItem from="1486776120199" duration="16473000" />
       <workItem from="1487474836748" duration="21956000" />
-      <workItem from="1487737973661" duration="25797000" />
+      <workItem from="1487737973661" duration="29843000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <created>1487744082353</created>
@@ -901,7 +898,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="167738000" />
+    <option name="totallyTimeSpent" value="171784000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1301" height="744" extended-state="6" />
@@ -984,13 +981,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="231">
           <caret line="782" column="33" selection-start-line="782" selection-start-column="33" selection-end-line="782" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/go/src/fmt/print.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="195" column="12" selection-start-line="195" selection-start-column="12" selection-end-line="195" selection-end-column="12" />
         </state>
       </provider>
     </entry>
@@ -1322,10 +1312,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/local/go/src/fmt/print.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="517" column="0" selection-start-line="517" selection-start-column="0" selection-end-line="517" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/modules/stdin_core_module.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
-          <caret line="85" column="17" selection-start-line="85" selection-start-column="17" selection-end-line="85" selection-end-column="17" />
+          <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
           <folding />
         </state>
       </provider>
