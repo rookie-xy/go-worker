@@ -10,7 +10,7 @@ import (
 )
 
 const (
-    STDOUT_MODULE = 0x0004
+    STDOUT_MODULE = 0x00114
 )
 
 var stdoutModule = String{ len("stdout_module"), "stdout_module" }
@@ -34,6 +34,15 @@ var outputStdoutCommands = []Command{
 }
 
 func stdoutBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != STDOUT_MODULE {
+            continue
+        }
+
+        module.CtxIndex++
+    }
+
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
         if module.Type != STDOUT_MODULE {

@@ -30,11 +30,29 @@ var coreMemoryContext = &AbstractContext{
 }
 
 func coreContextCreate(cycle *AbstractCycle) unsafe.Pointer {
-    return nil
+    memoryCore := NewMemoryCore()
+    if memoryCore == nil {
+        return nil
+    }
+
+    memoryCore.name = "memory test"
+    memoryCore.size = 1024
+
+    return unsafe.Pointer(memoryCore)
 }
 
-func coreContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
-    return ""
+func coreContextInit(cycle *AbstractCycle, context *unsafe.Pointer) string {
+    log := cycle.GetLog()
+    this := (*AbstractMemoryCore)(unsafe.Pointer(uintptr(*context)))
+    if this == nil {
+        log.Error("coreStdinContextInit error")
+        return "0"
+    }
+
+    fmt.Println(this.name)
+    fmt.Println(this.size)
+
+    return "0"
 }
 
 var (
@@ -47,7 +65,7 @@ var coreMemoryCommands = []Command{
 
     { name,
       MAIN_CONF|CONF_1MORE,
-      configureSetFlag,
+      configureSetString,
       0,
       unsafe.Offsetof(coreMemory.name),
       nil },
@@ -63,9 +81,21 @@ var coreMemoryCommands = []Command{
 }
 
 func configureSetNumber(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
-    value := configure.GetValue()
-    fmt.Println(value)
-    return ""
+
+    pointer := (*int)(unsafe.Pointer(uintptr(*config) + command.Offset))
+    if pointer == nil {
+        return "0"
+    }
+
+    number := configure.GetValue()
+    if number == nil {
+        return "0"
+    }
+
+    fmt.Printf("configureSetNumber: %d\n", *pointer)
+    *pointer = number.(int)
+
+    return "0"
 }
 
 var coreMemoryModule = Module{

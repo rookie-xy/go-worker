@@ -222,6 +222,7 @@ func (c *AbstractConfigure) Parse(cycle *AbstractCycle) int {
         }
 
     case map[interface{}]interface{}:
+        //fmt.Println(v)
         if c.doParse(v, cycle) == Error {
             return Error
         }
@@ -241,11 +242,18 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
         //	flag := Ok
         name := key.(string)
 
-        for m := 0; /*flag != Error && !found &&*/ Modules[m] != nil; m++ {
+        for m := 0; /*flag != Error && !found && */Modules[m] != nil; m++ {
             module := Modules[m]
-
+								    /*
             if module.Type != CONFIG_MODULE &&
                module.Type != c.moduleType {
+
+                continue;
+            }
+            */
+fmt.Printf("%s, %X, %X, %d\n", name, module.Type, c.moduleType, m)
+            if module.Type != c.moduleType {
+
                 continue;
             }
 
@@ -254,22 +262,25 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
                 continue;
             }
 
+            //fmt.Printf("%s, %X, %X, %d\n", name, module.Type, c.moduleType, m)
+
             for i := 0; commands[i].Name.Len != 0; i++ {
                 command := commands[i]
-
+//fmt.Println(name, command.Name.Data.(string))
                 if len(name) == command.Name.Len &&
                         name == command.Name.Data.(string) {
                 //				found = true;
 
                     //log.Error("directive \"%s\" is not allowed here", name)
                     //					flag = Error
-
                     context := cycle.GetContext(module.Index)
-                    fmt.Printf("context: %s, %d\n", name, module.Index)
+
+                    //fmt.Printf("context: %s, %d\n", name, module.Index)
 
                     c.value = value
                     command.Set(c, &command, cycle, context)
-                    break;
+                    //break;
+                    continue
                 }
 
                 if value == nil {

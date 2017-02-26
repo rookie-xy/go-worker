@@ -41,22 +41,22 @@ func coreStdinContextCreate(cycle *AbstractCycle) unsafe.Pointer {
     return unsafe.Pointer(stdinCore)
 }
 
-func coreStdinContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
-/*
+func coreStdinContextInit(cycle *AbstractCycle, context *unsafe.Pointer) string {
     log := cycle.GetLog()
-
-    core := (*AbstractStdinCore)(unsafe.Pointer(configure))
-    if core.status == true {
-        core.AbstractFile = NewFile(log)
+    this := (*AbstractStdinCore)(unsafe.Pointer(uintptr(*context)))
+    if this == nil {
+        log.Error("coreStdinContextInit error")
+        return "0"
     }
-    */
+
+    fmt.Println(this.channal)
 
     return "0"
 }
 
 var (
     status = String{ len("status"), "status" }
-    channal = String{ len("channal"), "channal" }
+    channal = String{ len("push"), "push" }
     coreStdin AbstractStdinCore
 )
 
@@ -80,21 +80,21 @@ var coreStdinCommands = []Command{
 }
 
 func configureSetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
-    p := config
-fmt.Println(p)
-    fp := (*bool)(unsafe.Pointer(uintptr(*p) + command.Offset))
-    fmt.Println("meililiiiiiiiiiiiiiiiiiiii", *fp)
-    fmt.Println(command.Offset)
+    if config == nil {
+        return "0"
+    }
+
+    pointer := (*bool)(unsafe.Pointer(uintptr(*config) + command.Offset))
+    if pointer == nil {
+        return "0"
+    }
 
     flag := configure.GetValue()
     if flag == true {
-        fmt.Println("mengshiiiiiiiiiiiiiiiii")
-        *fp = true
+        *pointer = true
     } else if flag == false {
-        fmt.Println("zhangyueeeeeeeeeeeeeeeeeeee")
-        *fp = false
+        *pointer = false
     } else {
-        fmt.Println("eeeeeeeeeeeeeeeeeeeeeeee")
         return "-1"
     }
 
@@ -109,11 +109,18 @@ fmt.Println(p)
 }
 
 func configureSetString(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
-    p := config
-    fp := (*string)(unsafe.Pointer(uintptr(*p) + command.Offset))
-    fmt.Printf("stringggggggggggggggggggggg: %s\n", *fp)
-    *fp = "hahahahha"
-    fmt.Println(command.Offset)
+    pointer := (*string)(unsafe.Pointer(uintptr(*config) + command.Offset))
+    if pointer == nil {
+        return "0"
+    }
+
+    strings := configure.GetValue()
+    if strings == nil {
+        return "0"
+    }
+
+    fmt.Printf("configureSetString: %s\n", *pointer)
+    *pointer = strings.(string)
 
     return "0"
 }
@@ -129,10 +136,20 @@ var coreStdinModule = Module{
 }
 
 func coreStdinInit(cycle *AbstractCycle) int {
-    fmt.Println("yyyyyyyyyyyyyyyyyyyyyyfdsafdsf")
-    c := cycle.GetContext(10)
-k := (*AbstractStdinCore)(unsafe.Pointer(uintptr(*c)))
-    fmt.Println(k.channal)
+    /*
+    context := cycle.GetContext(10)
+    if context == nil {
+        return Error
+    }
+
+    this := (*AbstractStdinCore)(unsafe.Pointer(uintptr(*context)))
+    if this == nil {
+        return Error
+    }
+
+    fmt.Println(this.channal)
+    */
+
     return Ok
 }
 

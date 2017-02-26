@@ -40,6 +40,15 @@ func memoryBlock(configure *AbstractConfigure, command *Command, cycle *Abstract
             continue
         }
 
+        module.CtxIndex++
+    }
+
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != MEMORY_MODULE {
+            continue
+        }
+
         context := (*AbstractContext)(unsafe.Pointer(module.Context))
         if context == nil {
             continue

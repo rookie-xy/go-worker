@@ -5,7 +5,15 @@
 inputs:
     - stdin:
           status: on
-          channal: test
+          push: input_channal_name_1
+
+    - stdin:
+          status: off
+          push: input_channal_name_2
+
+    - stdin:
+          status: on
+          push: input_channal_name_3
 
 #    - http:
 #          listen: 127.0.0.1:8900
@@ -13,12 +21,16 @@ inputs:
 #              document: /data/service/html
 #              timeout: 10
 
-#channals:
-#    - memory:
-#          name: test
-#          size: 2048
+channals:
+    - memory:
+          name: test_memory_1
+          size: 2048
 
-#outputs:
-#    - stdout:
-#          status: on
-#          channal: test
+    - memory:
+          name: test_memory_2
+          size: 4096
+
+outputs:
+    - stdout:
+          state: on
+          pull: output_channal_name
