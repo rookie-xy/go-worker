@@ -12,12 +12,13 @@ import (
 type AbstractConfigure struct {
     *AbstractLog
     *AbstractFile
-     resource   string
-     fileName   string
-     commandType  int64
+
+     resource     string
+     fileName     string
+     commandType  int
      moduleType   int64
-     value         interface{}
-     configure  Configure
+     value        interface{}
+     configure    Configure
 }
 
 type Configure interface {
@@ -171,7 +172,7 @@ func (c *AbstractConfigure) SetModuleType(moduleType int64) int {
     return Ok
 }
 
-func (c *AbstractConfigure) SetCommandType(commandType int64) int {
+func (c *AbstractConfigure) SetCommandType(commandType int) int {
     if commandType <= 0 {
         return Error
     }
@@ -237,12 +238,14 @@ func (c *AbstractConfigure) Parse(cycle *AbstractCycle) int {
 func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cycle *AbstractCycle) int {
     log := c.AbstractLog.Get()
 
-    for key, value := range materialized {
-        //	found := false
-        //	flag := Ok
-        name := key.(string)
+    flag := Ok
 
-        for m := 0; /*flag != Error && !found && */Modules[m] != nil; m++ {
+    for key, value := range materialized {
+
+        name := key.(string)
+        found := false
+
+        for m := 0; flag != Error && !found && Modules[m] != nil; m++ {
             module := Modules[m]
 								    /*
             if module.Type != CONFIG_MODULE &&
@@ -251,11 +254,6 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
                 continue;
             }
             */
-fmt.Printf("%s, %X, %X, %d\n", name, module.Type, c.moduleType, m)
-            if module.Type != c.moduleType {
-
-                continue;
-            }
 
             commands := module.Commands;
             if commands == nil {
@@ -265,11 +263,20 @@ fmt.Printf("%s, %X, %X, %d\n", name, module.Type, c.moduleType, m)
             //fmt.Printf("%s, %X, %X, %d\n", name, module.Type, c.moduleType, m)
 
             for i := 0; commands[i].Name.Len != 0; i++ {
+
                 command := commands[i]
-//fmt.Println(name, command.Name.Data.(string))
+
                 if len(name) == command.Name.Len &&
                         name == command.Name.Data.(string) {
-                //				found = true;
+
+                				found = true;
+
+                    if command.Type & c.commandType == 0 {
+                        log.Error("error")
+
+                        flag = Error
+                        break
+                    }
 
                     //log.Error("directive \"%s\" is not allowed here", name)
                     //					flag = Error
@@ -289,6 +296,21 @@ fmt.Printf("%s, %X, %X, %d\n", name, module.Type, c.moduleType, m)
                 }
             }
         }
+
+        if !found {
+            log.Error("unkown")
+
+            flag = Error
+            break
+        }
+
+        if flag == Error {
+            break
+        }
+    }
+
+    if flag == Error {
+        return Error
     }
 
     return Ok

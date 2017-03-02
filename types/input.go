@@ -31,7 +31,7 @@ var inputs = String{ len("inputs"), "inputs" }
 var inputCommands = []Command{
 
     { inputs,
-      MAIN_CONF|CONF_BLOCK,
+      CORE_CONFIG|CONFIG_BLOCK,
       inputsBlock,
       0,
       0,

@@ -12,6 +12,7 @@ import (
 
 const (
     STDIN_MODULE = 0x0002
+    STDIN_CONFIG = 0x0000111
 )
 
 var stdinModule = String{ len("stdin_module"), "stdin_module" }
@@ -25,7 +26,7 @@ var stdin = String{ len("stdin"), "stdin" }
 var inputStdinCommands = []Command{
 
     { stdin,
-      MAIN_CONF|CONF_1MORE,
+      USER_CONFIG|CONFIG_BLOCK,
       stdinBlock,
       0,
       0,

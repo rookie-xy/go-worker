@@ -63,14 +63,14 @@ var (
 var coreStdinCommands = []Command{
 
     { status,
-      MAIN_CONF|CONF_1MORE,
+      STDIN_CONFIG|CONFIG_FLAG,
       configureSetFlag,
       0,
       unsafe.Offsetof(coreStdin.status),
       nil },
 
     { channal,
-      MAIN_CONF|CONF_1MORE,
+      STDIN_CONFIG|CONFIG_ANY,
       configureSetString,
       0,
       unsafe.Offsetof(coreStdin.channal),

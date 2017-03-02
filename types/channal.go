@@ -29,7 +29,7 @@ var channals = String{ len("channals"), "channals" }
 var channalCommands = []Command{
 
     { channals,
-      MAIN_CONF|CONF_BLOCK,
+      MAIN_CONFIG|CONFIG_BLOCK,
       channalsBlock,
       0,
       0,
