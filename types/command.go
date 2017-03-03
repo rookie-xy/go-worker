@@ -14,7 +14,7 @@ const (
     CONFIG_2MORE       = 0x00001000
     CONFIG_BLOCK       = 0x00000100
 
-    CORE_CONFIG  =   0x01000000
+    MAIN_CONFIG  =   0x01000000
     USER_CONFIG  =   0x0F000000
 )
 

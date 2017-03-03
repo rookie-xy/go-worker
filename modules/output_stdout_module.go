@@ -11,6 +11,7 @@ import (
 
 const (
     STDOUT_MODULE = 0x00114
+    STDOUT_CONFIG = 0X000111
 )
 
 var stdoutModule = String{ len("stdout_module"), "stdout_module" }
@@ -24,7 +25,7 @@ var stdout = String{ len("stdout"), "stdout" }
 var outputStdoutCommands = []Command{
 
     { stdout,
-      MAIN_CONF|CONF_1MORE,
+      USER_CONFIG|CONFIG_BLOCK,
       stdoutBlock,
       0,
       0,
@@ -64,6 +65,10 @@ func stdoutBlock(configure *AbstractConfigure, command *Command, cycle *Abstract
     }
 
     if configure.SetModuleType(STDOUT_MODULE) == Error {
+        return "0"
+    }
+
+    if configure.SetCommandType(STDOUT_CONFIG) == Error {
         return "0"
     }
 

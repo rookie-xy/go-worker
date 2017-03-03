@@ -63,14 +63,14 @@ var (
 var coreStdoutCommands = []Command{
 
     { coreStatus,
-      MAIN_CONF|CONF_1MORE,
+      STDOUT_CONFIG|CONFIG_FLAG,
       configureSetFlag,
       0,
       unsafe.Offsetof(coreStdout.status),
       nil },
 
     { coreChannal,
-      MAIN_CONF|CONF_1MORE,
+      STDOUT_CONFIG|CONFIG_FLAG,
       configureSetString,
       0,
       unsafe.Offsetof(coreStdout.channal),

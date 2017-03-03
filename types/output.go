@@ -29,7 +29,7 @@ var outputs = String{ len("outputs"), "outputs" }
 var outputCommands = []Command{
 
     { outputs,
-      MAIN_CONF|CONF_BLOCK,
+      MAIN_CONFIG|CONFIG_BLOCK,
       outputsBlock,
       0,
       0,

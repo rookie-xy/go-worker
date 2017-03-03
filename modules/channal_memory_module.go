@@ -11,6 +11,7 @@ import (
 
 const (
     MEMORY_MODULE = 0x0003
+    MEMORY_CONFIG = 0x00055
 )
 
 var memoryModule = String{ len("memory_module"), "memory_module" }
@@ -24,7 +25,7 @@ var	memory = String{ len("memory"), "memory" }
 var channalMemoryCommands = []Command{
 
     { memory,
-      MAIN_CONF|CONF_1MORE,
+      USER_CONFIG|CONFIG_BLOCK,
       memoryBlock,
       0,
       0,
@@ -64,6 +65,10 @@ func memoryBlock(configure *AbstractConfigure, command *Command, cycle *Abstract
     }
 
     if configure.SetModuleType(MEMORY_MODULE) == Error {
+        return "0"
+    }
+
+    if configure.SetCommandType(MEMORY_CONFIG) == Error {
         return "0"
     }
 

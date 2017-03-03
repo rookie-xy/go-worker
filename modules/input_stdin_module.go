@@ -69,6 +69,10 @@ func stdinBlock(configure *AbstractConfigure, command *Command, cycle *AbstractC
         return "0"
     }
 
+    if configure.SetCommandType(STDIN_CONFIG) == Error {
+        return "0"
+    }
+
     if configure.Parse(cycle) == Error {
         return "0"
     }
