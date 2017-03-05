@@ -6,13 +6,13 @@ package modules
 
 import (
       "unsafe"
+      "fmt"
     . "worker/types"
-"fmt"
 )
 
 type AbstractLocationHttp struct {
-				 document string
-     bufsize  int
+    document string
+    bufsize  int
 }
 
 func NewLocationHttp() *AbstractLocationHttp {
