@@ -6,7 +6,7 @@ package modules
 
 import (
       "unsafe"
-      "fmt"
+//      "fmt"
     . "worker/types"
 )
 
@@ -45,14 +45,15 @@ func httpLocationContextInit(cycle *AbstractCycle, context *unsafe.Pointer) stri
         return "0"
     }
 
-    fmt.Println(this.document)
+    httpLocation = *this
 
     return "0"
 }
 
 var (
     document = String{ len("document"), "document" }
-    bufsize = String{ len("bufsize"), "bufsize" }
+    bufsize  = String{ len("bufsize"), "bufsize" }
+
     httpLocation AbstractLocationHttp
 )
 
@@ -80,7 +81,7 @@ var httpLocationModule = Module{
     CONTEXT_V1,
     unsafe.Pointer(httpLocationContext),
     httpLocationCommands,
-    HTTP_MODULE,
+    LOCATION_MODULE,
     nil,
     nil,
 }

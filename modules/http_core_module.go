@@ -11,7 +11,8 @@ import (
 )
 
 const (
-    LOCATION_CONFIG = 0x00010001
+    LOCATION_MODULE = 0x0005
+    LOCATION_CONFIG = 0x00050000
 )
 
 type AbstractHttpCore struct {
@@ -21,7 +22,6 @@ type AbstractHttpCore struct {
      listen    string
      timeout   int
      location  *AbstractLocationHttp
-     input     Input
 }
 
 func NewHttpCore() *AbstractHttpCore {
@@ -50,13 +50,14 @@ func coreHttpContextCreate(cycle *AbstractCycle) unsafe.Pointer {
 
 func coreHttpContextInit(cycle *AbstractCycle, context *unsafe.Pointer) string {
     log := cycle.GetLog()
+
     this := (*AbstractHttpCore)(unsafe.Pointer(uintptr(*context)))
     if this == nil {
-        log.Error("coreStdinContextInit error")
+        log.Error("error")
         return "0"
     }
 
-    fmt.Println(this.listen)
+    coreHttp = *this
 
     return "0"
 }
@@ -98,7 +99,7 @@ var coreHttpCommands = []Command{
 func locationBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
-        if module.Type != HTTP_MODULE {
+        if module.Type != LOCATION_MODULE {
             continue
         }
 
@@ -107,7 +108,7 @@ func locationBlock(configure *AbstractConfigure, command *Command, cycle *Abstra
 
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
-        if module.Type != HTTP_MODULE {
+        if module.Type != LOCATION_MODULE {
             continue
         }
 
@@ -124,7 +125,7 @@ func locationBlock(configure *AbstractConfigure, command *Command, cycle *Abstra
         }
     }
 
-    if configure.SetModuleType(HTTP_MODULE) == Error {
+    if configure.SetModuleType(LOCATION_MODULE) == Error {
         return "0"
     }
 
@@ -138,7 +139,7 @@ func locationBlock(configure *AbstractConfigure, command *Command, cycle *Abstra
 
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
-        if module.Type != HTTP_MODULE {
+        if module.Type != LOCATION_MODULE {
             continue
         }
 
@@ -173,6 +174,16 @@ var coreHttpModule = Module{
 }
 
 func coreHttpInit(cycle *AbstractCycle) int {
+    fmt.Println(coreHttp.listen)
+    fmt.Println(coreHttp.timeout)
+
+    if coreHttp.location == nil {
+        coreHttp.location = &httpLocation
+    }
+
+    fmt.Println(coreHttp.location.document)
+    fmt.Println(coreHttp.location.bufsize)
+
     return Ok
 }
 

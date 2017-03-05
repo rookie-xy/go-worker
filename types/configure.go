@@ -293,7 +293,6 @@ func (c *AbstractConfigure) Parse(cycle *AbstractCycle) int {
         }
 
     case map[interface{}]interface{}:
-        //fmt.Println(v)
         if c.doParse(v, cycle) == Error {
             return Error
         }
@@ -318,7 +317,7 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
 
         name := key.(string)
         found := false
-        //fmt.Println(name)
+
         for m := 0; flag != Error && !found && Modules[m] != nil; m++ {
             module := Modules[m]
 								    /*
@@ -348,25 +347,17 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
                     if command.Type & c.commandType == 0 &&
                        command.Type & MAIN_CONFIG == 0 {
 
-                        //fmt.Printf("mmmmmmmmmmmmmmmerror :%s, %x, %x\n", name, command.Type, c.commandType)
-
                         //flag = Error
 																				    found = false
                         break
-                    }/* else {
-                        fmt.Printf("ok: %s\n", name)
-                    }*/
+                    }
 
                     //log.Error("directive \"%s\" is not allowed here", name)
                     //					flag = Error
                     context := cycle.GetContext(module.Index)
 
-                    //fmt.Printf("context: %s, %d\n", name, module.Index)
-
                     c.value = value
                     command.Set(c, &command, cycle, context)
-                    //break;
-                    continue
                 }
             }
         }
