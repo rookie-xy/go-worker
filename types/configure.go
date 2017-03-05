@@ -7,6 +7,12 @@ package types
 import (
     "fmt"
     "gopkg.in/yaml.v2"
+    "unsafe"
+)
+
+var (
+    ConfigOk    =  0
+    ConfigError = -1
 )
 
 type AbstractConfigure struct {
@@ -186,6 +192,70 @@ func (c *AbstractConfigure) GetValue() interface{} {
    return c.value
 }
 
+func SetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+    if config == nil {
+        return "0"
+    }
+
+    pointer := (*bool)(unsafe.Pointer(uintptr(*config) + command.Offset))
+    if pointer == nil {
+        return "0"
+    }
+
+    flag := configure.GetValue()
+    if flag == true {
+        *pointer = true
+    } else if flag == false {
+        *pointer = false
+    } else {
+        return "-1"
+    }
+
+    /*
+    if command.Post != nil {
+        post := command.Post.(DvrConfPostType);
+        post.Handler(cf, post, *p);
+    }
+    */
+
+    return ""
+}
+
+func SetString(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+    pointer := (*string)(unsafe.Pointer(uintptr(*config) + command.Offset))
+    if pointer == nil {
+        return "0"
+    }
+
+    strings := configure.GetValue()
+    if strings == nil {
+        return "0"
+    }
+
+    fmt.Printf("configureSetString: %s\n", *pointer)
+    *pointer = strings.(string)
+
+    return "0"
+}
+
+func SetNumber(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+
+    pointer := (*int)(unsafe.Pointer(uintptr(*config) + command.Offset))
+    if pointer == nil {
+        return "0"
+    }
+
+    number := configure.GetValue()
+    if number == nil {
+        return "0"
+    }
+
+    fmt.Printf("configureSetNumber: %d\n", *pointer)
+    *pointer = number.(int)
+
+    return "0"
+}
+
 func (c *AbstractConfigure) Parse(cycle *AbstractCycle) int {
     log := c.AbstractLog.Get()
 
@@ -242,9 +312,13 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
 
     for key, value := range materialized {
 
+        if key != nil && value != nil {
+            flag = Ok
+        }
+
         name := key.(string)
         found := false
-
+        //fmt.Println(name)
         for m := 0; flag != Error && !found && Modules[m] != nil; m++ {
             module := Modules[m]
 								    /*
@@ -271,12 +345,17 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
 
                 				found = true;
 
-                    if command.Type & c.commandType == 0 {
-                        log.Error("error")
+                    if command.Type & c.commandType == 0 &&
+                       command.Type & MAIN_CONFIG == 0 {
 
-                        flag = Error
+                        //fmt.Printf("mmmmmmmmmmmmmmmerror :%s, %x, %x\n", name, command.Type, c.commandType)
+
+                        //flag = Error
+																				    found = false
                         break
-                    }
+                    }/* else {
+                        fmt.Printf("ok: %s\n", name)
+                    }*/
 
                     //log.Error("directive \"%s\" is not allowed here", name)
                     //					flag = Error
@@ -288,11 +367,6 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
                     command.Set(c, &command, cycle, context)
                     //break;
                     continue
-                }
-
-                if value == nil {
-                    log.Error("lllll: %d\n", 10)
-                    return Error
                 }
             }
         }
@@ -310,10 +384,10 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
     }
 
     if flag == Error {
-        return Error
+        return ConfigError
     }
 
-    return Ok
+    return ConfigOk
 }
 
 func (c *AbstractConfigure) ReadToken() int {

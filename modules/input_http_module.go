@@ -5,95 +5,112 @@
 package modules
 
 import (
-	"unsafe"
-	"fmt"
-	. "worker/types"
+      "unsafe"
+    . "worker/types"
 )
 
 const (
     HTTP_MODULE = 0x0001
+    HTTP_CONFIG = 0x00010000
 )
 
-type AbstractHttpInput struct {
-	*AbstractCycle
-	*AbstractFile
-
-	listen  string
-	location map[string]interface{}
-	input    Input
-}
-
-func NewHttpInput() *AbstractHttpInput {
-	return &AbstractHttpInput{}
+var httpModule = String{ len("http_module"), "http_module" }
+var inputHttpContext = &AbstractContext{
+    httpModule,
+    nil,
+    nil,
 }
 
 var http = String{ len("http"), "http" }
-var inputHttpContext = &AbstractContext{
-	http,
-	inputHttpContextCreate,
-	inputHttpContextInit,
-}
-
-func inputHttpContextCreate(cycle *AbstractCycle) unsafe.Pointer {
-	return nil
-}
-
-func inputHttpContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
-	return "0"
-}
-
-var (
-	listen = String{ len("listen"), "listen" }
-	location = String{ len("location"), "location" }
-	inputHttp AbstractHttpInput
-)
-
 var inputHttpCommands = []Command{
 
-	{ listen,
-      MAIN_CONF|CONF_1MORE,
-	  configureSetFlag,
-	  0,
-	  unsafe.Offsetof(inputHttp.listen),
-	  nil },
+    { http,
+      USER_CONFIG|CONFIG_BLOCK,
+      httpBlock,
+      0,
+      0,
+      nil },
 
-	{ location,
-      MAIN_CONF|CONF_1MORE,
-	  locationBlock,
-	  0,
-	  unsafe.Offsetof(inputHttp.location),
-	  nil },
-
-	NilCommand,
+    NilCommand,
 }
 
-func locationBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
-	return ""
+func httpBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != HTTP_MODULE {
+            continue
+        }
+
+        module.CtxIndex++
+    }
+
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != HTTP_MODULE {
+            continue
+        }
+
+        context := (*AbstractContext)(unsafe.Pointer(module.Context))
+        if context == nil {
+            continue
+        }
+
+        if handle := context.Create; handle != nil {
+            this := handle(cycle)
+            if cycle.SetContext(module.Index, &this) == Error {
+                return "0"
+            }
+        }
+    }
+
+    if configure.SetModuleType(HTTP_MODULE) == Error {
+        return "0"
+    }
+
+    if configure.SetCommandType(HTTP_CONFIG) == Error {
+        return "0"
+    }
+
+    if configure.Parse(cycle) == Error {
+        return "0"
+    }
+
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != HTTP_MODULE {
+            continue
+        }
+
+        this := (*AbstractContext)(unsafe.Pointer(module.Context))
+        if this == nil {
+            continue
+        }
+
+        context := cycle.GetContext(module.Index)
+        if context == nil {
+            continue
+        }
+
+        if init := this.Init; init != nil {
+            if init(cycle, context) == "-1" {
+                return "0"
+            }
+        }
+    }
+
+    return "0"
 }
 
 var inputHttpModule = Module{
-	MODULE_V1,
-	CONTEXT_V1,
-	unsafe.Pointer(inputHttpContext),
-	inputHttpCommands,
-	INPUT_MODULE,
-	inputHttpInit,
-	inputHttpMain,
-}
-
-func inputHttpInit(cycle *AbstractCycle) int {
-	return Ok
-}
-
-func inputHttpMain(cycle *AbstractCycle) int {
-
-	for ;; {
-		fmt.Println("aaaaaaaaaaa")
-	}
-
-	return Ok
+    MODULE_V1,
+    CONTEXT_V1,
+    unsafe.Pointer(inputHttpContext),
+    inputHttpCommands,
+    INPUT_MODULE,
+    nil,
+    nil,
 }
 
 func init() {
-	Modules = append(Modules, &inputHttpModule)
+    Modules = append(Modules, &inputHttpModule)
 }

@@ -5,78 +5,86 @@
 package modules
 
 import (
-	"unsafe"
-	"fmt"
-	. "worker/types"
+      "unsafe"
+    . "worker/types"
+"fmt"
 )
 
 type AbstractLocationHttp struct {
-    *AbstractHttpInput
-	document string
+				 document string
+     bufsize  int
 }
 
 func NewLocationHttp() *AbstractLocationHttp {
-	return &AbstractLocationHttp{}
+    return &AbstractLocationHttp{}
 }
 
 var httpLocationContext = &AbstractContext{
-	location,
-	httpLocationContextCreate,
-	httpLocationContextInit,
+    location,
+    httpLocationContextCreate,
+    httpLocationContextInit,
 }
 
 func httpLocationContextCreate(cycle *AbstractCycle) unsafe.Pointer {
-	return nil
+    httpLocation := NewLocationHttp()
+    if httpLocation == nil {
+        return nil
+    }
+
+    httpLocation.document = "/data/service/http/mengshi"
+    httpLocation.bufsize = 256
+
+    return unsafe.Pointer(httpLocation)
 }
 
-func httpLocationContextInit(cycle *AbstractCycle, configure *unsafe.Pointer) string {
-	return "0"
+func httpLocationContextInit(cycle *AbstractCycle, context *unsafe.Pointer) string {
+    log := cycle.GetLog()
+    this := (*AbstractLocationHttp)(unsafe.Pointer(uintptr(*context)))
+    if this == nil {
+        log.Error("coreStdinContextInit error")
+        return "0"
+    }
+
+    fmt.Println(this.document)
+
+    return "0"
 }
 
 var (
-	document = String{ len("document"), "document" }
-	httpLocation AbstractLocationHttp
+    document = String{ len("document"), "document" }
+    bufsize = String{ len("bufsize"), "bufsize" }
+    httpLocation AbstractLocationHttp
 )
 
 var httpLocationCommands = []Command{
 
-	{ document,
-      MAIN_CONF|CONF_1MORE,
-	  httpLocationSet,
-	  0,
-	  unsafe.Offsetof(httpLocation.document),
-	  nil },
+    { document,
+      LOCATION_CONFIG,
+      SetString,
+      0,
+      unsafe.Offsetof(httpLocation.document),
+      nil },
 
-	NilCommand,
-}
+    { bufsize,
+      LOCATION_CONFIG,
+      SetNumber,
+      0,
+      unsafe.Offsetof(httpLocation.bufsize),
+      nil },
 
-func httpLocationSet(configure *AbstractConfigure, command *Command, cycle *AbstractCycle,config *unsafe.Pointer ) string {
-	return ""
+    NilCommand,
 }
 
 var httpLocationModule = Module{
-	MODULE_V1,
-	CONTEXT_V1,
-	unsafe.Pointer(httpLocationContext),
-	httpLocationCommands,
-	HTTP_MODULE,
-	httpLocationInit,
-	httpLocationMain,
-}
-
-func httpLocationInit(cycle *AbstractCycle) int {
-	return Ok
-}
-
-func httpLocationMain(cycle *AbstractCycle) int {
-
-	for ;; {
-		fmt.Println("aaaaaaaaaaa")
-	}
-
-	return Ok
+    MODULE_V1,
+    CONTEXT_V1,
+    unsafe.Pointer(httpLocationContext),
+    httpLocationCommands,
+    HTTP_MODULE,
+    nil,
+    nil,
 }
 
 func init() {
-	Modules = append(Modules, &httpLocationModule)
+    Modules = append(Modules, &httpLocationModule)
 }

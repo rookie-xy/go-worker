@@ -11,7 +11,7 @@ import (
 
 const (
     MEMORY_MODULE = 0x0003
-    MEMORY_CONFIG = 0x00055
+    MEMORY_CONFIG = 0x00030000
 )
 
 var memoryModule = String{ len("memory_module"), "memory_module" }

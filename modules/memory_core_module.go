@@ -64,38 +64,20 @@ var (
 var coreMemoryCommands = []Command{
 
     { name,
-      MEMORY_CONFIG|CONFIG_FLAG,
-      configureSetString,
+      MEMORY_CONFIG,
+      SetString,
       0,
       unsafe.Offsetof(coreMemory.name),
       nil },
 
     { size,
-      MEMORY_CONFIG|CONFIG_FLAG,
-      configureSetNumber,
+      MEMORY_CONFIG,
+      SetNumber,
       0,
       unsafe.Offsetof(coreMemory.size),
       nil },
 
     NilCommand,
-}
-
-func configureSetNumber(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
-
-    pointer := (*int)(unsafe.Pointer(uintptr(*config) + command.Offset))
-    if pointer == nil {
-        return "0"
-    }
-
-    number := configure.GetValue()
-    if number == nil {
-        return "0"
-    }
-
-    fmt.Printf("configureSetNumber: %d\n", *pointer)
-    *pointer = number.(int)
-
-    return "0"
 }
 
 var coreMemoryModule = Module{

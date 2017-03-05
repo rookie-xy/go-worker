@@ -5,21 +5,23 @@
 inputs:
     - stdin:
           status: on
-          push: input_channal_name_1
+          channal: input_channal_name_1
 
     - stdin:
           status: off
-          push: input_channal_name_2
+          channal: input_channal_name_2
 
     - stdin:
           status: on
-          push: input_channal_name_3
+          channal: input_channal_name_3
 
-#    - http:
-#          listen: 127.0.0.1:8900
-#          location:
-#              document: /data/service/html
-#              timeout: 10
+    - http:
+          listen: 127.0.0.1:8900
+          timeout: 10
+
+          location:
+              document: /data/service/html
+              bufsize: 2048
 
 channals:
     - memory:
@@ -32,5 +34,13 @@ channals:
 
 outputs:
     - stdout:
-          state: on
-          pull: output_channal_name
+          status: on
+          channal: output_channal_name_1
+
+    - stdout:
+          status: on
+          channal: output_channal_name_2
+
+    - stdout:
+          status: on
+          channal: output_channal_name_3

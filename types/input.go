@@ -64,6 +64,10 @@ func inputsBlock(configure *AbstractConfigure, command *Command, cycle *Abstract
         return "0"
     }
 
+    if configure.SetCommandType(INPUT_CONFIG) == Error {
+        return "0"
+    }
+
     if configure.Parse(cycle) == Error {
         return "0"
     }

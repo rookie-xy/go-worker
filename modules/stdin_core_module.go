@@ -56,73 +56,27 @@ func coreStdinContextInit(cycle *AbstractCycle, context *unsafe.Pointer) string 
 
 var (
     status = String{ len("status"), "status" }
-    channal = String{ len("push"), "push" }
+    channal = String{ len("channal"), "channal" }
     coreStdin AbstractStdinCore
 )
 
 var coreStdinCommands = []Command{
 
     { status,
-      STDIN_CONFIG|CONFIG_FLAG,
-      configureSetFlag,
+      STDIN_CONFIG,
+      SetFlag,
       0,
       unsafe.Offsetof(coreStdin.status),
       nil },
 
     { channal,
-      STDIN_CONFIG|CONFIG_ANY,
-      configureSetString,
+      STDIN_CONFIG,
+      SetString,
       0,
       unsafe.Offsetof(coreStdin.channal),
       nil },
 
     NilCommand,
-}
-
-func configureSetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
-    if config == nil {
-        return "0"
-    }
-
-    pointer := (*bool)(unsafe.Pointer(uintptr(*config) + command.Offset))
-    if pointer == nil {
-        return "0"
-    }
-
-    flag := configure.GetValue()
-    if flag == true {
-        *pointer = true
-    } else if flag == false {
-        *pointer = false
-    } else {
-        return "-1"
-    }
-
-    /*
-    if command.Post != nil {
-        post := command.Post.(DvrConfPostType);
-        post.Handler(cf, post, *p);
-    }
-    */
-
-    return ""
-}
-
-func configureSetString(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
-    pointer := (*string)(unsafe.Pointer(uintptr(*config) + command.Offset))
-    if pointer == nil {
-        return "0"
-    }
-
-    strings := configure.GetValue()
-    if strings == nil {
-        return "0"
-    }
-
-    fmt.Printf("configureSetString: %s\n", *pointer)
-    *pointer = strings.(string)
-
-    return "0"
 }
 
 var coreStdinModule = Module{
