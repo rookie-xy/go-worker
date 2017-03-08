@@ -12,7 +12,10 @@ type AbstractChannal struct {
      channal  Channal
 }
 
-type Channal interface {}
+type Channal interface {
+    push()
+    pull()
+}
 
 func NewChannal() *AbstractChannal {
     return &AbstractChannal{}

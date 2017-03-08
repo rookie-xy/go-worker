@@ -10,7 +10,12 @@ import (
       "strings"
 
     . "worker/types"
-    . "worker/modules"
+
+    _ "github.com/rookie-xy/worker-input-modules/stdin_modules/src"
+    _ "github.com/rookie-xy/worker-input-modules/http_modules/src"
+    _ "github.com/rookie-xy/worker-channel-modules/memory_modules/src"
+    _ "github.com/rookie-xy/worker-output-modules/stdout_modules/src"
+
     "fmt"
 )
 
@@ -249,7 +254,7 @@ func main() {
         Modules[n].Index = uint(n)
     }
 
-    fmt.Println(len(Modules), MODULE_VER)
+    //fmt.Println(len(Modules), MODULE_VER)
 
     if n <= 0 {
         log.Info("no module to load")
