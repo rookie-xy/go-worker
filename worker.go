@@ -9,14 +9,12 @@ import (
       "unsafe"
       "strings"
 
-    . "worker/types"
+    . "github.com/rookie-xy/worker/types"
 
     _ "github.com/rookie-xy/worker-input-modules/stdin_modules/src"
     _ "github.com/rookie-xy/worker-input-modules/http_modules/src"
     _ "github.com/rookie-xy/worker-channel-modules/memory_modules/src"
     _ "github.com/rookie-xy/worker-output-modules/stdout_modules/src"
-
-    "fmt"
 )
 
 type worker struct {
@@ -156,7 +154,7 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
         if handle := context.Create; handle != nil {
             this := handle(cycle)
 
-            fmt.Println(module.Index)
+            //fmt.Println(module.Index)
             if cycle.SetContext(module.Index, &this) == Error {
                 return Error
             }

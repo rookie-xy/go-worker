@@ -232,7 +232,7 @@ func SetString(configure *AbstractConfigure, command *Command, cycle *AbstractCy
         return "0"
     }
 
-    fmt.Printf("configureSetString: %s\n", *pointer)
+//    fmt.Printf("configureSetString: %s\n", *pointer)
     *pointer = strings.(string)
 
     return "0"
@@ -250,7 +250,7 @@ func SetNumber(configure *AbstractConfigure, command *Command, cycle *AbstractCy
         return "0"
     }
 
-    fmt.Printf("configureSetNumber: %d\n", *pointer)
+//    fmt.Printf("configureSetNumber: %d\n", *pointer)
     *pointer = number.(int)
 
     return "0"
