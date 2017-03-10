@@ -1,8 +1,8 @@
-package modules
-
 /*
  * Copyright (C) 2016 Meng Shi
  */
+
+package modules
 
 import (
       "unsafe"
@@ -50,6 +50,10 @@ func channalsBlock(configure *AbstractConfigure, command *Command, cycle *Abstra
     }
 
     if configure.SetModuleType(CHANNAL_MODULE) == Error {
+        return "0"
+    }
+
+    if configure.SetCommandType(CHANNAL_CONFIG) == Error {
         return "0"
     }
 

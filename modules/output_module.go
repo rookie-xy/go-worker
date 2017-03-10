@@ -53,6 +53,10 @@ func outputsBlock(configure *AbstractConfigure, command *Command, cycle *Abstrac
         return "0"
     }
 
+    if configure.SetCommandType(OUTPUT_CONFIG) == Error {
+        return "0"
+    }
+
     if configure.Parse(cycle) == Error {
         return "0"
     }
