@@ -10,6 +10,7 @@ import (
       "strings"
 
     . "github.com/rookie-xy/worker/types"
+    _ "github.com/rookie-xy/worker/modules"
 
     _ "github.com/rookie-xy/worker-input-modules/stdin_modules/src"
     _ "github.com/rookie-xy/worker-input-modules/http_modules/src"
