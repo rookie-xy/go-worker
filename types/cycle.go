@@ -4,7 +4,9 @@
 
 package types
 
-import "unsafe"
+import (
+    "unsafe"
+)
 
 type AbstractCycle struct {
     *AbstractLog
@@ -99,7 +101,9 @@ func (c *AbstractCycle) Start() int {
         module := Modules[m]
 
         if main := module.Main; main != nil {
-            main.Start()
+            if main.Start() == Error {
+                return Error
+            }
         }
     }
 

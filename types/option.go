@@ -50,95 +50,79 @@ func (o *AbstractOption) GetItem(k string) interface{} {
 }
 
 func (o *AbstractOption) Parse() int {
-	log := o.AbstractLog
+    log := o.AbstractLog
 
-	argv := o.GetArgv()
+    argv := o.GetArgv()
 
-	for i := 1; i < o.GetArgc(); i++ {
+    for i := 1; i < o.GetArgc(); i++ {
 
-		if argv[i][0] != '-' {
-			return Error
-		}
+        if argv[i][0] != '-' {
+            return Error
+        }
 
-		switch argv[i][1] {
+        switch argv[i][1] {
 
-		case 'c':
-			if argv[i + 1] == "" {
-				return Error
-			}
+        case 'c':
+            if argv[i + 1] == "" {
+                return Error
+            }
 
-			// file://path=/home/
-			o.SetItem("configure", "file://resource=" + argv[i + 1])
-			i++
-			break
+            // file://path=/home/
+            o.SetItem("configure", "file://resource=" + argv[i + 1])
+            i++
 
-		case 'z':
-			if argv[i + 1] == "" {
-				return Error
-			}
+            break
 
-			// file://path=/home/
-			o.SetItem("configure", "zookeeper://resource=" + argv[i + 1])
-			i++
-			break
+        case 'z':
+            if argv[i + 1] == "" {
+                return Error
+            }
 
-		case 't':
-			o.SetItem("test", true)
-			break
+            // file://path=/home/
+            o.SetItem("configure", "zookeeper://resource=" + argv[i + 1])
+            i++
 
-		default:
-			o.SetItem("invaild", "")
-			log.Info("not found any option")
-			//o.result["error"] = "not found any option"
-			break
-		}
-	}
+            break
 
-	return Ok
+        case 't':
+            o.SetItem("test", true)
+
+            break
+
+        default:
+            o.SetItem("invaild", "")
+            log.Info("not found any option")
+            //o.result["error"] = "not found any option"
+            break
+        }
+    }
+
+    return Ok
 }
 
 func initOptionModule(cycle *AbstractCycle) int {
-	option := cycle.GetOption()
-	if option == nil {
-		return Error
-	}
+    option := cycle.GetOption()
+    if option == nil {
+        return Error
+    }
 
-	if option.Parse() == Error {
-		return Error
-	}
-	/*
-	simpleOption := NewOption(cycle.log)
+    if option.Parse() == Error {
+        return Error
+    }
 
-	option := cycle.GetOption()
-	if option == nil {
-		return Error
-	}
-
-	log := option.AbstractLog
-
-	if simpleOption.SetOption(option) == Error {
-		log.Error("set option error")
-		return Error
-	}
-
-	if simpleOption.Parse() == Error {
-		return Error
-	}
-	*/
-
-	return Ok
+    return Ok
 }
 
 var optionModule = Module{
-	MODULE_V1,
-	CONTEXT_V1,
-	nil,
-	nil,
-	SYSTEM_MODULE,
-	initOptionModule,
-	nil,
+    MODULE_V1,
+    CONTEXT_V1,
+    nil,
+    nil,
+    SYSTEM_MODULE,
+    initOptionModule,
+    nil,
 }
 
 func init() {
-	Modules = append(Modules, &optionModule)
+    Modules = append(Modules, &optionModule)
 }

@@ -17,7 +17,12 @@ type Routine interface {
 }
 
 func (f MainFunc) Start() int {
+    if f == nil {
+        return Error
+    }
+
     go f(nil)
+
     return Ok
 }
 

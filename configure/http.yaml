@@ -1,8 +1,8 @@
 inputs:
-    - http:
+    - httpd:
           listen: 127.0.0.1:8900
           timeout: 10
 
           location:
-              document: /data/service/html
+              document: /home/go/src/github.com/rookie-xy/worker-web
               bufsize: 2048

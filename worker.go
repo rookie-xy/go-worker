@@ -252,8 +252,6 @@ func main() {
         Modules[n].Index = uint(n)
     }
 
-    //fmt.Println(len(Modules), MODULE_VER)
-
     if n <= 0 {
         log.Info("no module to load")
     }
@@ -284,6 +282,10 @@ func main() {
 
     if worker.Start() == Error {
         return
+    }
+
+    select {
+
     }
 
     worker.Monitor()
