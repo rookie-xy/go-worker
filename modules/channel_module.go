@@ -10,7 +10,7 @@ import (
 )
 
 var channal = String{ len("channal"), "channal" }
-var channalContext = &AbstractContext{
+var channalContext = &Context{
     channal,
     nil,
     nil,
@@ -29,14 +29,27 @@ var channalCommands = []Command{
     NilCommand,
 }
 
-func channalsBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+func channalsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
+    if cycle == nil {
+        return Error
+    }
+
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
         if module.Type != CHANNAL_MODULE {
             continue
         }
 
-        context := (*AbstractContext)(unsafe.Pointer(module.Context))
+        module.CtxIndex++
+    }
+
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != CHANNAL_MODULE {
+            continue
+        }
+
+        context := (*Context)(unsafe.Pointer(module.Context))
         if context == nil {
             continue
         }
@@ -44,21 +57,26 @@ func channalsBlock(configure *AbstractConfigure, command *Command, cycle *Abstra
         if handle := context.Create; handle != nil {
             this := handle(cycle)
             if cycle.SetContext(module.Index, &this) == Error {
-                return "0"
+												    return Error
             }
         }
     }
 
+    configure := cycle.GetConfigure()
+    if configure == nil {
+        return Error
+    }
+
     if configure.SetModuleType(CHANNAL_MODULE) == Error {
-        return "0"
+        return Error
     }
 
     if configure.SetCommandType(CHANNAL_CONFIG) == Error {
-        return "0"
+        return Error
     }
 
     if configure.Parse(cycle) == Error {
-        return "0"
+        return Error
     }
 
     for m := 0; Modules[m] != nil; m++ {
@@ -67,7 +85,7 @@ func channalsBlock(configure *AbstractConfigure, command *Command, cycle *Abstra
             continue
         }
 
-        this := (*AbstractContext)(unsafe.Pointer(module.Context))
+        this := (*Context)(unsafe.Pointer(module.Context))
         if this == nil {
             continue
         }
@@ -79,12 +97,12 @@ func channalsBlock(configure *AbstractConfigure, command *Command, cycle *Abstra
 
         if init := this.Init; init != nil {
             if init(cycle, context) == "-1" {
-                return "0"
+                return Error
             }
         }
     }
 
-    return "0"
+    return Ok
 }
 
 var channalModule = Module{

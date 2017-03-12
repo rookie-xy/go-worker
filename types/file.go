@@ -8,8 +8,8 @@ import (
     "os"
 )
 
-type AbstractFile struct {
-    *AbstractLog
+type File struct {
+    *Log
      file     *os.File
      name      string
      size      int64
@@ -23,18 +23,18 @@ type Action interface {
     Close() int
     Read() int
     Write() int
-    Type() *AbstractFile
+    Type() *File
 }
 */
 
-func NewFile(log *AbstractLog) *AbstractFile {
-    return &AbstractFile{
-        AbstractLog : log,
+func NewFile(log *Log) *File {
+    return &File{
+        Log : log,
         file        : os.Stdout,
     }
 }
 
-func (f *AbstractFile) SetName(name string) int {
+func (f *File) SetName(name string) int {
     if name == "" {
         return Error
     }
@@ -44,11 +44,11 @@ func (f *AbstractFile) SetName(name string) int {
     return Ok
 }
 
-func (f *AbstractFile) GetName() string {
+func (f *File) GetName() string {
     return f.name
 }
 
-func (f *AbstractFile) SetSize(size int64) int {
+func (f *File) SetSize(size int64) int {
     if size < 0 {
         return Error
     }
@@ -58,11 +58,11 @@ func (f *AbstractFile) SetSize(size int64) int {
     return Ok
 }
 
-func (f *AbstractFile) GetSize() int64 {
+func (f *File) GetSize() int64 {
     return f.size
 }
 
-func (f *AbstractFile) SetContent(content []byte) int {
+func (f *File) SetContent(content []byte) int {
     if content == nil {
         return Error
     }
@@ -72,11 +72,11 @@ func (f *AbstractFile) SetContent(content []byte) int {
     return Ok
 }
 
-func (f *AbstractFile) GetContent() []byte {
+func (f *File) GetContent() []byte {
     return f.content
 }
 
-func (f *AbstractFile) SetFile(file *os.File) int {
+func (f *File) SetFile(file *os.File) int {
     if file == nil {
         return Error
     }
@@ -86,11 +86,11 @@ func (f *AbstractFile) SetFile(file *os.File) int {
     return Ok
 }
 
-func (f *AbstractFile) GetFile() *os.File {
+func (f *File) GetFile() *os.File {
     return f.file
 }
 
-func (f *AbstractFile) Set(action IO) int {
+func (f *File) Set(action IO) int {
     if action == nil {
         return Error
     }
@@ -100,12 +100,12 @@ func (f *AbstractFile) Set(action IO) int {
     return Ok
 }
 
-func (f *AbstractFile) Get() IO {
+func (f *File) Get() IO {
     return f.action
 }
 
-func (f *AbstractFile) Open(name string) int {
-    log := f.AbstractLog.Get()
+func (f *File) Open(name string) int {
+    log := f.Log.Get()
 
     file, error := os.OpenFile(name, os.O_RDWR, 0777)
     if error != nil {
@@ -125,8 +125,8 @@ func (f *AbstractFile) Open(name string) int {
     return Ok
 }
 
-func (f *AbstractFile) Close() int {
-    log := f.AbstractLog.Get()
+func (f *File) Close() int {
+    log := f.Log.Get()
 
     if error := f.file.Close(); error != nil {
         log.Info("close file error: %s", error)
@@ -136,8 +136,8 @@ func (f *AbstractFile) Close() int {
     return Ok
 }
 
-func (f *AbstractFile) Read() int {
-    log := f.AbstractLog.Get()
+func (f *File) Read() int {
+    log := f.Log.Get()
 
     var char []byte
 
@@ -159,10 +159,10 @@ func (f *AbstractFile) Read() int {
     return Ok
 }
 
-func (f *AbstractFile) Write() int {
+func (f *File) Write() int {
     return Ok
 }
 
-func (f *AbstractFile) Type() *AbstractFile {
+func (f *File) Type() *File {
     return f
 }

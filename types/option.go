@@ -4,33 +4,34 @@
 
 package types
 
-type AbstractOption struct {
-    *AbstractLog
+type Option struct {
+    *Log
+
      argc   int
      argv   []string
      items  map[string]interface{}
 }
 
-type Option interface {
+type OptionIf interface {
     Parse() int
 }
 
-func NewOption(log *AbstractLog) *AbstractOption {
-    return &AbstractOption{
-        AbstractLog:log,
+func NewOption(log *Log) *Option {
+    return &Option{
+        Log:   log,
         items: make(map[string]interface{}),
     }
 }
 
-func (o *AbstractOption) GetArgc() int {
+func (o *Option) GetArgc() int {
     return o.argc
 }
 
-func (o *AbstractOption) GetArgv() []string {
+func (o *Option) GetArgv() []string {
     return o.argv
 }
 
-func (o *AbstractOption) SetArgs(argc int, argv []string) int {
+func (o *Option) SetArgs(argc int, argv []string) int {
     if argc <= 0 || argv == nil {
         return Error
     }
@@ -41,16 +42,16 @@ func (o *AbstractOption) SetArgs(argc int, argv []string) int {
     return Ok
 }
 
-func (o *AbstractOption) SetItem(k string, v interface{}) {
+func (o *Option) SetItem(k string, v interface{}) {
     o.items[k] = v
 }
 
-func (o *AbstractOption) GetItem(k string) interface{} {
+func (o *Option) GetItem(k string) interface{} {
     return o.items[k]
 }
 
-func (o *AbstractOption) Parse() int {
-    log := o.AbstractLog
+func (o *Option) Parse() int {
+    log := o.Log
 
     argv := o.GetArgv()
 

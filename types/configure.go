@@ -15,47 +15,47 @@ var (
     ConfigError = -1
 )
 
-type AbstractConfigure struct {
-    *AbstractLog
-    *AbstractFile
+type Configure struct {
+    *Log
+    *File
 
      resource     string
      fileName     string
      commandType  int
      moduleType   int64
      value        interface{}
-     configure    Configure
+     configure    ConfigureIf
 }
 
-type Configure interface {
+type ConfigureIf interface {
     Parse() int
     ReadToken() int
 }
 
-func NewConfigure(log *AbstractLog) *AbstractConfigure {
-    return &AbstractConfigure{
-        AbstractLog  : log,
-        AbstractFile : NewFile(log),
+func NewConfigure(log *Log) *Configure {
+    return &Configure{
+        Log          : log,
+        File : NewFile(log),
     }
 }
 
-func (c *AbstractConfigure) SetName(file string) int {
+func (c *Configure) SetName(file string) int {
     if file == "" {
         return Error
     }
 
-    if c.AbstractFile.SetName(file) == Error {
+    if c.File.SetName(file) == Error {
         return Error
     }
 
     return Ok
 }
 
-func (c *AbstractConfigure) GetName() string {
-    return c.AbstractFile.GetName()
+func (c *Configure) GetName() string {
+    return c.File.GetName()
 }
 
-func (c *AbstractConfigure) SetFileName(fileName string) int {
+func (c *Configure) SetFileName(fileName string) int {
     if fileName == "" {
         return Error
     }
@@ -65,11 +65,11 @@ func (c *AbstractConfigure) SetFileName(fileName string) int {
     return Ok
 }
 
-func (c *AbstractConfigure) GetFileName() string {
+func (c *Configure) GetFileName() string {
     return c.fileName
 }
 
-func (c *AbstractConfigure) SetFileType(fileType string) int {
+func (c *Configure) SetFileType(fileType string) int {
     if fileType == "" {
         return Error
     }
@@ -81,7 +81,7 @@ func (c *AbstractConfigure) SetFileType(fileType string) int {
     return Ok
 }
 
-func (c *AbstractConfigure) GetFileType() string {
+func (c *Configure) GetFileType() string {
     if fileType := c.GetName(); fileType != "" {
         return fileType
     }
@@ -89,27 +89,27 @@ func (c *AbstractConfigure) GetFileType() string {
     return ""
 }
 
-func (c *AbstractConfigure) SetFile(action IO) int {
+func (c *Configure) SetFile(action IO) int {
     if action == nil {
         return Error
     }
 
-    if c.AbstractFile.Set(action) == Error {
+    if c.File.Set(action) == Error {
         return Error
     }
 
     return Ok
 }
 
-func (c *AbstractConfigure) GetFile() IO {
-    if file := c.AbstractFile.Get(); file != nil {
+func (c *Configure) GetFile() IO {
+    if file := c.File.Get(); file != nil {
         return file
     }
 
     return nil
 }
 
-func (c *AbstractConfigure) SetResource(resource string) int {
+func (c *Configure) SetResource(resource string) int {
     if resource == "" {
         return Error
     }
@@ -119,17 +119,17 @@ func (c *AbstractConfigure) SetResource(resource string) int {
     return Ok
 }
 
-func (c *AbstractConfigure) GetResource(resource string) string {
+func (c *Configure) GetResource(resource string) string {
     return c.resource
 }
 
-func (c *AbstractConfigure) Get() Configure {
-    log := c.AbstractLog.Get()
+func (c *Configure) Get() ConfigureIf {
+    log := c.Log.Get()
 
 
-    file := c.AbstractFile.Get()
+    file := c.File.Get()
     if file == nil {
-        file = NewFile(c.AbstractLog)
+        file = NewFile(c.Log)
     }
 
     if file.Open(c.resource) == Error {
@@ -158,7 +158,7 @@ JMP_CLOSE:
     return c.configure
 }
 
-func (c *AbstractConfigure) Set(configre Configure) int {
+func (c *Configure) Set(configre ConfigureIf) int {
     if configre == nil {
         return Error
     }
@@ -168,7 +168,7 @@ func (c *AbstractConfigure) Set(configre Configure) int {
     return Ok
 }
 
-func (c *AbstractConfigure) SetModuleType(moduleType int64) int {
+func (c *Configure) SetModuleType(moduleType int64) int {
     if moduleType <= 0 {
         return Error
     }
@@ -178,7 +178,7 @@ func (c *AbstractConfigure) SetModuleType(moduleType int64) int {
     return Ok
 }
 
-func (c *AbstractConfigure) SetCommandType(commandType int) int {
+func (c *Configure) SetCommandType(commandType int) int {
     if commandType <= 0 {
         return Error
     }
@@ -188,27 +188,32 @@ func (c *AbstractConfigure) SetCommandType(commandType int) int {
     return Ok
 }
 
-func (c *AbstractConfigure) GetValue() interface{} {
+func (c *Configure) GetValue() interface{} {
    return c.value
 }
 
-func SetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
-    if config == nil {
-        return "0"
+func SetFlag(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
+    if cycle == nil || p == nil {
+        return Error
     }
 
-    pointer := (*bool)(unsafe.Pointer(uintptr(*config) + command.Offset))
-    if pointer == nil {
-        return "0"
+    field := (*bool)(unsafe.Pointer(uintptr(*p) + command.Offset))
+    if field == nil {
+        return Error
+    }
+
+    configure := cycle.GetConfigure()
+    if configure == nil {
+        return Error
     }
 
     flag := configure.GetValue()
     if flag == true {
-        *pointer = true
+        *field = true
     } else if flag == false {
-        *pointer = false
+        *field = false
     } else {
-        return "-1"
+        return Error
     }
 
     /*
@@ -218,44 +223,61 @@ func SetFlag(configure *AbstractConfigure, command *Command, cycle *AbstractCycl
     }
     */
 
-    return ""
+    return Ok
 }
 
-func SetString(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
-    pointer := (*string)(unsafe.Pointer(uintptr(*config) + command.Offset))
-    if pointer == nil {
-        return "0"
+func SetString(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
+    if cycle == nil || p == nil {
+        return Error
+    }
+
+    field := (*string)(unsafe.Pointer(uintptr(*p) + command.Offset))
+    if field == nil {
+        return Error
+    }
+
+    configure := cycle.GetConfigure()
+    if configure == nil {
+        return Error
     }
 
     strings := configure.GetValue()
     if strings == nil {
-        return "0"
+        return Error
     }
 
-    *pointer = strings.(string)
+    *field = strings.(string)
 
-    return "0"
+    return Ok
 }
 
-func SetNumber(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+func SetNumber(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
+    if cycle == nil || p == nil {
+        return Error
+    }
 
-    pointer := (*int)(unsafe.Pointer(uintptr(*config) + command.Offset))
-    if pointer == nil {
-        return "0"
+    field := (*int)(unsafe.Pointer(uintptr(*p) + command.Offset))
+    if field == nil {
+        return Error
+    }
+
+    configure := cycle.GetConfigure()
+    if configure == nil {
+        return Error
     }
 
     number := configure.GetValue()
     if number == nil {
-        return "0"
+        return Error
     }
 
-    *pointer = number.(int)
+    *field = number.(int)
 
-    return "0"
+    return Error
 }
 
-func (c *AbstractConfigure) Parse(cycle *AbstractCycle) int {
-    log := c.AbstractLog.Get()
+func (c *Configure) Parse(cycle *Cycle) int {
+    log := c.Log.Get()
 
     if configure := c.Get(); configure != nil {
         if configure.Parse() == Error {
@@ -302,8 +324,8 @@ func (c *AbstractConfigure) Parse(cycle *AbstractCycle) int {
     return Ok
 }
 
-func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cycle *AbstractCycle) int {
-    log := c.AbstractLog.Get()
+func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cycle) int {
+    log := c.Log.Get()
 
     flag := Ok
 
@@ -355,7 +377,12 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
                     context := cycle.GetContext(module.Index)
 
                     c.value = value
-                    command.Set(c, &command, cycle, context)
+																    if cycle.SetConfigure(c) == Error {
+                        flag = Error
+																				    break
+                    }
+
+                    command.Set(cycle, &command, context)
                 }
             }
         }
@@ -379,7 +406,7 @@ func (c *AbstractConfigure) doParse(materialized map[interface{}]interface{}, cy
     return ConfigOk
 }
 
-func (c *AbstractConfigure) ReadToken() int {
+func (c *Configure) ReadToken() int {
     fmt.Println("configure read token")
     return Ok
 }

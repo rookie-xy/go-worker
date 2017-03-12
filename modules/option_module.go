@@ -8,7 +8,7 @@ import (
     . "github.com/rookie-xy/worker/types"
 )
 
-func initOptionModule(cycle *AbstractCycle) int {
+func initOptionModule(cycle *Cycle) int {
     option := cycle.GetOption()
     if option == nil {
         return Error

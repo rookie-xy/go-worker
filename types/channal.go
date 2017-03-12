@@ -4,17 +4,17 @@
 
 package types
 
-type AbstractChannal struct {
-    *AbstractCycle
-    *AbstractFile
-     channal  Channal
+type Channal struct {
+    *Cycle
+    *File
+     channal  ChannalIf
 }
 
-type Channal interface {
+type ChannalIf interface {
     push()
     pull()
 }
 
-func NewChannal() *AbstractChannal {
-    return &AbstractChannal{}
+func NewChannal() *Channal {
+    return &Channal{}
 }

@@ -5,28 +5,28 @@
 package main
 
 import (
-      "os"
-      "unsafe"
-      "strings"
-
+    "os"
+    "unsafe"
+    "strings"
     . "github.com/rookie-xy/worker/types"
     _ "github.com/rookie-xy/worker/modules"
 
     _ "github.com/rookie-xy/worker-input-modules/stdin_modules/src"
-    _ "github.com/rookie-xy/worker-input-modules/http_modules/src"
+    //_ "github.com/rookie-xy/worker-input-modules/http_modules/src"
     _ "github.com/rookie-xy/worker-channel-modules/memory_modules/src"
     _ "github.com/rookie-xy/worker-output-modules/stdout_modules/src"
+    "time"
 )
 
 type worker struct {
-    *AbstractLog
-    *AbstractCycle
+    *Log
+    *Cycle
      modules  []*Module
 }
 
-func NewWorker(log *AbstractLog) *worker {
+func NewWorker(log *Log) *worker {
     return &worker{
-        AbstractLog:log,
+        Log:log,
     }
 }
 
@@ -44,22 +44,22 @@ func (w *worker) GetModules() []*Module {
     return w.modules
 }
 
-func (w *worker) SetCycle(cycle *AbstractCycle) int {
+func (w *worker) SetCycle(cycle *Cycle) int {
     if cycle == nil {
         return Error
     }
 
-    w.AbstractCycle = cycle
+    w.Cycle = cycle
 
     return Ok
 }
 
-func (w *worker) GetCycle() *AbstractCycle {
-    return w.AbstractCycle
+func (w *worker) GetCycle() *Cycle {
+    return w.Cycle
 }
 
-func (w *worker) SystemInit(option *AbstractOption) int {
-    modules, cycle := w.modules, w.AbstractCycle
+func (w *worker) SystemInit(option *Option) int {
+    modules, cycle := w.modules, w.Cycle
 
     if modules == nil || cycle == nil {
         return Error
@@ -88,7 +88,7 @@ func (w *worker) SystemInit(option *AbstractOption) int {
     return Ok
 }
 
-func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
+func (w *worker) ConfigureInit(configure *Configure) int {
     cycle := w.GetCycle()
 
     option := cycle.GetOption()
@@ -146,7 +146,7 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
             continue
         }
 
-        context := (*AbstractContext)(unsafe.Pointer(module.Context))
+        context := (*Context)(unsafe.Pointer(module.Context))
         if context == nil {
 
             continue
@@ -155,7 +155,6 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
         if handle := context.Create; handle != nil {
             this := handle(cycle)
 
-            //fmt.Println(module.Index)
             if cycle.SetContext(module.Index, &this) == Error {
                 return Error
             }
@@ -172,7 +171,7 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
             continue
         }
 
-        this := (*AbstractContext)(unsafe.Pointer(module.Context))
+        this := (*Context)(unsafe.Pointer(module.Context))
         if this == nil {
             continue
         }
@@ -193,7 +192,7 @@ func (w *worker) ConfigureInit(configure *AbstractConfigure) int {
 }
 
 func (w *worker) Start() int {
-    modules, cycle := w.modules, w.AbstractCycle
+    modules, cycle := w.modules, w.Cycle
 
     if modules == nil && cycle == nil {
         return Error
@@ -209,7 +208,7 @@ func (w *worker) Start() int {
         }
     }
 
-    if cycle := w.AbstractCycle; cycle != nil {
+    if cycle := w.Cycle; cycle != nil {
         if cycle.Start() == Error {
             return Error
         }
@@ -219,7 +218,7 @@ func (w *worker) Start() int {
 }
 
 func (w *worker) Stop() int {
-    if cycle := w.AbstractCycle; cycle != nil {
+    if cycle := w.Cycle; cycle != nil {
         if cycle.Stop() == Error {
             return Error
         }
@@ -229,8 +228,8 @@ func (w *worker) Stop() int {
 }
 
 func (w *worker) Monitor() int {
-    if cycle := w.AbstractCycle; cycle != nil {
-        if routine := cycle.AbstractRoutine; routine != nil {
+    if cycle := w.Cycle; cycle != nil {
+        if routine := cycle.Routine; routine != nil {
             if routine.Monitor() == Error {
                 return Error
             }
@@ -268,8 +267,8 @@ func main() {
     }
 
     cycle := NewCycle(log)
-    cycle.AbstractOption = option
-    worker.AbstractCycle = cycle
+    cycle.Option = option
+    worker.Cycle = cycle
 
     if worker.SystemInit(option) == Error {
         return
@@ -285,9 +284,8 @@ func main() {
         return
     }
 
-    select {
-
-    }
+    //select {}
+    time.Sleep(1000000)
 
     worker.Monitor()
 

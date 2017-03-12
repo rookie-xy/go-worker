@@ -4,14 +4,14 @@
 
 package types
 
-type AbstractInput struct {
-    *AbstractCycle
-    *AbstractFile
-     input  Input
+type Input struct {
+    *Cycle
+    *File
+     input  InputIf
 }
 
-type Input interface {}
+type InputIf interface {}
 
-func NewInput() *AbstractInput {
-    return &AbstractInput{}
+func NewInput() *Input {
+    return &Input{}
 }

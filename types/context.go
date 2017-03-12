@@ -8,10 +8,10 @@ import (
     "unsafe"
 )
 
-type ContextCreateFunc func(cycle *AbstractCycle) unsafe.Pointer
-type ContextInitFunc func(cycle *AbstractCycle, configure *unsafe.Pointer) string
+type ContextCreateFunc func(cycle *Cycle) unsafe.Pointer
+type ContextInitFunc func(cycle *Cycle, configure *unsafe.Pointer) string
 
-type AbstractContext struct {
+type Context struct {
     Name    String
     Create  ContextCreateFunc
     Init    ContextInitFunc

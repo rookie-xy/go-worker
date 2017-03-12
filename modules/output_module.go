@@ -10,7 +10,7 @@ import (
 )
 
 var output = String{ len("output"), "output" }
-var outputContext = &AbstractContext{
+var outputContext = &Context{
     output,
     nil,
     nil,
@@ -29,14 +29,27 @@ var outputCommands = []Command{
     NilCommand,
 }
 
-func outputsBlock(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string {
+func outputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
+    if cycle == nil {
+        return Error
+    }
+
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
         if module.Type != OUTPUT_MODULE {
             continue
         }
 
-        context := (*AbstractContext)(unsafe.Pointer(module.Context))
+        module.CtxIndex++
+    }
+
+    for m := 0; Modules[m] != nil; m++ {
+        module := Modules[m]
+        if module.Type != OUTPUT_MODULE {
+            continue
+        }
+
+        context := (*Context)(unsafe.Pointer(module.Context))
         if context == nil {
             continue
         }
@@ -44,21 +57,26 @@ func outputsBlock(configure *AbstractConfigure, command *Command, cycle *Abstrac
         if handle := context.Create; handle != nil {
             this := handle(cycle)
             if cycle.SetContext(module.Index, &this) == Error {
-                return "0"
+                return Error
             }
         }
     }
 
+    configure := cycle.GetConfigure()
+    if configure == nil {
+        return Error
+    }
+
     if configure.SetModuleType(OUTPUT_MODULE) == Error {
-        return "0"
+        return Error
     }
 
     if configure.SetCommandType(OUTPUT_CONFIG) == Error {
-        return "0"
+        return Error
     }
 
     if configure.Parse(cycle) == Error {
-        return "0"
+        return Error
     }
 
     for m := 0; Modules[m] != nil; m++ {
@@ -67,7 +85,7 @@ func outputsBlock(configure *AbstractConfigure, command *Command, cycle *Abstrac
             continue
         }
 
-        this := (*AbstractContext)(unsafe.Pointer(module.Context))
+        this := (*Context)(unsafe.Pointer(module.Context))
         if this == nil {
             continue
         }
@@ -79,12 +97,12 @@ func outputsBlock(configure *AbstractConfigure, command *Command, cycle *Abstrac
 
         if init := this.Init; init != nil {
             if init(cycle, context) == "-1" {
-                return "0"
+                return Error
             }
         }
     }
 
-    return "0"
+    return Ok
 }
 
 var outputModule = Module{

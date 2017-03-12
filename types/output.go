@@ -4,14 +4,14 @@
 
 package types
 
-type AbstractOutput struct {
-    *AbstractCycle
-    *AbstractFile
-     output  Output
+type Output struct {
+    *Cycle
+    *File
+     output  OutputIf
 }
 
-type Output interface {}
+type OutputIf interface {}
 
-func NewOutput() *AbstractOutput {
-    return &AbstractOutput{}
+func NewOutput() *Output {
+    return &Output{}
 }

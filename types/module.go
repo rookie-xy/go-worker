@@ -27,10 +27,16 @@ const (
 
     OUTPUT_MODULE = 0x4749464E4F4345
     OUTPUT_CONFIG = 0x00000010
+
+    CODEC_MODULE = 0x4749464E4F439
+    CODEC_CONFIG = 0x01000000
+
+    FILTER_MODULE = 0x4749464E7F439
+    FILTER_CONFIG = 0x10000000
 )
 
-type InitFunc func(cycle *AbstractCycle) int
-type MainFunc func(cycle *AbstractCycle) int
+type InitFunc func(cycle *Cycle) int
+type MainFunc func(cycle *Cycle) int
 
 type Module struct {
     CtxIndex   uint

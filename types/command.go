@@ -18,7 +18,7 @@ const (
     USER_CONFIG  =   0x0F000000
 )
 
-type SetFunc func(configure *AbstractConfigure, command *Command, cycle *AbstractCycle, config *unsafe.Pointer) string
+type SetFunc func(cycle *Cycle, cmd *Command, p *unsafe.Pointer) int
 
 type Command struct {
     Name    String

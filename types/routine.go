@@ -4,12 +4,12 @@
 
 package types
 
-type AbstractRoutine struct {
+type Routine struct {
     name    string
     number  int
 }
 
-type Routine interface {
+type RoutineIf interface {
     Start() int
     Stop() int
 
@@ -30,6 +30,6 @@ func (f MainFunc) Stop() int {
     return Ok
 }
 
-func (r *AbstractRoutine) Monitor() int {
+func (r *Routine) Monitor() int {
     return Ok
 }

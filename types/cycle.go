@@ -8,69 +8,76 @@ import (
     "unsafe"
 )
 
-type AbstractCycle struct {
-    *AbstractLog
-    *AbstractRoutine
-    *AbstractOption
-    *AbstractConfigure
+type Cycle struct {
+    *Log
+    *Routine
+    *Option
+    *Configure
+
+    *Input
+    *Channal
+    *Output
+    *Codec
+    *Filter
+
      context  [1024]*unsafe.Pointer
-     cycle    Cycle
+     cycle    CycleIf
 }
 
-type Cycle interface {
+type CycleIf interface {
     Start() int
     Stop() int
 }
 
-func NewCycle(log *AbstractLog) *AbstractCycle {
-    return &AbstractCycle{
-        AbstractLog:log,
+func NewCycle(log *Log) *Cycle {
+    return &Cycle{
+        Log:log,
     }
 }
 
-func (c *AbstractCycle) SetOption(option *AbstractOption) int {
+func (c *Cycle) SetOption(option *Option) int {
     if option == nil {
         return Error
     }
 
-    c.AbstractOption = option
+    c.Option = option
 
     return Ok
 }
 
-func (c *AbstractCycle) GetOption() *AbstractOption {
-    return c.AbstractOption
+func (c *Cycle) GetOption() *Option {
+    return c.Option
 }
 
-func (c *AbstractCycle) SetConfigure(configure *AbstractConfigure) int {
+func (c *Cycle) SetConfigure(configure *Configure) int {
     if configure == nil {
         return Error
     }
 
-    c.AbstractConfigure = configure
+    c.Configure = configure
 
     return Ok
 }
 
-func (c *AbstractCycle) GetConfigure() *AbstractConfigure {
-    return c.AbstractConfigure
+func (c *Cycle) GetConfigure() *Configure {
+    return c.Configure
 }
 
-func (c *AbstractCycle) SetLog(log *AbstractLog) int {
+func (c *Cycle) SetLog(log *Log) int {
     if log == nil {
         return Error
     }
 
-    c.AbstractLog = log
+    c.Log = log
 
     return Ok
 }
 
-func (c *AbstractCycle) GetLog() *AbstractLog {
-    return c.AbstractLog
+func (c *Cycle) GetLog() *Log {
+    return c.Log
 }
 
-func (c *AbstractCycle) SetContext(index uint, pointer *unsafe.Pointer) int {
+func (c *Cycle) SetContext(index uint, pointer *unsafe.Pointer) int {
     if index < 0 || pointer == nil {
         return Error
     }
@@ -80,7 +87,7 @@ func (c *AbstractCycle) SetContext(index uint, pointer *unsafe.Pointer) int {
     return Ok
 }
 
-func (c *AbstractCycle) GetContext(index uint) *unsafe.Pointer {
+func (c *Cycle) GetContext(index uint) *unsafe.Pointer {
     if index < 0 {
         return nil
     }
@@ -88,7 +95,7 @@ func (c *AbstractCycle) GetContext(index uint) *unsafe.Pointer {
     return c.context[index]
 }
 
-func (c *AbstractCycle) Start() int {
+func (c *Cycle) Start() int {
     if cycle := c.cycle; cycle != nil {
         if cycle.Start() == Error {
             return Error
@@ -110,7 +117,7 @@ func (c *AbstractCycle) Start() int {
     return Ok
 }
 
-func (c *AbstractCycle) Stop() int {
+func (c *Cycle) Stop() int {
     if cycle := c.cycle; cycle != nil {
         if cycle.Stop() == Error {
             return Error

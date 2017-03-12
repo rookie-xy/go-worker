@@ -9,5 +9,5 @@ type IO interface {
     Close() int
     Read() int
     Write() int
-    Type() *AbstractFile
+    Type() *File
 }

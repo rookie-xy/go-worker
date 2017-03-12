@@ -9,13 +9,13 @@ import (
     "runtime"
 )
 
-type AbstractLog struct {
-    *AbstractFile
+type Log struct {
+    *File
      level  int
-     log    Log
+     log    LogIf
 }
 
-type Log interface {
+type LogIf interface {
     Debug(format string, d ...interface{})
     Info(format string, i ...interface{})
     Warn(format string, w ...interface{})
@@ -25,14 +25,14 @@ type Log interface {
 var Level = [...]string{ "stderr", "emerg", "alert", "crit", "error",
                          "warn", "notice", "info", "debug" }
 
-func NewLog() *AbstractLog {
-    return &AbstractLog{
-        AbstractFile : NewFile(nil),
+func NewLog() *Log {
+    return &Log{
+        File : NewFile(nil),
         level        : 4,
     }
 }
 
-func (l *AbstractLog) Set(log Log) int {
+func (l *Log) Set(log LogIf) int {
     if log == nil {
         return Error
     }
@@ -42,17 +42,17 @@ func (l *AbstractLog) Set(log Log) int {
     return Ok
 }
 
-func (l *AbstractLog) Get() Log {
+func (l *Log) Get() LogIf {
     return l.log
 }
 
-func (l *AbstractLog) Debug(format string, d ...interface{}) {
+func (l *Log) Debug(format string, d ...interface{}) {
     fmt.Printf(format, d)
     return
 }
 
-func (l *AbstractLog) Info(format string, i ...interface{}) {
-    file := l.AbstractFile.GetFile()
+func (l *Log) Info(format string, i ...interface{}) {
+    file := l.File.GetFile()
     fmt.Fprintf(file, format, i)
 
     // TODO
@@ -63,14 +63,14 @@ func (l *AbstractLog) Info(format string, i ...interface{}) {
     return
 }
 
-func (l *AbstractLog) Warn(format string, w ...interface{}) {
+func (l *Log) Warn(format string, w ...interface{}) {
     funcName, file, line, _ := runtime.Caller(0)
     fmts := format + runtime.FuncForPC(funcName).Name() + file + string(line)
     fmt.Printf(fmts, w)
     return
 }
 
-func (l *AbstractLog) Error(format string, e ...interface{}) {
+func (l *Log) Error(format string, e ...interface{}) {
     fmt.Printf(format, e)
     return
 }
