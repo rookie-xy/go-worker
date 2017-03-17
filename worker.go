@@ -8,14 +8,14 @@ import (
     "os"
     "unsafe"
     "strings"
+
     . "github.com/rookie-xy/worker/types"
     _ "github.com/rookie-xy/worker/modules"
 
-    _ "github.com/rookie-xy/worker-input-modules/stdin_modules/src"
-    //_ "github.com/rookie-xy/worker-input-modules/http_modules/src"
-    _ "github.com/rookie-xy/worker-channel-modules/memory_modules/src"
-    _ "github.com/rookie-xy/worker-output-modules/stdout_modules/src"
-    "time"
+    _ "github.com/rookie-xy/modules/inputs/stdin/src"
+    _ "github.com/rookie-xy/modules/inputs/httpd/src"
+    _ "github.com/rookie-xy/modules/channels/memory/src"
+    _ "github.com/rookie-xy/modules/outputs/stdout/src"
 )
 
 type worker struct {
@@ -59,6 +59,10 @@ func (w *worker) GetCycle() *Cycle {
 }
 
 func (w *worker) SystemInit(option *Option) int {
+    if option.Parse() == Error {
+        return Error
+    }
+
     modules, cycle := w.modules, w.Cycle
 
     if modules == nil || cycle == nil {
@@ -284,8 +288,7 @@ func main() {
         return
     }
 
-    //select {}
-    time.Sleep(1000000)
+    select {}
 
     worker.Monitor()
 
