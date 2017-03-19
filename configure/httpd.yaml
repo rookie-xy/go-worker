@@ -4,5 +4,5 @@ inputs:
           timeout: 10
 
           location:
-              document: /home/go/src/github.com/rookie-xy/worker-web
+              document: /home/go/src/github.com/rookie-xy/web
               bufsize: 2048

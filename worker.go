@@ -12,10 +12,13 @@ import (
     . "github.com/rookie-xy/worker/types"
     _ "github.com/rookie-xy/worker/modules"
 
+    _ "github.com/rookie-xy/modules/option/simple/src"
+
     _ "github.com/rookie-xy/modules/inputs/stdin/src"
     _ "github.com/rookie-xy/modules/inputs/httpd/src"
     _ "github.com/rookie-xy/modules/channels/memory/src"
     _ "github.com/rookie-xy/modules/outputs/stdout/src"
+    "fmt"
 )
 
 type worker struct {
@@ -59,9 +62,11 @@ func (w *worker) GetCycle() *Cycle {
 }
 
 func (w *worker) SystemInit(option *Option) int {
+    /*
     if option.Parse() == Error {
         return Error
     }
+    */
 
     modules, cycle := w.modules, w.Cycle
 
@@ -275,6 +280,16 @@ func main() {
     worker.Cycle = cycle
 
     if worker.SystemInit(option) == Error {
+        return
+    }
+
+    opt := cycle.Option.GetOptionIf()
+    if opt == nil {
+        fmt.Println("kkkkkkkkkkkkkkkkkkk")
+        return
+    }
+
+    if opt.Parse() == Error {
         return
     }
 

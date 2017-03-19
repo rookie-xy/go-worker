@@ -4,12 +4,16 @@
 
 package types
 
+import "fmt"
+
 type Option struct {
     *Log
 
      argc   int
      argv   []string
      items  map[string]interface{}
+
+     option OptionIf
 }
 
 type OptionIf interface {
@@ -50,7 +54,23 @@ func (o *Option) GetItem(k string) interface{} {
     return o.items[k]
 }
 
+func (o *Option) SetOptionIf(option OptionIf) int {
+    if option == nil {
+        return Error
+    }
+
+    o.option = option
+
+    return Ok
+}
+
+func (o *Option) GetOptionIf() OptionIf {
+    return o.option
+}
+
 func (o *Option) Parse() int {
+fmt.Println("option type")
+    /*
     log := o.Log
 
     argv := o.GetArgv()
@@ -97,6 +117,7 @@ func (o *Option) Parse() int {
             break
         }
     }
+    */
 
     return Ok
 }
