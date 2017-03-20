@@ -108,7 +108,7 @@ func (c *Cycle) Start() int {
         module := Modules[m]
 
         if main := module.Main; main != nil {
-            if main.Start() == Error {
+            if main.Start(c) == Error {
                 return Error
             }
         }

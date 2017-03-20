@@ -17,7 +17,7 @@ type Option struct {
 }
 
 type OptionIf interface {
-    Parse() int
+    Parser() int
 }
 
 func NewOption(log *Log) *Option {
@@ -54,7 +54,7 @@ func (o *Option) GetItem(k string) interface{} {
     return o.items[k]
 }
 
-func (o *Option) SetOptionIf(option OptionIf) int {
+func (o *Option) Set(option OptionIf) int {
     if option == nil {
         return Error
     }
@@ -64,60 +64,28 @@ func (o *Option) SetOptionIf(option OptionIf) int {
     return Ok
 }
 
-func (o *Option) GetOptionIf() OptionIf {
+func (o *Option) Get() OptionIf {
     return o.option
 }
 
-func (o *Option) Parse() int {
-fmt.Println("option type")
-    /*
-    log := o.Log
-
-    argv := o.GetArgv()
-
-    for i := 1; i < o.GetArgc(); i++ {
-
-        if argv[i][0] != '-' {
+func (o *Option) Materialized() int {
+    if option := o.Get(); option != nil {
+        if option.Parser() == Error {
             return Error
         }
 
-        switch argv[i][1] {
-
-        case 'c':
-            if argv[i + 1] == "" {
-                return Error
-            }
-
-            // file://path=/home/
-            o.SetItem("configure", "file://resource=" + argv[i + 1])
-            i++
-
-            break
-
-        case 'z':
-            if argv[i + 1] == "" {
-                return Error
-            }
-
-            // file://path=/home/
-            o.SetItem("configure", "zookeeper://resource=" + argv[i + 1])
-            i++
-
-            break
-
-        case 't':
-            o.SetItem("test", true)
-
-            break
-
-        default:
-            o.SetItem("invaild", "")
-            log.Info("not found any option")
-            //o.result["error"] = "not found any option"
-            break
-        }
+        return Ok
     }
-    */
 
+    // default method
+    if o.Parser() == Error {
+        return Error
+    }
+
+    return Ok
+}
+
+func (o *Option) Parser() int {
+    fmt.Println("option type")
     return Ok
 }

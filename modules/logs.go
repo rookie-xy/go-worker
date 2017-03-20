@@ -9,19 +9,19 @@ import (
     . "github.com/rookie-xy/worker/types"
 )
 
-var input = String{ len("input"), "input" }
-var inputContext = &Context{
-    input,
+var log = String{ len("log"), "log" }
+var logContext = &Context{
+    log,
     nil,
     nil,
 }
 
-var inputs = String{ len("inputs"), "inputs" }
-var inputCommands = []Command{
+var logs = String{ len("logs"), "logs" }
+var logCommands = []Command{
 
-    { inputs,
+    { logs,
       MAIN_CONFIG|CONFIG_BLOCK,
-      inputsBlock,
+      logsBlock,
       0,
       0,
       nil },
@@ -29,14 +29,14 @@ var inputCommands = []Command{
     NilCommand,
 }
 
-func inputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
+func logsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
     if cycle == nil {
         return Error
     }
 
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
-        if module.Type != INPUT_MODULE {
+        if module.Type != LOG_MODULE {
             continue
         }
 
@@ -45,7 +45,7 @@ func inputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
 
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
-        if module.Type != INPUT_MODULE {
+        if module.Type != LOG_MODULE {
             continue
         }
 
@@ -67,11 +67,11 @@ func inputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
         return Error
     }
 
-    if configure.SetModuleType(INPUT_MODULE) == Error {
+    if configure.SetModuleType(LOG_MODULE) == Error {
         return Error
     }
 
-    if configure.SetCommandType(INPUT_CONFIG) == Error {
+    if configure.SetCommandType(LOG_CONFIG) == Error {
         return Error
     }
 
@@ -81,7 +81,7 @@ func inputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
 
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
-        if module.Type != INPUT_MODULE {
+        if module.Type != LOG_MODULE {
             continue
         }
 
@@ -105,16 +105,16 @@ func inputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
     return Ok
 }
 
-var inputModule = Module{
+var logModule = Module{
     MODULE_V1,
     CONTEXT_V1,
-    unsafe.Pointer(inputContext),
-    inputCommands,
+    unsafe.Pointer(logContext),
+    logCommands,
     CONFIG_MODULE,
     nil,
     nil,
 }
 
 func init() {
-    Modules = append(Modules, &inputModule)
+    Modules = append(Modules, &logModule)
 }

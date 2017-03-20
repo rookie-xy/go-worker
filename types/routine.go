@@ -10,18 +10,18 @@ type Routine struct {
 }
 
 type RoutineIf interface {
-    Start() int
+    Start(cycle *Cycle) int
     Stop() int
 
     Monitor() int
 }
 
-func (f MainFunc) Start() int {
+func (f MainFunc) Start(cycle *Cycle) int {
     if f == nil {
         return Error
     }
 
-    go f(nil)
+    go f(cycle)
 
     return Ok
 }

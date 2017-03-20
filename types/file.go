@@ -105,7 +105,7 @@ func (f *File) Get() IO {
 }
 
 func (f *File) Open(name string) int {
-    log := f.Log.Get()
+    log := f.Log
 
     file, error := os.OpenFile(name, os.O_RDWR, 0777)
     if error != nil {
@@ -126,7 +126,7 @@ func (f *File) Open(name string) int {
 }
 
 func (f *File) Close() int {
-    log := f.Log.Get()
+    log := f.Log
 
     if error := f.file.Close(); error != nil {
         log.Info("close file error: %s", error)
@@ -137,7 +137,7 @@ func (f *File) Close() int {
 }
 
 func (f *File) Read() int {
-    log := f.Log.Get()
+    log := f.Log
 
     var char []byte
 

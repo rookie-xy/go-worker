@@ -13,12 +13,14 @@ import (
     _ "github.com/rookie-xy/worker/modules"
 
     _ "github.com/rookie-xy/modules/option/simple/src"
+    _ "github.com/rookie-xy/modules/configure/yaml/src"
+    _ "github.com/rookie-xy/modules/logs/mlog/src"
 
-    _ "github.com/rookie-xy/modules/inputs/stdin/src"
+    //_ "github.com/rookie-xy/modules/inputs/stdin/src"
     _ "github.com/rookie-xy/modules/inputs/httpd/src"
-    _ "github.com/rookie-xy/modules/channels/memory/src"
-    _ "github.com/rookie-xy/modules/outputs/stdout/src"
-    "fmt"
+
+    //_ "github.com/rookie-xy/modules/channels/memory/src"
+    //_ "github.com/rookie-xy/modules/outputs/stdout/src"
 )
 
 type worker struct {
@@ -62,12 +64,6 @@ func (w *worker) GetCycle() *Cycle {
 }
 
 func (w *worker) SystemInit(option *Option) int {
-    /*
-    if option.Parse() == Error {
-        return Error
-    }
-    */
-
     modules, cycle := w.modules, w.Cycle
 
     if modules == nil || cycle == nil {
@@ -88,10 +84,14 @@ func (w *worker) SystemInit(option *Option) int {
         }
 
         if module.Main != nil {
-	        if module.Main(cycle) == Error {
+	           if module.Main(cycle) == Error {
                 os.Exit(2)
             }
         }
+    }
+
+    if option.Materialized() == Error {
+        return Error
     }
 
     return Ok
@@ -170,7 +170,7 @@ func (w *worker) ConfigureInit(configure *Configure) int {
         }
     }
 
-    if configure.Parse(cycle) == Error {
+    if configure.Materialized(cycle) == Error {
         return Error
     }
 
@@ -283,18 +283,11 @@ func main() {
         return
     }
 
-    opt := cycle.Option.GetOptionIf()
-    if opt == nil {
-        fmt.Println("kkkkkkkkkkkkkkkkkkk")
-        return
+    configure := cycle.Configure
+    if configure == nil {
+        configure = NewConfigure(log)
     }
 
-    if opt.Parse() == Error {
-        return
-    }
-
-
-    configure := NewConfigure(log)
     if worker.ConfigureInit(configure) == Error {
         return
     }

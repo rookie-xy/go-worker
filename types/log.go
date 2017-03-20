@@ -4,32 +4,64 @@
 
 package types
 
-import (
-    "fmt"
-    "runtime"
-)
-
 type Log struct {
     *File
+
      level  int
+     path   string
      log    LogIf
 }
 
 type LogIf interface {
-    Debug(format string, d ...interface{})
-    Info(format string, i ...interface{})
-    Warn(format string, w ...interface{})
-    Error(format string, e ...interface{})
+    Dump() int
 }
 
-var Level = [...]string{ "stderr", "emerg", "alert", "crit", "error",
-                         "warn", "notice", "info", "debug" }
+const (
+    STDERR = iota
+    INFO
+    WARN
+    ERROR
+    DEBUG
+    PANIC
+    FATAL
+)
+
+var Level = [...]string{ "stderr", "info", "warn", "error", "debug",
+                         "panic", "fatal" }
 
 func NewLog() *Log {
     return &Log{
-        File : NewFile(nil),
-        level        : 4,
+        File  : NewFile(nil),
+        level : INFO,
     }
+}
+
+func (l *Log) SetLevel(level int) int {
+    if level > FATAL {
+        return Error
+    }
+
+    l.level = level
+
+    return Ok
+}
+
+func (l *Log) GetLevel() int {
+    return l.level
+}
+
+func (l *Log) SetPath(path string) int {
+    if path == "" {
+        return Error
+    }
+
+    l.path = path
+
+    return Ok
+}
+
+func (l *Log) GetPath() string {
+    return l.path
 }
 
 func (l *Log) Set(log LogIf) int {
@@ -46,31 +78,79 @@ func (l *Log) Get() LogIf {
     return l.log
 }
 
-func (l *Log) Debug(format string, d ...interface{}) {
-    fmt.Printf(format, d)
+func (l *Log) print(format string, p ...interface{}) int {
+    if format == "" || p == nil {
+        return Error
+    }
+
+    if log := l.Get(); log != nil {
+        if log.Dump() == Error {
+            return Error
+        }
+
+        return Ok
+    }
+
+    // default method
+    if l.Dump() == Error {
+        return Error
+    }
+
+    return Ok
+}
+
+func (l *Log) Stderr(format string, d ...interface{}) {
     return
 }
 
 func (l *Log) Info(format string, i ...interface{}) {
-    file := l.File.GetFile()
-    fmt.Fprintf(file, format, i)
+				l.print(format, i)
+}
 
-    // TODO
-    if file.Sync() != nil {
-        //
+func (l *Log) Warn(format string, w ...interface{}) {
+    if l.level < WARN {
+        return
+    }
+
+    if l.print(format, w) == Error {
+        return
     }
 
     return
 }
 
-func (l *Log) Warn(format string, w ...interface{}) {
-    funcName, file, line, _ := runtime.Caller(0)
-    fmts := format + runtime.FuncForPC(funcName).Name() + file + string(line)
-    fmt.Printf(fmts, w)
+func (l *Log) Error(format string, e ...interface{}) {
+    l.print(format, e)
+}
+
+func (l *Log) Debug(format string, d ...interface{}) {
+    if l.level < DEBUG {
+        return
+    }
+
+    if l.print(format, d) == Error {
+        return
+    }
+
     return
 }
 
-func (l *Log) Error(format string, e ...interface{}) {
-    fmt.Printf(format, e)
+func (l *Log) Panic(format string, d ...interface{}) {
+    if l.print(format, d) == Error {
+        return
+    }
+
     return
+}
+
+func (l *Log) Fatal(format string, d ...interface{}) {
+    if l.print(format, d) == Error {
+        return
+    }
+
+    return
+}
+
+func (l *Log) Dump() int {
+    return Ok
 }

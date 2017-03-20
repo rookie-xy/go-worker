@@ -6,7 +6,6 @@ package types
 
 import (
     "fmt"
-    "gopkg.in/yaml.v2"
     "unsafe"
 )
 
@@ -28,8 +27,7 @@ type Configure struct {
 }
 
 type ConfigureIf interface {
-    Parse() int
-    ReadToken() int
+    Parser(in []byte, out interface{}) int
 }
 
 func NewConfigure(log *Log) *Configure {
@@ -124,7 +122,7 @@ func (c *Configure) GetResource(resource string) string {
 }
 
 func (c *Configure) Get() ConfigureIf {
-    log := c.Log.Get()
+    log := c.Log
 
 
     file := c.File.Get()
@@ -190,6 +188,130 @@ func (c *Configure) SetCommandType(commandType int) int {
 
 func (c *Configure) GetValue() interface{} {
    return c.value
+}
+
+func (c *Configure) Materialized(cycle *Cycle) int {
+    log := c.Log
+
+    if configure := c.Get(); configure == nil {
+        return Error
+    }
+
+    // TODO default process
+    if c.value == nil {
+        content := c.GetContent()
+        if content == nil {
+            log.Error("configure content: %s, filename: %s, size: %d\n",
+                      content, c.GetFileName(), c.GetSize())
+
+            return Error
+        }
+
+        if c.configure.Parser(content, &c.value) == Error {
+            return Error
+        }
+    }
+
+    switch v := c.value.(type) {
+
+    case []interface{} :
+        for _, value := range v {
+            c.value = value
+            c.Materialized(cycle)
+        }
+
+    case map[interface{}]interface{}:
+        if c.doParse(v, cycle) == Error {
+            return Error
+        }
+
+    default:
+        fmt.Println("unknown")
+    }
+
+    return Ok
+}
+
+func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cycle) int {
+    log := c.Log
+
+    flag := Ok
+
+    for key, value := range materialized {
+
+        if key != nil && value != nil {
+            flag = Ok
+        }
+
+        name := key.(string)
+        found := false
+
+        for m := 0; flag != Error && !found && Modules[m] != nil; m++ {
+            module := Modules[m]
+								    /*
+            if module.Type != CONFIG_MODULE &&
+               module.Type != c.moduleType {
+
+                continue;
+            }
+            */
+
+            commands := module.Commands;
+            if commands == nil {
+                continue;
+            }
+
+            //fmt.Printf("%s, %X, %X, %d\n", name, module.Type, c.moduleType, m)
+
+            for i := 0; commands[i].Name.Len != 0; i++ {
+
+                command := commands[i]
+
+                if len(name) == command.Name.Len &&
+                        name == command.Name.Data.(string) {
+
+                				found = true;
+
+                    if command.Type & c.commandType == 0 &&
+                       command.Type & MAIN_CONFIG == 0 {
+
+                        //flag = Error
+																				    found = false
+                        break
+                    }
+
+                    //log.Error("directive \"%s\" is not allowed here", name)
+                    //					flag = Error
+                    context := cycle.GetContext(module.Index)
+
+                    c.value = value
+																    if cycle.SetConfigure(c) == Error {
+                        flag = Error
+																				    break
+                    }
+
+                    command.Set(cycle, &command, context)
+                }
+            }
+        }
+
+        if !found {
+            log.Error("unkown")
+
+            flag = Error
+            break
+        }
+
+        if flag == Error {
+            break
+        }
+    }
+
+    if flag == Error {
+        return ConfigError
+    }
+
+    return ConfigOk
 }
 
 func SetFlag(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
@@ -276,137 +398,7 @@ func SetNumber(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
     return Error
 }
 
-func (c *Configure) Parse(cycle *Cycle) int {
-    log := c.Log.Get()
-
-    if configure := c.Get(); configure != nil {
-        if configure.Parse() == Error {
-            return Error
-        }
-
-        return Ok
-    }
-
-    // TODO default process
-    if c.value == nil {
-        content := c.GetContent()
-        if content == nil {
-            log.Error("configure content: %s, filename: %s, size: %d\n",
-                      content, c.GetFileName(), c.GetSize())
-
-            return Error
-        }
-
-        error := yaml.Unmarshal(content, &c.value)
-        if error != nil {
-            log.Error("yanm unmarshal error: %s\n", error)
-            return Error
-        }
-    }
-
-    switch v := c.value.(type) {
-
-    case []interface{} :
-        for _, value := range v {
-            c.value = value
-            c.Parse(cycle)
-        }
-
-    case map[interface{}]interface{}:
-        if c.doParse(v, cycle) == Error {
-            return Error
-        }
-
-    default:
-        fmt.Println("unknown")
-    }
-
-    return Ok
-}
-
-func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cycle) int {
-    log := c.Log.Get()
-
-    flag := Ok
-
-    for key, value := range materialized {
-
-        if key != nil && value != nil {
-            flag = Ok
-        }
-
-        name := key.(string)
-        found := false
-
-        for m := 0; flag != Error && !found && Modules[m] != nil; m++ {
-            module := Modules[m]
-								    /*
-            if module.Type != CONFIG_MODULE &&
-               module.Type != c.moduleType {
-
-                continue;
-            }
-            */
-
-            commands := module.Commands;
-            if commands == nil {
-                continue;
-            }
-
-            //fmt.Printf("%s, %X, %X, %d\n", name, module.Type, c.moduleType, m)
-
-            for i := 0; commands[i].Name.Len != 0; i++ {
-
-                command := commands[i]
-
-                if len(name) == command.Name.Len &&
-                        name == command.Name.Data.(string) {
-
-                				found = true;
-
-                    if command.Type & c.commandType == 0 &&
-                       command.Type & MAIN_CONFIG == 0 {
-
-                        //flag = Error
-																				    found = false
-                        break
-                    }
-
-                    //log.Error("directive \"%s\" is not allowed here", name)
-                    //					flag = Error
-                    context := cycle.GetContext(module.Index)
-
-                    c.value = value
-																    if cycle.SetConfigure(c) == Error {
-                        flag = Error
-																				    break
-                    }
-
-                    command.Set(cycle, &command, context)
-                }
-            }
-        }
-
-        if !found {
-            log.Error("unkown")
-
-            flag = Error
-            break
-        }
-
-        if flag == Error {
-            break
-        }
-    }
-
-    if flag == Error {
-        return ConfigError
-    }
-
-    return ConfigOk
-}
-
-func (c *Configure) ReadToken() int {
-    fmt.Println("configure read token")
+func (c *Configure) Parser(in []byte, out interface{}) int {
+    fmt.Println("configure parser")
     return Ok
 }

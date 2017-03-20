@@ -75,7 +75,7 @@ func codecBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
         return Error
     }
 
-    if configure.Parse(cycle) == Error {
+    if configure.Materialized(cycle) == Error {
         return Error
     }
 

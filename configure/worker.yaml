@@ -1,6 +1,7 @@
-#log:
-#    level: info
-#    path: /data/logs/worker.log
+logs:
+    - mlog:
+          level: info
+          path: /data/logs/worker.log
 
 
 inputs:
