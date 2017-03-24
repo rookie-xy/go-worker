@@ -36,7 +36,7 @@ func channalsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
 
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
-        if module.Type != CHANNAL_MODULE {
+        if module.Type != CHANNEL_MODULE {
             continue
         }
 
@@ -45,7 +45,7 @@ func channalsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
 
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
-        if module.Type != CHANNAL_MODULE {
+        if module.Type != CHANNEL_MODULE {
             continue
         }
 
@@ -67,11 +67,11 @@ func channalsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
         return Error
     }
 
-    if configure.SetModuleType(CHANNAL_MODULE) == Error {
+    if configure.SetModuleType(CHANNEL_MODULE) == Error {
         return Error
     }
 
-    if configure.SetCommandType(CHANNAL_CONFIG) == Error {
+    if configure.SetCommandType(CHANNEL_CONFIG) == Error {
         return Error
     }
 
@@ -81,7 +81,7 @@ func channalsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
 
     for m := 0; Modules[m] != nil; m++ {
         module := Modules[m]
-        if module.Type != CHANNAL_MODULE {
+        if module.Type != CHANNEL_MODULE {
             continue
         }
 

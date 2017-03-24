@@ -23,8 +23,21 @@ type Configure struct {
      commandType  int
      moduleType   int64
      value        interface{}
+     Content
+     //Parser
      configure    ConfigureIf
 }
+
+type Content interface {
+    Set() int
+    Get() int
+}
+/*
+type Parser interface {
+    Marshal(in interface{}) ([]byte, int)
+    Unmarshal(in []byte, out interface{}) int
+}
+*/
 
 type ConfigureIf interface {
     Parser(in []byte, out interface{}) int
@@ -124,7 +137,6 @@ func (c *Configure) GetResource(resource string) string {
 func (c *Configure) Get() ConfigureIf {
     log := c.Log
 
-
     file := c.File.Get()
     if file == nil {
         file = NewFile(c.Log)
@@ -187,9 +199,47 @@ func (c *Configure) SetCommandType(commandType int) int {
 }
 
 func (c *Configure) GetValue() interface{} {
-   return c.value
+    return c.value
+}
+/*
+func (c *Configure) SetContent(content Content) int {
+    if content == nil {
+       return Error
+    }
+
+    c.Content = content
+
+    return Ok
 }
 
+func (c *Configure) GetContent() Content {
+    if c.Content == nil {
+        return nil
+    }
+
+    return c.Content
+}
+*/
+/*
+func (c *Configure) SetParser(parser Parser) int {
+    if parser == nil {
+       return Error
+    }
+
+    c.Parser = parser
+
+    return c.Parser
+}
+
+
+func (c *Configure) GetParser() Parser {
+    if c.Parser == nil {
+        return nil
+    }
+
+    return c.Parser
+}
+*/
 func (c *Configure) Materialized(cycle *Cycle) int {
     log := c.Log
 
@@ -197,7 +247,6 @@ func (c *Configure) Materialized(cycle *Cycle) int {
         return Error
     }
 
-    // TODO default process
     if c.value == nil {
         content := c.GetContent()
         if content == nil {
@@ -398,7 +447,7 @@ func SetNumber(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
     return Error
 }
 
-func (c *Configure) Parser(in []byte, out interface{}) int {
+func (c *Configure) Parse(in []byte, out interface{}) int {
     fmt.Println("configure parser")
     return Ok
 }

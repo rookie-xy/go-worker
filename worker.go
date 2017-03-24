@@ -16,11 +16,12 @@ import (
     _ "github.com/rookie-xy/modules/configure/yaml/src"
     _ "github.com/rookie-xy/modules/logs/mlog/src"
 
-    //_ "github.com/rookie-xy/modules/inputs/stdin/src"
+    _ "github.com/rookie-xy/modules/inputs/stdin/src"
     _ "github.com/rookie-xy/modules/inputs/httpd/src"
 
-    //_ "github.com/rookie-xy/modules/channels/memory/src"
-    //_ "github.com/rookie-xy/modules/outputs/stdout/src"
+    _ "github.com/rookie-xy/modules/channels/memory/src"
+    _ "github.com/rookie-xy/modules/outputs/stdout/src"
+    "fmt"
 )
 
 type worker struct {
@@ -72,6 +73,28 @@ func (w *worker) SystemInit(option *Option) int {
 
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
+
+        switch module.Type {
+        case INPUT_MODULE:
+            fmt.Println("input")
+        case CHANNEL_MODULE:
+            fmt.Println("channel")
+        case OUTPUT_MODULE:
+            fmt.Println("output")
+        case SYSTEM_MODULE:
+            fmt.Println("system")
+        case CONFIG_MODULE:
+            fmt.Println("config")
+
+        default:
+            switch module.Type >> 32 {
+            case INPUT_MODULE:
+                fmt.Println("UUUUUUUUUUUUUUUUUUUUUUU")
+            default:
+                //fmt.Printf("kkkkkkkkkkkkkkkkkkkkkkkkkkk: %X\n", module.Type>>8)
+            }
+
+        }
 
         if module.Type != SYSTEM_MODULE {
             continue
@@ -296,13 +319,14 @@ func main() {
         return
     }
 
-    select {}
+    select {
+
+    }
 
     worker.Monitor()
 
     if worker.Stop() == Error {
         return
     }
-
     return
 }

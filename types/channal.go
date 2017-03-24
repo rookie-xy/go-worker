@@ -4,32 +4,32 @@
 
 package types
 
-type Channal struct {
+type Channel struct {
     *Cycle
     *File
 
      upstream   chan string
      downstream chan string
 
-     channal    ChannalIf
+     channal    ChannelIf
 }
 
-type ChannalIf interface {
+type ChannelIf interface {
     push(name string, data string) int
     pull(name string) int
 }
 
-func NewChannal() *Channal {
-    return &Channal{}
+func NewChannel() *Channel {
+    return &Channel{}
 }
 
-func (c *Channal) push(name string, data string) int {
+func (c *Channel) push(name string, data string) int {
     c.upstream <- data
 
     return Ok
 }
 
-func (c *Channal) pull(name string) string {
+func (c *Channel) pull(name string) string {
     data := <-c.downstream
 
     return data

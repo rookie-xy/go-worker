@@ -1,7 +1,7 @@
 logs:
     - mlog:
-          level: info
-          path: /data/logs/worker.log
+          level: "info"
+          path: "/data/logs/worker.log"
 
 
 inputs:
@@ -14,6 +14,13 @@ inputs:
           status: off
           channal: "input_channal_name_2"
 
+    - httpd:
+          listen: "127.0.0.1:8900"
+          timeout: 10
+
+          location:
+              document: "/home/go/src/github.com/rookie-xy/web"
+              bufsize: 2048
 
 channals:
     - memory:

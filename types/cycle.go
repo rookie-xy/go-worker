@@ -15,7 +15,7 @@ type Cycle struct {
     *Configure
 
     *Input
-    *Channal
+    *Channel
     *Output
     *Codec
     *Filter
