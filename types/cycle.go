@@ -21,6 +21,8 @@ type Cycle struct {
     *Filter
 
      context  [1024]*unsafe.Pointer
+     modules  []*Module
+
      cycle    CycleIf
 }
 
@@ -93,6 +95,24 @@ func (c *Cycle) GetContext(index uint) *unsafe.Pointer {
     }
 
     return c.context[index]
+}
+
+func (c *Cycle) SetModules(modules []*Module) int {
+    if modules == nil || len(modules) <= 0 {
+        return Error
+    }
+
+    c.modules = modules
+
+    return Ok
+}
+
+func (c *Cycle) GetModules() []*Module {
+    if c.modules == nil || len(c.modules) <= 0 {
+        return nil
+    }
+
+    return c.modules
 }
 
 func (c *Cycle) Start() int {

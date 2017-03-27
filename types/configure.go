@@ -15,6 +15,7 @@ var (
 )
 
 type Configure struct {
+    *Cycle
     *Log
     *File
 
@@ -43,10 +44,10 @@ type ConfigureIf interface {
     Parser(in []byte, out interface{}) int
 }
 
-func NewConfigure(log *Log) *Configure {
+func NewConfigure(cycle *Cycle) *Configure {
     return &Configure{
-        Log          : log,
-        File : NewFile(log),
+        Cycle: cycle,
+        File : NewFile(cycle.Log),
     }
 }
 
@@ -361,6 +362,25 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
     }
 
     return ConfigOk
+}
+
+func (c *Configure)Block(module int64, config int) int {
+    var modules []*Module
+
+    if cycle := c.Cycle; cycle == nil {
+        return Error
+    } else {
+        modules = cycle.GetModules()
+        if modules == nil || len(modules) <= 0 {
+            return Error
+        }
+    }
+
+    if Block(c.Cycle, modules, module, config) == Error {
+        return Error
+    }
+
+    return Ok
 }
 
 func SetFlag(cycle *Cycle, command *Command, p *unsafe.Pointer) int {

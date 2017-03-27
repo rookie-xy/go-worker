@@ -6,7 +6,6 @@ package main
 
 import (
     "os"
-    "unsafe"
     "strings"
 
     . "github.com/rookie-xy/worker/types"
@@ -21,7 +20,6 @@ import (
 
     _ "github.com/rookie-xy/modules/channels/memory/src"
     _ "github.com/rookie-xy/modules/outputs/stdout/src"
-    "fmt"
 )
 
 type worker struct {
@@ -74,6 +72,7 @@ func (w *worker) SystemInit(option *Option) int {
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
 
+        /*
         switch module.Type {
         case INPUT_MODULE:
             fmt.Println("input")
@@ -95,6 +94,7 @@ func (w *worker) SystemInit(option *Option) int {
             }
 
         }
+        */
 
         if module.Type != SYSTEM_MODULE {
             continue
@@ -171,7 +171,8 @@ func (w *worker) ConfigureInit(configure *Configure) int {
     if modules == nil {
         return Error
     }
-
+    configure.Block(CONFIG_MODULE, -1)
+/*
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
         if module.Type != CONFIG_MODULE {
@@ -219,7 +220,7 @@ func (w *worker) ConfigureInit(configure *Configure) int {
             }
         }
     }
-
+*/
     return Ok
 }
 
@@ -293,12 +294,15 @@ func main() {
         return
     }
 
+    cycle := NewCycle(log)
+    cycle.SetModules(Modules)
+
     option := NewOption(log)
     if option.SetArgs(len(os.Args), os.Args) == Error {
         return
     }
 
-    cycle := NewCycle(log)
+    //cycle := NewCycle(log)
     cycle.Option = option
     worker.Cycle = cycle
 
@@ -308,7 +312,7 @@ func main() {
 
     configure := cycle.Configure
     if configure == nil {
-        configure = NewConfigure(log)
+        configure = NewConfigure(cycle)
     }
 
     if worker.ConfigureInit(configure) == Error {

@@ -46,7 +46,7 @@ type Module struct {
     Index      uint
     Context    unsafe.Pointer
     Commands   []Command
-    Type       int
+    Type       int64
     Init       InitFunc
     Main       MainFunc
 }
