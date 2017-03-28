@@ -9,6 +9,11 @@ import (
     . "github.com/rookie-xy/worker/types"
 )
 
+const (
+    FILTER_MODULE = 0x696600000000
+    FILTER_CONFIG = 0x10000000
+)
+
 var filter = String{ len("filter"), "filter" }
 var filterContext = &Context{
     filter,
@@ -30,78 +35,7 @@ var filterCommands = []Command{
 }
 
 func filterBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    if cycle == nil {
-        return Error
-    }
-
-    for m := 0; Modules[m] != nil; m++ {
-        module := Modules[m]
-        if module.Type != FILTER_MODULE {
-            continue
-        }
-
-        module.CtxIndex++
-    }
-
-    for m := 0; Modules[m] != nil; m++ {
-        module := Modules[m]
-        if module.Type != FILTER_MODULE {
-            continue
-        }
-
-        context := (*Context)(unsafe.Pointer(module.Context))
-        if context == nil {
-            continue
-        }
-
-        if handle := context.Create; handle != nil {
-            this := handle(cycle)
-            if cycle.SetContext(module.Index, &this) == Error {
-                return Error
-            }
-        }
-    }
-
-    configure := cycle.GetConfigure()
-    if configure == nil {
-        return Error
-    }
-
-    if configure.SetModuleType(FILTER_MODULE) == Error {
-        return Error
-    }
-
-    if configure.SetCommandType(FILTER_CONFIG) == Error {
-        return Error
-    }
-
-    if configure.Materialized(cycle) == Error {
-        return Error
-    }
-
-    for m := 0; Modules[m] != nil; m++ {
-        module := Modules[m]
-        if module.Type != FILTER_MODULE {
-            continue
-        }
-
-        this := (*Context)(unsafe.Pointer(module.Context))
-        if this == nil {
-            continue
-        }
-
-        context := cycle.GetContext(module.Index)
-        if context == nil {
-            continue
-        }
-
-        if init := this.Init; init != nil {
-            if init(cycle, context) == "-1" {
-                return Error
-            }
-        }
-    }
-
+    cycle.Configure.Block(FILTER_MODULE, FILTER_CONFIG)
     return Ok
 }
 

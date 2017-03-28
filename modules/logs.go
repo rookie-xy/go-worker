@@ -9,6 +9,11 @@ import (
     . "github.com/rookie-xy/worker/types"
 )
 
+const (
+    LOG_MODULE = 0x6F6C00000000
+    LOG_CONFIG = 0x10100000
+)
+
 var log = String{ len("log"), "log" }
 var logContext = &Context{
     log,

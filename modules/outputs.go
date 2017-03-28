@@ -9,6 +9,11 @@ import (
     . "github.com/rookie-xy/worker/types"
 )
 
+const (
+    OUTPUT_MODULE = 0x756F00000000
+    OUTPUT_CONFIG = 0x00000010
+)
+
 var output = String{ len("output"), "output" }
 var outputContext = &Context{
     output,

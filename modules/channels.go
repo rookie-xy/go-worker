@@ -9,6 +9,11 @@ import (
     . "github.com/rookie-xy/worker/types"
 )
 
+const (
+    CHANNEL_MODULE = 0x686300000000
+    CHANNEL_CONFIG = 0x00001000
+)
+
 var channal = String{ len("channal"), "channal" }
 var channalContext = &Context{
     channal,

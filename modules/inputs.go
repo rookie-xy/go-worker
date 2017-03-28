@@ -9,6 +9,11 @@ import (
     . "github.com/rookie-xy/worker/types"
 )
 
+const (
+    INPUT_MODULE = 0x6E6900000000
+    INPUT_CONFIG = 0x00100000
+)
+
 var input = String{ len("input"), "input" }
 var inputContext = &Context{
     input,
@@ -45,5 +50,5 @@ var inputModule = Module{
 }
 
 func init() {
-    Modules = append(Modules, &inputModule)
+    Modules = Load(Modules, &inputModule)
 }
