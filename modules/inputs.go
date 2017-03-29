@@ -10,8 +10,8 @@ import (
 )
 
 const (
-    INPUT_MODULE = 0x6E6900000000
-    INPUT_CONFIG = 0x00100000
+    INPUT_MODULE = 0x30000000
+    INPUT_CONFIG = INPUT_MODULE|0x00000001
 )
 
 var input = String{ len("input"), "input" }

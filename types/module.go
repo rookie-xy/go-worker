@@ -13,11 +13,11 @@ var (
 )
 
 const (
-    MODULE_V1 = 0
+    MODULE_V1  = 0
     CONTEXT_V1 = 0
 
-    SYSTEM_MODULE = 0x4D4554535953
-    CONFIG_MODULE = 0x4749464E4F43
+    SYSTEM_MODULE = 0x10000000
+    CONFIG_MODULE = 0xF0000000
 )
 
 type InitFunc func(cycle *Cycle) int

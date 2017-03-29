@@ -13,13 +13,13 @@ import (
 
     _ "github.com/rookie-xy/modules/option/simple/src"
     _ "github.com/rookie-xy/modules/configure/yaml/src"
-    _ "github.com/rookie-xy/modules/logs/mlog/src"
+    //_ "github.com/rookie-xy/modules/logs/mlog/src"
 
     _ "github.com/rookie-xy/modules/inputs/stdin/src"
-    _ "github.com/rookie-xy/modules/inputs/httpd/src"
+    //_ "github.com/rookie-xy/modules/inputs/httpd/src"
 
     _ "github.com/rookie-xy/modules/channels/memory/src"
-    _ "github.com/rookie-xy/modules/outputs/stdout/src"
+    //_ "github.com/rookie-xy/modules/outputs/stdout/src"
 )
 
 type worker struct {
@@ -72,29 +72,7 @@ func (w *worker) SystemInit(option *Option) int {
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
 
-        /*
-        switch module.Type {
-        case INPUT_MODULE:
-            fmt.Println("input")
-        case CHANNEL_MODULE:
-            fmt.Println("channel")
-        case OUTPUT_MODULE:
-            fmt.Println("output")
-        case SYSTEM_MODULE:
-            fmt.Println("system")
-        case CONFIG_MODULE:
-            fmt.Println("config")
 
-        default:
-            switch module.Type >> 32 {
-            case INPUT_MODULE:
-                fmt.Println("UUUUUUUUUUUUUUUUUUUUUUU")
-            default:
-                //fmt.Printf("kkkkkkkkkkkkkkkkkkkkkkkkkkk: %X\n", module.Type>>8)
-            }
-
-        }
-        */
 
         if module.Type != SYSTEM_MODULE {
             continue
@@ -171,56 +149,9 @@ func (w *worker) ConfigureInit(configure *Configure) int {
     if modules == nil {
         return Error
     }
+
     configure.Block(CONFIG_MODULE, -1)
-/*
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
-        if module.Type != CONFIG_MODULE {
-            continue
-        }
 
-        context := (*Context)(unsafe.Pointer(module.Context))
-        if context == nil {
-
-            continue
-        }
-
-        if handle := context.Create; handle != nil {
-            this := handle(cycle)
-
-            if cycle.SetContext(module.Index, &this) == Error {
-                return Error
-            }
-        }
-    }
-
-    if configure.Materialized(cycle) == Error {
-        return Error
-    }
-
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
-        if module.Type != CONFIG_MODULE {
-            continue
-        }
-
-        this := (*Context)(unsafe.Pointer(module.Context))
-        if this == nil {
-            continue
-        }
-
-        context := cycle.GetContext(module.Index)
-        if context == nil {
-            continue
-        }
-
-        if init := this.Init; init != nil {
-            if init(cycle, context) == "-1" {
-                return Error
-            }
-        }
-    }
-*/
     return Ok
 }
 
@@ -334,3 +265,28 @@ func main() {
     }
     return
 }
+
+
+       /*
+        switch module.Type {
+        case INPUT_MODULE:
+            fmt.Println("input")
+        case CHANNEL_MODULE:
+            fmt.Println("channel")
+        case OUTPUT_MODULE:
+            fmt.Println("output")
+        case SYSTEM_MODULE:
+            fmt.Println("system")
+        case CONFIG_MODULE:
+            fmt.Println("config")
+
+        default:
+            switch module.Type >> 32 {
+            case INPUT_MODULE:
+                fmt.Println("UUUUUUUUUUUUUUUUUUUUUUU")
+            default:
+                //fmt.Printf("kkkkkkkkkkkkkkkkkkkkkkkkkkk: %X\n", module.Type>>8)
+            }
+
+        }
+        */

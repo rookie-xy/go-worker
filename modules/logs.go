@@ -10,7 +10,7 @@ import (
 )
 
 const (
-    LOG_MODULE = 0x6F6C00000000
+    LOG_MODULE = 0x50000000
     LOG_CONFIG = 0x10100000
 )
 

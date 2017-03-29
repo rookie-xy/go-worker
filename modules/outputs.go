@@ -10,7 +10,7 @@ import (
 )
 
 const (
-    OUTPUT_MODULE = 0x756F00000000
+    OUTPUT_MODULE = 0x40000000
     OUTPUT_CONFIG = 0x00000010
 )
 

@@ -286,6 +286,13 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
     log := c.Log
 
     flag := Ok
+/*
+    modules := cycle.GetModules()
+    if modules == nil {
+        return Error
+    }
+    */
+
 
     for key, value := range materialized {
 

@@ -10,23 +10,23 @@ import (
 )
 
 const (
-    CHANNEL_MODULE = 0x686300000000
-    CHANNEL_CONFIG = 0x00001000
+    CHANNEL_MODULE = 0x20000000
+    CHANNEL_CONFIG = CHANNEL_MODULE|0x00000001
 )
 
-var channal = String{ len("channal"), "channal" }
-var channalContext = &Context{
-    channal,
+var channel = String{ len("channel"), "channel" }
+var channelContext = &Context{
+    channel,
     nil,
     nil,
 }
 
-var channals = String{ len("channals"), "channals" }
-var channalCommands = []Command{
+var channels = String{ len("channels"), "channels" }
+var channelCommands = []Command{
 
-    { channals,
+    { channels,
       MAIN_CONFIG|CONFIG_BLOCK,
-      channalsBlock,
+      channelsBlock,
       0,
       0,
       nil },
@@ -34,21 +34,21 @@ var channalCommands = []Command{
     NilCommand,
 }
 
-func channalsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
+func channelsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
     cycle.Configure.Block(CHANNEL_MODULE, CHANNEL_CONFIG)
     return Ok
 }
 
-var channalModule = Module{
+var channelModule = Module{
     MODULE_V1,
     CONTEXT_V1,
-    unsafe.Pointer(channalContext),
-    channalCommands,
+    unsafe.Pointer(channelContext),
+    channelCommands,
     CONFIG_MODULE,
     nil,
     nil,
 }
 
 func init() {
-    Modules = append(Modules, &channalModule)
+    Modules = Load(Modules, &channelModule)
 }

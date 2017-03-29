@@ -55,7 +55,7 @@ func Block(cycle *Cycle, modules []*Module, modType int64, cfgType int) int {
         return Error
     }
 
-    if modType != CONFIG_BLOCK && cfgType != -1 {
+    if modType != CONFIG_MODULE && cfgType != -1 {
         if configure.SetModuleType(modType) == Error {
             return Error
         }
@@ -65,9 +65,9 @@ func Block(cycle *Cycle, modules []*Module, modType int64, cfgType int) int {
         }
     }
 
-        if configure.Materialized(cycle) == Error {
-            return Error
-        }
+    if configure.Materialized(cycle) == Error {
+        return Error
+    }
 
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
