@@ -11,7 +11,7 @@ import (
 
 const (
     LOG_MODULE = 0x50000000
-    LOG_CONFIG = 0x10100000
+    LOG_CONFIG = LOG_MODULE|0x00000001
 )
 
 var log = String{ len("log"), "log" }

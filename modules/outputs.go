@@ -11,7 +11,7 @@ import (
 
 const (
     OUTPUT_MODULE = 0x40000000
-    OUTPUT_CONFIG = 0x00000010
+    OUTPUT_CONFIG = OUTPUT_MODULE|0x00000001
 )
 
 var output = String{ len("output"), "output" }

@@ -286,12 +286,11 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
     log := c.Log
 
     flag := Ok
-/*
+
     modules := cycle.GetModules()
     if modules == nil {
         return Error
     }
-    */
 
 
     for key, value := range materialized {
@@ -302,9 +301,9 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
 
         name := key.(string)
         found := false
-
-        for m := 0; flag != Error && !found && Modules[m] != nil; m++ {
-            module := Modules[m]
+fmt.Println("kkkkkkkkkkkkkkkkkkkkk", name)
+        for m := 0; flag != Error && !found && modules[m] != nil; m++ {
+            module := modules[m]
 								    /*
             if module.Type != CONFIG_MODULE &&
                module.Type != c.moduleType {
@@ -336,6 +335,8 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
 																				    found = false
                         break
                     }
+
+                    fmt.Printf("h:%s, %X, %X\n", name, command.Type, c.commandType)
 
                     //log.Error("directive \"%s\" is not allowed here", name)
                     //					flag = Error
