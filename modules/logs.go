@@ -50,5 +50,5 @@ var logModule = Module{
 }
 
 func init() {
-    Modules = append(Modules, &logModule)
+    //Modules = Load(Modules, &logModule)
 }

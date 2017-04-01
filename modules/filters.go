@@ -50,5 +50,5 @@ var filterModule = Module{
 }
 
 func init() {
-    Modules = append(Modules, &filterModule)
+    //Modules = append(Modules, &filterModule)
 }

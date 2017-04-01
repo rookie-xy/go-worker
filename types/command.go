@@ -7,15 +7,16 @@ package types
 import "unsafe"
 
 const (
-    CONFIG_ARGS_NUMBER = 0x000000ff
-    CONFIG_FLAG        = 0x00000200
-    CONFIG_ANY         = 0x00000400
-    CONFIG_1MORE       = 0x00000800
-    CONFIG_2MORE       = 0x00001000
-    CONFIG_BLOCK       = 0x00000100
+    CONFIG_ARGS_NUMBER = 0x06000000
+    CONFIG_FLAG        = 0x05000000
+    CONFIG_ANY         = 0x04000000
+    CONFIG_1MORE       = 0x03000000
+    CONFIG_2MORE       = 0x02000000
+    CONFIG_BLOCK       = 0x01000000
+    CONFIG_VALUE       = 0x00000001
 
-    MAIN_CONFIG  =   0x01000000
-    USER_CONFIG  =   0x0F000000
+    MAIN_CONFIG  =   0x10000000
+    USER_CONFIG  =   0xF0000000
 )
 
 type SetFunc func(cycle *Cycle, cmd *Command, p *unsafe.Pointer) int

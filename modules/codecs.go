@@ -50,5 +50,5 @@ var codecModule = Module{
 }
 
 func init() {
-    Modules = append(Modules, &codecModule)
+    //Modules = append(Modules, &codecModule)
 }

@@ -11,7 +11,7 @@ import (
 
 const (
     OUTPUT_MODULE = 0x40000000
-    OUTPUT_CONFIG = OUTPUT_MODULE|0x00000001
+    OUTPUT_CONFIG = 0x04000000
 )
 
 var output = String{ len("output"), "output" }
@@ -50,5 +50,5 @@ var outputModule = Module{
 }
 
 func init() {
-    Modules = append(Modules, &outputModule)
+    Modules = Load(Modules, &outputModule)
 }

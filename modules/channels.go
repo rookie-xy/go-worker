@@ -11,7 +11,7 @@ import (
 
 const (
     CHANNEL_MODULE = 0x20000000
-    CHANNEL_CONFIG = CHANNEL_MODULE|0x00000001
+    CHANNEL_CONFIG = 0x00200001
 )
 
 var channel = String{ len("channel"), "channel" }
@@ -50,5 +50,5 @@ var channelModule = Module{
 }
 
 func init() {
-    Modules = Load(Modules, &channelModule)
+    //Modules = Load(Modules, &channelModule)
 }

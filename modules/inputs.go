@@ -11,7 +11,7 @@ import (
 
 const (
     INPUT_MODULE = 0x30000000
-    INPUT_CONFIG = INPUT_MODULE|0x00000001
+    INPUT_CONFIG = 0x00300000
 )
 
 var input = String{ len("input"), "input" }

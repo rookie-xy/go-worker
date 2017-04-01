@@ -8,22 +8,6 @@ inputs:
           status: off
           channel: "input_channel_name_2"
 
-    - httpd:
-          listen: "127.0.0.1:8900"
-          timeout: 10
-
-          location:
-              document: "/home/go/src/github.com/rookie-xy/web"
-              bufsize: 2048
-
-channels:
-    - memory:
-          name: "test_memory_1"
-          size: 2048
-
-    - memory:
-          name: "test_memory_2"
-          size: 4096
 
 outputs:
     - stdout:

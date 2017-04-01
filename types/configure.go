@@ -292,7 +292,6 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
         return Error
     }
 
-
     for key, value := range materialized {
 
         if key != nil && value != nil {
@@ -301,7 +300,7 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
 
         name := key.(string)
         found := false
-fmt.Println("kkkkkkkkkkkkkkkkkkkkk", name)
+
         for m := 0; flag != Error && !found && modules[m] != nil; m++ {
             module := modules[m]
 								    /*
@@ -336,7 +335,7 @@ fmt.Println("kkkkkkkkkkkkkkkkkkkkk", name)
                         break
                     }
 
-                    fmt.Printf("h:%s, %X, %X\n", name, command.Type, c.commandType)
+                    //fmt.Printf("h:%s, %X, %X\n", name, command.Type, c.commandType)
 
                     //log.Error("directive \"%s\" is not allowed here", name)
                     //					flag = Error
