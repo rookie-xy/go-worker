@@ -11,7 +11,7 @@ import (
 
 const (
     OUTPUT_MODULE = 0x40000000
-    OUTPUT_CONFIG = 0x04000000
+    OUTPUT_CONFIG = MAIN_CONFIG|CONFIG_BLOCK
 )
 
 var output = String{ len("output"), "output" }
@@ -25,7 +25,7 @@ var outputs = String{ len("outputs"), "outputs" }
 var outputCommands = []Command{
 
     { outputs,
-      MAIN_CONFIG|CONFIG_BLOCK,
+      OUTPUT_CONFIG,
       outputsBlock,
       0,
       0,
@@ -35,7 +35,7 @@ var outputCommands = []Command{
 }
 
 func outputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(OUTPUT_MODULE, OUTPUT_CONFIG)
+    cycle.Configure.Block(OUTPUT_MODULE, USER_CONFIG|CONFIG_ARRAY)
     return Ok
 }
 

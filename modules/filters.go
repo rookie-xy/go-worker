@@ -25,7 +25,7 @@ var filters = String{ len("filters"), "filters" }
 var filterCommands = []Command{
 
     { filters,
-      MAIN_CONFIG|CONFIG_BLOCK,
+      MAIN_CONFIG|CONFIG_MAP,
       filterBlock,
       0,
       0,

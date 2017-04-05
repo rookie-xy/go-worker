@@ -25,7 +25,7 @@ var codecs = String{ len("codecs"), "codecs" }
 var codecCommands = []Command{
 
     { codecs,
-      MAIN_CONFIG|CONFIG_BLOCK,
+      MAIN_CONFIG|CONFIG_MAP,
       codecBlock,
       0,
       0,

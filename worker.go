@@ -150,7 +150,7 @@ func (w *worker) ConfigureInit(configure *Configure) int {
         return Error
     }
 
-    configure.Block(CONFIG_MODULE, -1)
+    configure.Block(CONFIG_MODULE, MAIN_CONFIG|CONFIG_BLOCK)
 
     return Ok
 }

@@ -11,7 +11,7 @@ import (
 
 const (
     CHANNEL_MODULE = 0x20000000
-    CHANNEL_CONFIG = 0x00200001
+    CHANNEL_CONFIG = 0x02000000
 )
 
 var channel = String{ len("channel"), "channel" }
@@ -25,7 +25,7 @@ var channels = String{ len("channels"), "channels" }
 var channelCommands = []Command{
 
     { channels,
-      MAIN_CONFIG|CONFIG_BLOCK,
+      MAIN_CONFIG|CONFIG_MAP,
       channelsBlock,
       0,
       0,

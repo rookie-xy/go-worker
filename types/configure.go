@@ -283,7 +283,7 @@ func (c *Configure) Materialized(cycle *Cycle) int {
 }
 
 func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cycle) int {
-    log := c.Log
+    //log := c.Log
 
     flag := Ok
 
@@ -299,24 +299,24 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
         }
 
         name := key.(string)
+        //fmt.Println(name)
+				    //c.value = value
         found := false
+
+        /*
+				    for m := 0; modules[m] != nil; m++ {
+            module := modules[m]
+            fmt.Printf("allllllllllllllllllllllll:%X, %X\n", module.Type, c.moduleType)
+        }
+        */
 
         for m := 0; flag != Error && !found && modules[m] != nil; m++ {
             module := modules[m]
-								    /*
-            if module.Type != CONFIG_MODULE &&
-               module.Type != c.moduleType {
-
-                continue;
-            }
-            */
 
             commands := module.Commands;
             if commands == nil {
                 continue;
             }
-
-            //fmt.Printf("%s, %X, %X, %d\n", name, module.Type, c.moduleType, m)
 
             for i := 0; commands[i].Name.Len != 0; i++ {
 
@@ -327,18 +327,13 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
 
                 				found = true;
 
-                    if command.Type & c.commandType == 0 &&
-                       command.Type & MAIN_CONFIG == 0 {
-
-                        //flag = Error
-																				    found = false
-                        break
+                    if name == "channel" {
+                        if c.moduleType != module.Type {
+                            break
+                        }
+                        fmt.Printf("%s, %X, %X\n", name, c.moduleType, module.Type)
                     }
 
-                    //fmt.Printf("h:%s, %X, %X\n", name, command.Type, c.commandType)
-
-                    //log.Error("directive \"%s\" is not allowed here", name)
-                    //					flag = Error
                     context := cycle.GetContext(module.Index)
 
                     c.value = value
@@ -350,17 +345,7 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
                     command.Set(cycle, &command, context)
                 }
             }
-        }
-
-        if !found {
-            log.Error("unkown")
-
-            flag = Error
-            break
-        }
-
-        if flag == Error {
-            break
+								    fmt.Printf("%s, %X, %X\n", name, c.moduleType, module.Type)
         }
     }
 
@@ -444,6 +429,33 @@ func SetString(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
         return Error
     }
 
+    *field = strings.(string)
+fmt.Printf("ccccccccccccccccccccccccc: %s\n", *field)
+
+    return Ok
+}
+
+func SetStrings(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
+    if cycle == nil || p == nil {
+        return Error
+    }
+
+    field := (*string)(unsafe.Pointer(uintptr(*p) + command.Offset))
+    if field == nil {
+        return Error
+    }
+
+    configure := cycle.GetConfigure()
+    if configure == nil {
+        return Error
+    }
+
+    strings := configure.GetValue()
+    if strings == nil {
+        return Error
+    }
+
+fmt.Printf("uuuuuuuuuuuuuuuuuuuuuuuuuu: %s\n", *field)
     *field = strings.(string)
 
     return Ok

@@ -11,7 +11,7 @@ import (
 
 const (
     INPUT_MODULE = 0x30000000
-    INPUT_CONFIG = 0x00300000
+    INPUT_CONFIG = MAIN_CONFIG|CONFIG_BLOCK
 )
 
 var input = String{ len("input"), "input" }
@@ -25,7 +25,7 @@ var inputs = String{ len("inputs"), "inputs" }
 var inputCommands = []Command{
 
     { inputs,
-      MAIN_CONFIG|CONFIG_BLOCK,
+      INPUT_CONFIG,
       inputsBlock,
       0,
       0,
@@ -35,7 +35,7 @@ var inputCommands = []Command{
 }
 
 func inputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(INPUT_MODULE, INPUT_CONFIG)
+    cycle.Configure.Block(INPUT_MODULE, USER_CONFIG|CONFIG_ARRAY)
     return Ok
 }
 

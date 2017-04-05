@@ -25,7 +25,7 @@ var logs = String{ len("logs"), "logs" }
 var logCommands = []Command{
 
     { logs,
-      MAIN_CONFIG|CONFIG_BLOCK,
+      MAIN_CONFIG|CONFIG_MAP,
       logsBlock,
       0,
       0,
