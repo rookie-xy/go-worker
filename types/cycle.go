@@ -115,6 +115,33 @@ func (c *Cycle) GetModules() []*Module {
     return c.modules
 }
 
+func (c *Cycle) GetModule(moduleType int64) []*Module {
+    if c.modules == nil || len(c.modules) <= 0 {
+        return nil
+    }
+
+    if moduleType == CONFIG_MODULE {
+        return c.modules
+    }
+
+    var modules []*Module
+
+    moduleType = moduleType >> 28
+
+    for m := 0; c.modules[m] != nil; m++ {
+        module := c.modules[m]
+        modType := module.Type >> 28
+
+        if moduleType == modType {
+            modules = append(modules, module)
+        }
+    }
+
+    modules = append(modules, nil)
+
+    return modules
+}
+
 func (c *Cycle) Start() int {
     if cycle := c.cycle; cycle != nil {
         if cycle.Start() == Error {

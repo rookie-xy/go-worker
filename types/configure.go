@@ -287,28 +287,19 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
 
     flag := Ok
 
-    modules := cycle.GetModules()
+    modules := cycle.GetModule(c.moduleType)
     if modules == nil {
+        fmt.Printf("aaaaaa:%d, %X\n", len(modules), c.moduleType)
         return Error
     }
 
     for key, value := range materialized {
-
         if key != nil && value != nil {
             flag = Ok
         }
 
         name := key.(string)
-        //fmt.Println(name)
-				    //c.value = value
         found := false
-
-        /*
-				    for m := 0; modules[m] != nil; m++ {
-            module := modules[m]
-            fmt.Printf("allllllllllllllllllllllll:%X, %X\n", module.Type, c.moduleType)
-        }
-        */
 
         for m := 0; flag != Error && !found && modules[m] != nil; m++ {
             module := modules[m]
@@ -327,13 +318,6 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
 
                 				found = true;
 
-                    if name == "channel" {
-                        if c.moduleType != module.Type {
-                            break
-                        }
-                        fmt.Printf("%s, %X, %X\n", name, c.moduleType, module.Type)
-                    }
-
                     context := cycle.GetContext(module.Index)
 
                     c.value = value
@@ -345,7 +329,6 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
                     command.Set(cycle, &command, context)
                 }
             }
-								    fmt.Printf("%s, %X, %X\n", name, c.moduleType, module.Type)
         }
     }
 
@@ -429,33 +412,6 @@ func SetString(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
         return Error
     }
 
-    *field = strings.(string)
-fmt.Printf("ccccccccccccccccccccccccc: %s\n", *field)
-
-    return Ok
-}
-
-func SetStrings(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
-    if cycle == nil || p == nil {
-        return Error
-    }
-
-    field := (*string)(unsafe.Pointer(uintptr(*p) + command.Offset))
-    if field == nil {
-        return Error
-    }
-
-    configure := cycle.GetConfigure()
-    if configure == nil {
-        return Error
-    }
-
-    strings := configure.GetValue()
-    if strings == nil {
-        return Error
-    }
-
-fmt.Printf("uuuuuuuuuuuuuuuuuuuuuuuuuu: %s\n", *field)
     *field = strings.(string)
 
     return Ok

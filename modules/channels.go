@@ -11,7 +11,7 @@ import (
 
 const (
     CHANNEL_MODULE = 0x20000000
-    CHANNEL_CONFIG = 0x02000000
+    CHANNEL_CONFIG = MAIN_CONFIG|CONFIG_BLOCK
 )
 
 var channel = String{ len("channel"), "channel" }
@@ -25,7 +25,7 @@ var channels = String{ len("channels"), "channels" }
 var channelCommands = []Command{
 
     { channels,
-      MAIN_CONFIG|CONFIG_MAP,
+      CHANNEL_CONFIG,
       channelsBlock,
       0,
       0,
@@ -35,7 +35,7 @@ var channelCommands = []Command{
 }
 
 func channelsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(CHANNEL_MODULE, CHANNEL_CONFIG)
+    cycle.Configure.Block(CHANNEL_MODULE, USER_CONFIG|CONFIG_ARRAY)
     return Ok
 }
 
@@ -50,5 +50,5 @@ var channelModule = Module{
 }
 
 func init() {
-    //Modules = Load(Modules, &channelModule)
+    Modules = Load(Modules, &channelModule)
 }
