@@ -10,8 +10,8 @@ import (
 )
 
 const (
-    CODEC_MODULE = 0x6F6300000000
-    CODEC_CONFIG = 0x01000000
+    CODEC_MODULE = 0x70000000
+    CODEC_CONFIG = MAIN_CONFIG|CONFIG_BLOCK
 )
 
 var codec = String{ len("codec"), "codec" }
@@ -25,7 +25,7 @@ var codecs = String{ len("codecs"), "codecs" }
 var codecCommands = []Command{
 
     { codecs,
-      MAIN_CONFIG|CONFIG_MAP,
+      CODEC_CONFIG,
       codecBlock,
       0,
       0,
@@ -35,7 +35,7 @@ var codecCommands = []Command{
 }
 
 func codecBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(CODEC_MODULE, CODEC_CONFIG)
+    cycle.Configure.Block(CODEC_MODULE, CODEC_CONFIG|CONFIG_MAP)
     return Ok
 }
 
@@ -50,5 +50,5 @@ var codecModule = Module{
 }
 
 func init() {
-    //Modules = append(Modules, &codecModule)
+    Modules = Load(Modules, &codecModule)
 }

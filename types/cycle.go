@@ -133,11 +133,11 @@ func (c *Cycle) GetModule(moduleType int64) []*Module {
         modType := module.Type >> 28
 
         if moduleType == modType {
-            modules = append(modules, module)
+            modules = Load(modules, module)
         }
     }
 
-    modules = append(modules, nil)
+    modules = Load(modules, nil)
 
     return modules
 }

@@ -33,10 +33,10 @@ type Module struct {
     Main       MainFunc
 }
 
-var Modules = []*Module{}
+var Modules []*Module
 
 func Load(modules []*Module, module *Module) []*Module {
-    if modules == nil || module == nil {
+    if modules == nil && module == nil {
         return nil
     }
 

@@ -22,48 +22,9 @@ import (
     _ "github.com/rookie-xy/modules/outputs/stdout/src"
 )
 
-type worker struct {
-    *Log
-    *Cycle
-     modules  []*Module
-}
 
-func NewWorker(log *Log) *worker {
-    return &worker{
-        Log:log,
-    }
-}
-
-func (w *worker) SetModules(m []*Module) int {
-    if m == nil {
-        return Error
-    }
-
-    w.modules = m
-
-    return Ok
-}
-
-func (w *worker) GetModules() []*Module {
-    return w.modules
-}
-
-func (w *worker) SetCycle(cycle *Cycle) int {
-    if cycle == nil {
-        return Error
-    }
-
-    w.Cycle = cycle
-
-    return Ok
-}
-
-func (w *worker) GetCycle() *Cycle {
-    return w.Cycle
-}
-
-func (w *worker) SystemInit(option *Option) int {
-    modules, cycle := w.modules, w.Cycle
+func systemInit(cycle *Cycle) int {
+    modules, option := cycle.GetModules(), cycle.GetOption()
 
     if modules == nil || cycle == nil {
         return Error
@@ -98,8 +59,8 @@ func (w *worker) SystemInit(option *Option) int {
     return Ok
 }
 
-func (w *worker) ConfigureInit(configure *Configure) int {
-    cycle := w.GetCycle()
+func configureInit(configure *Configure) int {
+    cycle := configure.Cycle
 
     option := cycle.GetOption()
     if option == nil {
@@ -145,18 +106,15 @@ func (w *worker) ConfigureInit(configure *Configure) int {
         return Error
     }
 
-    modules := w.modules
-    if modules == nil {
+    if configure.Block(CONFIG_MODULE, CONFIG_BLOCK) == Error {
         return Error
     }
-
-    configure.Block(CONFIG_MODULE, MAIN_CONFIG|CONFIG_BLOCK)
 
     return Ok
 }
 
-func (w *worker) Start() int {
-    modules, cycle := w.modules, w.Cycle
+func start(cycle *Cycle) int {
+    modules := cycle.GetModules()
 
     if modules == nil && cycle == nil {
         return Error
@@ -172,31 +130,25 @@ func (w *worker) Start() int {
         }
     }
 
-    if cycle := w.Cycle; cycle != nil {
-        if cycle.Start() == Error {
-            return Error
-        }
+    if cycle.Start() == Error {
+        return Error
     }
 
     return Ok
 }
 
-func (w *worker) Stop() int {
-    if cycle := w.Cycle; cycle != nil {
-        if cycle.Stop() == Error {
-            return Error
-        }
+func stop(cycle *Cycle) int {
+    if cycle.Stop() == Error {
+        return Error
     }
 
     return Ok
 }
 
-func (w *worker) Monitor() int {
-    if cycle := w.Cycle; cycle != nil {
-        if routine := cycle.Routine; routine != nil {
-            if routine.Monitor() == Error {
-                return Error
-            }
+func monitor(cycle *Cycle) int {
+    if routine := cycle.Routine; routine != nil {
+        if routine.Monitor() == Error {
+            return Error
         }
     }
 
@@ -211,18 +163,13 @@ func main() {
         return
     }
 
-    Modules = append(Modules, nil)
+    Modules = Load(Modules, nil)
     for /* nil */; Modules[n] != nil; n++ {
         Modules[n].Index = uint(n)
     }
 
     if n <= 0 {
         log.Info("no module to load")
-    }
-
-    worker := NewWorker(log)
-    if worker.SetModules(Modules) == Error {
-        return
     }
 
     cycle := NewCycle(log)
@@ -233,11 +180,9 @@ func main() {
         return
     }
 
-    //cycle := NewCycle(log)
     cycle.Option = option
-    worker.Cycle = cycle
 
-    if worker.SystemInit(option) == Error {
+    if systemInit(cycle) == Error {
         return
     }
 
@@ -246,11 +191,11 @@ func main() {
         configure = NewConfigure(cycle)
     }
 
-    if worker.ConfigureInit(configure) == Error {
+    if configureInit(configure) == Error {
         return
     }
 
-    if worker.Start() == Error {
+    if start(cycle) == Error {
         return
     }
 
@@ -258,35 +203,11 @@ func main() {
 
     }
 
-    worker.Monitor()
+    monitor(cycle)
 
-    if worker.Stop() == Error {
+    if stop(cycle) == Error {
         return
     }
+
     return
 }
-
-
-       /*
-        switch module.Type {
-        case INPUT_MODULE:
-            fmt.Println("input")
-        case CHANNEL_MODULE:
-            fmt.Println("channel")
-        case OUTPUT_MODULE:
-            fmt.Println("output")
-        case SYSTEM_MODULE:
-            fmt.Println("system")
-        case CONFIG_MODULE:
-            fmt.Println("config")
-
-        default:
-            switch module.Type >> 32 {
-            case INPUT_MODULE:
-                fmt.Println("UUUUUUUUUUUUUUUUUUUUUUU")
-            default:
-                //fmt.Printf("kkkkkkkkkkkkkkkkkkkkkkkkkkk: %X\n", module.Type>>8)
-            }
-
-        }
-        */

@@ -11,7 +11,7 @@ import (
 
 const (
     LOG_MODULE = 0x50000000
-    LOG_CONFIG = LOG_MODULE|0x00000001
+    LOG_CONFIG = MAIN_CONFIG|CONFIG_BLOCK
 )
 
 var log = String{ len("log"), "log" }
@@ -25,7 +25,7 @@ var logs = String{ len("logs"), "logs" }
 var logCommands = []Command{
 
     { logs,
-      MAIN_CONFIG|CONFIG_MAP,
+      LOG_CONFIG,
       logsBlock,
       0,
       0,
@@ -35,7 +35,7 @@ var logCommands = []Command{
 }
 
 func logsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(LOG_MODULE, LOG_CONFIG)
+    cycle.Configure.Block(LOG_MODULE, USER_CONFIG|CONFIG_ARRAY)
     return Ok
 }
 
@@ -50,5 +50,5 @@ var logModule = Module{
 }
 
 func init() {
-    //Modules = Load(Modules, &logModule)
+    Modules = Load(Modules, &logModule)
 }

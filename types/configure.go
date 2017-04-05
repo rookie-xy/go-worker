@@ -25,23 +25,17 @@ type Configure struct {
      moduleType   int64
      value        interface{}
      Content
-     //Parser
-     configure    ConfigureIf
+     Parser
 }
 
 type Content interface {
     Set() int
     Get() int
 }
-/*
-type Parser interface {
-    Marshal(in interface{}) ([]byte, int)
-    Unmarshal(in []byte, out interface{}) int
-}
-*/
 
-type ConfigureIf interface {
-    Parser(in []byte, out interface{}) int
+type Parser interface {
+    Marshal(in interface{}) ([]byte, error)
+    Unmarshal(in []byte, out interface{}) int
 }
 
 func NewConfigure(cycle *Cycle) *Configure {
@@ -135,7 +129,7 @@ func (c *Configure) GetResource(resource string) string {
     return c.resource
 }
 
-func (c *Configure) Get() ConfigureIf {
+func (c *Configure) Get() /* ConfigureIf */Parser {
     log := c.Log
 
     file := c.File.Get()
@@ -166,17 +160,8 @@ JMP_CLOSE:
         return nil
     }
 
-    return c.configure
-}
-
-func (c *Configure) Set(configre ConfigureIf) int {
-    if configre == nil {
-        return Error
-    }
-
-    c.configure = configre
-
-    return Ok
+    //return c.configure
+    return c.Parser
 }
 
 func (c *Configure) SetModuleType(moduleType int64) int {
@@ -202,7 +187,7 @@ func (c *Configure) SetCommandType(commandType int) int {
 func (c *Configure) GetValue() interface{} {
     return c.value
 }
-/*
+
 func (c *Configure) SetContent(content Content) int {
     if content == nil {
        return Error
@@ -220,8 +205,7 @@ func (c *Configure) GetContent() Content {
 
     return c.Content
 }
-*/
-/*
+
 func (c *Configure) SetParser(parser Parser) int {
     if parser == nil {
        return Error
@@ -229,9 +213,8 @@ func (c *Configure) SetParser(parser Parser) int {
 
     c.Parser = parser
 
-    return c.Parser
+    return Ok
 }
-
 
 func (c *Configure) GetParser() Parser {
     if c.Parser == nil {
@@ -240,7 +223,7 @@ func (c *Configure) GetParser() Parser {
 
     return c.Parser
 }
-*/
+
 func (c *Configure) Materialized(cycle *Cycle) int {
     log := c.Log
 
@@ -249,7 +232,7 @@ func (c *Configure) Materialized(cycle *Cycle) int {
     }
 
     if c.value == nil {
-        content := c.GetContent()
+        content := c.File.GetContent()
         if content == nil {
             log.Error("configure content: %s, filename: %s, size: %d\n",
                       content, c.GetFileName(), c.GetSize())
@@ -257,9 +240,10 @@ func (c *Configure) Materialized(cycle *Cycle) int {
             return Error
         }
 
-        if c.configure.Parser(content, &c.value) == Error {
+        if c.Parser.Unmarshal(content, &c.value) == Error {
             return Error
         }
+
     }
 
     switch v := c.value.(type) {
@@ -289,7 +273,6 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
 
     modules := cycle.GetModule(c.moduleType)
     if modules == nil {
-        fmt.Printf("aaaaaa:%d, %X\n", len(modules), c.moduleType)
         return Error
     }
 
@@ -442,7 +425,12 @@ func SetNumber(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
     return Error
 }
 
-func (c *Configure) Parse(in []byte, out interface{}) int {
-    fmt.Println("configure parser")
+func (c *Configure) Marshal(in interface{}) ([]byte, error) {
+    fmt.Println("configure Marshal")
+    return nil, nil
+}
+
+func (c *Configure) Unmarshal(in []byte, out interface{}) int {
+    fmt.Println("configure Unmarshal")
     return Ok
 }
