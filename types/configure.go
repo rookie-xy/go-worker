@@ -19,11 +19,12 @@ type Configure struct {
     *Log
     *File
 
-     resource     string
-     fileName     string
      commandType  int
      moduleType   int64
      value        interface{}
+
+     notice       chan int
+
      Content
      Parser
 }
@@ -42,7 +43,17 @@ func NewConfigure(cycle *Cycle) *Configure {
     return &Configure{
         Cycle: cycle,
         File : NewFile(cycle.Log),
+        notice:make(chan int),
     }
+}
+
+func (c *Configure) SetNotice(n int) {
+    c.notice <- n
+}
+
+func (c *Configure) GetNotice() int {
+    n := <- c.notice
+    return n
 }
 
 func (c *Configure) SetName(file string) int {
@@ -59,20 +70,6 @@ func (c *Configure) SetName(file string) int {
 
 func (c *Configure) GetName() string {
     return c.File.GetName()
-}
-
-func (c *Configure) SetFileName(fileName string) int {
-    if fileName == "" {
-        return Error
-    }
-
-    c.fileName = fileName
-
-    return Ok
-}
-
-func (c *Configure) GetFileName() string {
-    return c.fileName
 }
 
 func (c *Configure) SetFileType(fileType string) int {
@@ -115,21 +112,8 @@ func (c *Configure) GetFile() IO {
     return nil
 }
 
-func (c *Configure) SetResource(resource string) int {
-    if resource == "" {
-        return Error
-    }
-
-    c.resource = resource
-
-    return Ok
-}
-
-func (c *Configure) GetResource(resource string) string {
-    return c.resource
-}
-
-func (c *Configure) Get() /* ConfigureIf */Parser {
+/*
+func (c *Configure) Get() Parser {
     log := c.Log
 
     file := c.File.Get()
@@ -163,7 +147,7 @@ JMP_CLOSE:
     //return c.configure
     return c.Parser
 }
-
+*/
 func (c *Configure) SetModuleType(moduleType int64) int {
     if moduleType <= 0 {
         return Error
@@ -227,15 +211,15 @@ func (c *Configure) GetParser() Parser {
 func (c *Configure) Materialized(cycle *Cycle) int {
     log := c.Log
 
-    if configure := c.Get(); configure == nil {
-        return Error
-    }
-
     if c.value == nil {
         content := c.File.GetContent()
         if content == nil {
+            /*
             log.Error("configure content: %s, filename: %s, size: %d\n",
                       content, c.GetFileName(), c.GetSize())
+                      */
+            log.Error("configure content: %s, size: %d\n",
+                      content, c.GetSize())
 
             return Error
         }
@@ -243,7 +227,6 @@ func (c *Configure) Materialized(cycle *Cycle) int {
         if c.Parser.Unmarshal(content, &c.value) == Error {
             return Error
         }
-
     }
 
     switch v := c.value.(type) {
@@ -423,6 +406,16 @@ func SetNumber(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
     *field = number.(int)
 
     return Error
+}
+
+func (c *Configure) Set() int {
+    fmt.Println("configure content set")
+    return Ok
+}
+
+func (c *Configure) Get() int {
+    fmt.Println("configure content set")
+    return Ok
 }
 
 func (c *Configure) Marshal(in interface{}) ([]byte, error) {

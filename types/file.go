@@ -6,11 +6,13 @@ package types
 
 import (
     "os"
+    "fmt"
 )
 
 type File struct {
     *Log
      file     *os.File
+
      name      string
      size      int64
      content   []byte
@@ -142,7 +144,8 @@ func (f *File) Read() int {
     var char []byte
 
     if size := f.size; size <= 0 {
-        log.Error("file size is: %d\n", size)
+        //log.Error("file size is: %d\n", size)
+        fmt.Printf("file size is: %d\n", size)
         return Error
     } else {
         char = make([]byte, size)
