@@ -6,7 +6,7 @@ package types
 
 type Channel struct {
     *Cycle
-    *File
+    *AbstractFile
 
      upstream   chan string
      downstream chan string

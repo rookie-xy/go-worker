@@ -4,10 +4,7 @@
 
 package types
 
-import (
-    "fmt"
-    "unsafe"
-)
+import "unsafe"
 
 var (
     ConfigOk    =  0
@@ -17,7 +14,7 @@ var (
 type Configure struct {
     *Cycle
     *Log
-    *File
+    *AbstractFile
 
      commandType  int
      moduleType   int64
@@ -25,13 +22,8 @@ type Configure struct {
 
      notice       chan int
 
-     Content
+     Handle
      Parser
-}
-
-type Content interface {
-    Set() int
-    Get() int
 }
 
 type Parser interface {
@@ -41,113 +33,12 @@ type Parser interface {
 
 func NewConfigure(cycle *Cycle) *Configure {
     return &Configure{
-        Cycle: cycle,
-        File : NewFile(cycle.Log),
-        notice:make(chan int),
+        Cycle        : cycle,
+        AbstractFile : NewAbstractFile(cycle.Log),
+        notice       : make(chan int),
     }
 }
 
-func (c *Configure) SetNotice(n int) {
-    c.notice <- n
-}
-
-func (c *Configure) GetNotice() int {
-    n := <- c.notice
-    return n
-}
-
-func (c *Configure) SetName(file string) int {
-    if file == "" {
-        return Error
-    }
-
-    if c.File.SetName(file) == Error {
-        return Error
-    }
-
-    return Ok
-}
-
-func (c *Configure) GetName() string {
-    return c.File.GetName()
-}
-
-func (c *Configure) SetFileType(fileType string) int {
-    if fileType == "" {
-        return Error
-    }
-
-    if c.SetName(fileType) == Error {
-        return Error
-    }
-
-    return Ok
-}
-
-func (c *Configure) GetFileType() string {
-    if fileType := c.GetName(); fileType != "" {
-        return fileType
-    }
-
-    return ""
-}
-
-func (c *Configure) SetFile(action IO) int {
-    if action == nil {
-        return Error
-    }
-
-    if c.File.Set(action) == Error {
-        return Error
-    }
-
-    return Ok
-}
-
-func (c *Configure) GetFile() IO {
-    if file := c.File.Get(); file != nil {
-        return file
-    }
-
-    return nil
-}
-
-/*
-func (c *Configure) Get() Parser {
-    log := c.Log
-
-    file := c.File.Get()
-    if file == nil {
-        file = NewFile(c.Log)
-    }
-
-    if file.Open(c.resource) == Error {
-        log.Error("configure open file error")
-        return nil
-    }
-
-    if file.Read() == Error {
-        log.Error("configure read file error")
-        goto JMP_CLOSE
-        return nil
-    }
-
-    if content := file.Type().GetContent(); content != nil {
-        c.content = content
-    } else {
-        log.Warn("not found content: %d\n", 10)
-    }
-
-JMP_CLOSE:
-    if file.Close() == Error {
-        log.Warn("file close error: %d\n", 10)
-        return nil
-    }
-
-    //return c.configure
-    return c.Parser
-}
-*/
 func (c *Configure) SetModuleType(moduleType int64) int {
     if moduleType <= 0 {
         return Error
@@ -168,26 +59,43 @@ func (c *Configure) SetCommandType(commandType int) int {
     return Ok
 }
 
-func (c *Configure) GetValue() interface{} {
-    return c.value
-}
-
-func (c *Configure) SetContent(content Content) int {
-    if content == nil {
-       return Error
+func (c *Configure) SetValue(value interface{}) int {
+    if value == nil {
+        return Error
     }
-
-    c.Content = content
 
     return Ok
 }
 
-func (c *Configure) GetContent() Content {
-    if c.Content == nil {
+func (c *Configure) GetValue() interface{} {
+    return c.value
+}
+
+func (c *Configure) SetNotice(n int) {
+    c.notice <- n
+}
+
+func (c *Configure) GetNotice() int {
+    n := <- c.notice
+    return n
+}
+
+func (c *Configure) SetHandle(handle Handle) int {
+    if handle == nil {
+       return Error
+    }
+
+    c.Handle = handle
+
+    return Ok
+}
+
+func (c *Configure) GetHandle() Handle {
+    if c.Handle == nil {
         return nil
     }
 
-    return c.Content
+    return c.Handle
 }
 
 func (c *Configure) SetParser(parser Parser) int {
@@ -209,16 +117,14 @@ func (c *Configure) GetParser() Parser {
 }
 
 func (c *Configure) Materialized(cycle *Cycle) int {
-    log := c.Log
-
     if c.value == nil {
-        content := c.File.GetContent()
+        content := c.GetBytes()
         if content == nil {
             /*
             log.Error("configure content: %s, filename: %s, size: %d\n",
                       content, c.GetFileName(), c.GetSize())
                       */
-            log.Error("configure content: %s, size: %d\n",
+            c.Error("configure content: %s, size: %d\n",
                       content, c.GetSize())
 
             return Error
@@ -243,15 +149,13 @@ func (c *Configure) Materialized(cycle *Cycle) int {
         }
 
     default:
-        fmt.Println("unknown")
+        c.Warn("unknown")
     }
 
     return Ok
 }
 
 func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cycle) int {
-    //log := c.Log
-
     flag := Ok
 
     modules := cycle.GetModule(c.moduleType)
@@ -408,22 +312,23 @@ func SetNumber(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
     return Error
 }
 
+/* default impl */
 func (c *Configure) Set() int {
-    fmt.Println("configure content set")
+    c.Warn("configure handle set")
     return Ok
 }
 
 func (c *Configure) Get() int {
-    fmt.Println("configure content set")
+    c.Warn("configure content set")
     return Ok
 }
 
 func (c *Configure) Marshal(in interface{}) ([]byte, error) {
-    fmt.Println("configure Marshal")
+    c.Warn("configure Marshal")
     return nil, nil
 }
 
 func (c *Configure) Unmarshal(in []byte, out interface{}) int {
-    fmt.Println("configure Unmarshal")
+    c.Warn("configure Unmarshal")
     return Ok
 }

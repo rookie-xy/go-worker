@@ -7,9 +7,10 @@ package types
 import "unsafe"
 
 var (
-    Ok    =  0
-    Error = -1
-    Again = -2
+    Ok     =  0
+    Error  = -1
+    Again  = -2
+    Ignore = -3
 )
 
 const (

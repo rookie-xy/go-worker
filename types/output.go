@@ -6,7 +6,8 @@ package types
 
 type Output struct {
     *Cycle
-    *File
+    *AbstractFile
+
      output  OutputIf
 }
 

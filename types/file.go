@@ -4,39 +4,34 @@
 
 package types
 
-import (
-    "os"
-    "fmt"
-)
+import . "os"
 
-type File struct {
+type AbstractFile struct {
     *Log
-     file     *os.File
+    *File
 
-     name      string
-     size      int64
-     content   []byte
-     action    IO
+     name     string
+     size     int64
+     bytes  []byte
+
+     action   IO
 }
 
-/*
-type Action interface {
+type IO interface {
     Open(name string) int
-    Close() int
-    Read() int
-    Write() int
-    Type() *File
+    Closer() int
+    Reader() int
+    Writer() int
 }
-*/
 
-func NewFile(log *Log) *File {
-    return &File{
-        Log : log,
-        file        : os.Stdout,
+func NewAbstractFile(log *Log) *AbstractFile {
+    return &AbstractFile{
+        Log  : log,
+        File : Stdout,
     }
 }
 
-func (f *File) SetName(name string) int {
+func (f *AbstractFile) SetName(name string) int {
     if name == "" {
         return Error
     }
@@ -46,11 +41,11 @@ func (f *File) SetName(name string) int {
     return Ok
 }
 
-func (f *File) GetName() string {
+func (f *AbstractFile) GetName() string {
     return f.name
 }
 
-func (f *File) SetSize(size int64) int {
+func (f *AbstractFile) SetSize(size int64) int {
     if size < 0 {
         return Error
     }
@@ -60,112 +55,74 @@ func (f *File) SetSize(size int64) int {
     return Ok
 }
 
-func (f *File) GetSize() int64 {
+func (f *AbstractFile) GetSize() int64 {
     return f.size
 }
 
-func (f *File) SetContent(content []byte) int {
-    if content == nil {
+func (f *AbstractFile) SetBytes(bytes []byte) int {
+    if bytes == nil {
         return Error
     }
 
-    f.content = content
+    f.bytes = bytes
 
     return Ok
 }
 
-func (f *File) GetContent() []byte {
-    return f.content
+func (f *AbstractFile) GetBytes() []byte {
+    return f.bytes
 }
 
-func (f *File) SetFile(file *os.File) int {
-    if file == nil {
-        return Error
-    }
+func (f *AbstractFile) Open(name string) int {
+    var error error
 
-    f.file = file
-
-    return Ok
-}
-
-func (f *File) GetFile() *os.File {
-    return f.file
-}
-
-func (f *File) Set(action IO) int {
-    if action == nil {
-        return Error
-    }
-
-    f.action = action
-
-    return Ok
-}
-
-func (f *File) Get() IO {
-    return f.action
-}
-
-func (f *File) Open(name string) int {
-    log := f.Log
-
-    file, error := os.OpenFile(name, os.O_RDWR, 0777)
+    f.File, error = OpenFile(name, O_RDWR, 0777)
     if error != nil {
-        log.Info("open file error: %s", error)
+        f.Info("open file error: %s", error)
         return Error
     }
 
-    stat, error := file.Stat()
+    stat, error := f.Stat()
     if error != nil {
-        log.Info("stat file error: %s", error)
+        f.Info("stat file error: %s", error)
         return Error
     }
 
-    f.file = file
     f.size = stat.Size()
 
     return Ok
 }
 
-func (f *File) Close() int {
-    log := f.Log
-
-    if error := f.file.Close(); error != nil {
-        log.Info("close file error: %s", error)
+func (f *AbstractFile) Closer() int {
+    if error := f.Close(); error != nil {
+        f.Info("close file error: %s", error)
         return Error
     }
 
     return Ok
 }
 
-func (f *File) Read() int {
-    log := f.Log
-
+func (f *AbstractFile) Reader() int {
     var char []byte
 
     if size := f.size; size <= 0 {
-        //log.Error("file size is: %d\n", size)
-        fmt.Printf("file size is: %d\n", size)
+        f.Error("file size is: %d\n", size)
         return Error
     } else {
         char = make([]byte, size)
     }
 
-    _, error := f.file.Read(char)
+    _, error := f.Read(char)
     if error != nil {
-        log.Error("file read error: %s", error)
+        f.Error("file read error: %s", error)
         return Error
     }
 
-    f.content = char
+    f.bytes = char
 
     return Ok
 }
 
-func (f *File) Write() int {
+func (f *AbstractFile) Writer() int {
     return Ok
-}
-
-func (f *File) Type() *File {
-    return f
 }

@@ -12,8 +12,8 @@ const (
     CONFIG_ARRAY = 0x00300000
     CONFIG_VALUE = 0x00F00000
 
-    MAIN_CONFIG  =   0x01000000
-    USER_CONFIG  =   0x0F000000
+    MAIN_CONFIG  = 0x01000000
+    USER_CONFIG  = 0x0F000000
 )
 
 type SetFunc func(cycle *Cycle, cmd *Command, p *unsafe.Pointer) int

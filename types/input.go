@@ -6,7 +6,7 @@ package types
 
 type Input struct {
     *Cycle
-    *File
+    *AbstractFile
      input  InputIf
 }
 

@@ -5,7 +5,7 @@
 package types
 
 type Log struct {
-    *File
+    *AbstractFile
 
      level  int
      path   string
@@ -32,7 +32,7 @@ var Level = [...]string{ STDERR : "stderr", INFO : "info",   WARN : "warn",
 
 func NewLog() *Log {
     return &Log{
-        File  : NewFile(nil),
+        AbstractFile : NewAbstractFile(nil),
         level : INFO,
     }
 }
