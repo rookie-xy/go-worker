@@ -26,6 +26,11 @@ type Cycle struct {
      cycle    CycleIf
 }
 
+type Handle interface {
+    Get() int
+    Set() int
+}
+
 type CycleIf interface {
     Start() int
     Stop() int

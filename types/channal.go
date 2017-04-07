@@ -11,7 +11,7 @@ type Channel struct {
      upstream   chan string
      downstream chan string
 
-     channal    ChannelIf
+     channel    ChannelIf
 }
 
 type ChannelIf interface {
