@@ -39,7 +39,6 @@ outputs:
           status: on
           channel: "output_channel_name_2"
 
-
 #codecs:
 #    plain: "text"
 
@@ -47,7 +46,6 @@ outputs:
 #        match: "^{ISO_9002_TIMESTAMP}"
 #        previous: ""
 #        next: ""
-
 
 #filters:
 #    - grok:

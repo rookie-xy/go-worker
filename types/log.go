@@ -26,9 +26,15 @@ const (
     FATAL
 )
 
-var Level = [...]string{ STDERR : "stderr", INFO : "info",   WARN : "warn",
-                         ERROR  : "error", DEBUG : "debug", PANIC : "panic",
-                         FATAL  : "fatal" }
+var Levels = [...]string{
+    STDERR : "stderr",
+    INFO   : "info",
+    WARN   : "warn",
+    ERROR  : "error",
+    DEBUG  : "debug",
+    PANIC  : "panic",
+    FATAL  : "fatal",
+}
 
 func NewLog() *Log {
     return &Log{

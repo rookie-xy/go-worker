@@ -6,21 +6,6 @@ package types
 
 import "unsafe"
 
-var (
-    Ok     =  0
-    Error  = -1
-    Again  = -2
-    Ignore = -3
-)
-
-const (
-    MODULE_V1  = 0
-    CONTEXT_V1 = 0
-
-    SYSTEM_MODULE = 0x10000000
-    CONFIG_MODULE = 0xF0000000
-)
-
 type InitFunc func(cycle *Cycle) int
 type MainFunc func(cycle *Cycle) int
 
@@ -44,4 +29,20 @@ func Load(modules []*Module, module *Module) []*Module {
     modules = append(modules, module)
 
     return modules
+}
+
+func Start(modules []*Module) int {
+    return Ok
+}
+
+func Stop(modules []*Module) int {
+    return Ok
+}
+
+func Reload(modules []*Module) int {
+    return Ok
+}
+
+func Manager(modules []*Module) int {
+    return Ok
 }

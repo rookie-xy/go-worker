@@ -4,9 +4,7 @@
 
 package types
 
-import (
-    "unsafe"
-)
+import "unsafe"
 
 type Cycle struct {
     *Log
@@ -29,6 +27,8 @@ type Cycle struct {
 type Handle interface {
     Get() int
     Set() int
+
+    GetType() unsafe.Pointer
 }
 
 type CycleIf interface {

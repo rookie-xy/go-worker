@@ -18,6 +18,8 @@ import (
     _ "github.com/rookie-xy/modules/inputs/httpd/src"
     _ "github.com/rookie-xy/modules/channels/memory/src"
     _ "github.com/rookie-xy/modules/outputs/stdout/src"
+    "os/signal"
+    "syscall"
 )
 
 
@@ -62,7 +64,7 @@ func configureInit(configure *Configure) int {
     return Ok
 }
 
-func start(cycle *Cycle) int {
+func run(cycle *Cycle) int {
     modules := cycle.GetModules()
 
     if modules == nil && cycle == nil {
@@ -94,12 +96,53 @@ func stop(cycle *Cycle) int {
     return Ok
 }
 
+/*
+var sigset = [...]int{
+    syscall.SIGHUP,
+    syscall.SIGTERM,
+}
+*/
+
 func monitor(cycle *Cycle) int {
+    modules := cycle.GetModules()
+    if modules == nil {
+        return Error
+    }
+
+    select {
+
+    case status := cycle.Configure.GetNotice() :
+
+        switch status {
+
+        case START:
+            if Start(modules) == Error {
+                return Error
+            }
+
+        case STOP:
+            if Stop(modules) == Error {
+                return Error
+            }
+
+        case RELOAD:
+            if Reload(modules) == Error {
+                return Error
+            }
+        }
+
+    default:
+
+    }
+
     if routine := cycle.Routine; routine != nil {
         if routine.Monitor() == Error {
             return Error
         }
     }
+
+//    signalChan := make(chan os.Signal, 1)
+//    signal.Notify(signalChan, sigset)
 
     return Ok
 }
@@ -144,12 +187,8 @@ func main() {
         return
     }
 
-    if start(cycle) == Error {
+    if run(cycle) == Error {
         return
-    }
-
-    select {
-
     }
 
     monitor(cycle)

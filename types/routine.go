@@ -4,6 +4,10 @@
 
 package types
 
+import "unsafe"
+
+type RoutineFunc func(p *unsafe.Pointer) int
+
 type Routine struct {
     name    string
     number  int
@@ -31,5 +35,9 @@ func (f MainFunc) Stop() int {
 }
 
 func (r *Routine) Monitor() int {
+    return Ok
+}
+
+func (r *Routine) Go(flag int, r RoutineFunc, p unsafe.Pointer) int {
     return Ok
 }
