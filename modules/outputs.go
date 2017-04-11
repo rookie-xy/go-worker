@@ -35,7 +35,13 @@ var outputCommands = []Command{
 }
 
 func outputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(OUTPUT_MODULE, USER_CONFIG|CONFIG_ARRAY)
+    if nil == cycle {
+        return Error
+    }
+
+    flag := USER_CONFIG|CONFIG_ARRAY
+    cycle.Block(cycle, OUTPUT_MODULE, flag)
+
     return Ok
 }
 

@@ -4,7 +4,10 @@
 
 package types
 
-import "unsafe"
+import (
+    "unsafe"
+    "fmt"
+)
 
 type InitFunc func(cycle *Cycle) int
 type MainFunc func(cycle *Cycle) int
@@ -32,6 +35,7 @@ func Load(modules []*Module, module *Module) []*Module {
 }
 
 func Start(modules []*Module) int {
+    fmt.Println("start")
     return Ok
 }
 
@@ -40,9 +44,25 @@ func Stop(modules []*Module) int {
 }
 
 func Reload(modules []*Module) int {
+    fmt.Println("reload")
     return Ok
 }
 
 func Manager(modules []*Module) int {
+    return Ok
+}
+
+func (f MainFunc) Start(cycle *Cycle) int {
+    if f == nil {
+        return Error
+    }
+
+    go f(cycle)
+    //cycle.Routine.Go(0, f, cycle)
+
+    return Ok
+}
+
+func (f MainFunc) Stop() int {
     return Ok
 }

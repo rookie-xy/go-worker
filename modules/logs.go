@@ -35,7 +35,13 @@ var logCommands = []Command{
 }
 
 func logsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(LOG_MODULE, USER_CONFIG|CONFIG_ARRAY)
+    if nil == cycle {
+        return Error
+    }
+
+    flag := USER_CONFIG|CONFIG_ARRAY
+    cycle.Block(cycle, LOG_MODULE, flag)
+
     return Ok
 }
 

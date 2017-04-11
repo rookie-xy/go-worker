@@ -18,8 +18,7 @@ import (
     _ "github.com/rookie-xy/modules/inputs/httpd/src"
     _ "github.com/rookie-xy/modules/channels/memory/src"
     _ "github.com/rookie-xy/modules/outputs/stdout/src"
-    "os/signal"
-    "syscall"
+    "fmt"
 )
 
 
@@ -52,12 +51,15 @@ func systemInit(cycle *Cycle) int {
     return Ok
 }
 
-func configureInit(configure *Configure) int {
-    if notice := configure.GetNotice(); notice == Error {
-        return Error
+func configureInit(configure *Configure, cycle *Cycle) int {
+    if e := <- configure.Event; e != nil {
+        opcode := e.GetOpcode()
+        if opcode != Ok {
+            return Ignore
+        }
     }
 
-    if configure.Block(CONFIG_MODULE, CONFIG_BLOCK) == Error {
+    if configure.Block(cycle, CONFIG_MODULE, CONFIG_BLOCK) == Error {
         return Error
     }
 
@@ -65,8 +67,11 @@ func configureInit(configure *Configure) int {
 }
 
 func run(cycle *Cycle) int {
-    modules := cycle.GetModules()
+    if cycle.Routine == nil {
+        cycle.Routine = NewRoutine()
+    }
 
+    modules := cycle.GetModules()
     if modules == nil && cycle == nil {
         return Error
     }
@@ -109,30 +114,36 @@ func monitor(cycle *Cycle) int {
         return Error
     }
 
-    select {
+    for {
+        select {
 
-    case status := cycle.Configure.GetNotice() :
+        case event := <- cycle.Event:
+            opcode := event.GetOpcode()
 
-        switch status {
+            switch opcode {
 
-        case START:
-            if Start(modules) == Error {
-                return Error
+            case START:
+                if Start(modules) == Error {
+                    return Error
+                }
+
+            case STOP:
+                if Stop(modules) == Error {
+                    return Error
+                }
+
+            case RELOAD:
+                if Reload(modules) == Error {
+                    return Error
+                }
+
+            default:
+                fmt.Println("ddddddddddddddddddd")
             }
 
-        case STOP:
-            if Stop(modules) == Error {
-                return Error
-            }
-
-        case RELOAD:
-            if Reload(modules) == Error {
-                return Error
-            }
+        default:
+            //fmt.Println("aaaaaaaaaaaaaaaaa")
         }
-
-    default:
-
     }
 
     if routine := cycle.Routine; routine != nil {
@@ -183,7 +194,7 @@ func main() {
         configure = NewConfigure(cycle)
     }
 
-    if configureInit(configure) == Error {
+    if configureInit(configure, cycle) == Error {
         return
     }
 

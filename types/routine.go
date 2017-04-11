@@ -6,7 +6,7 @@ package types
 
 import "unsafe"
 
-type RoutineFunc func(p *unsafe.Pointer) int
+type RoutineFunc func(p unsafe.Pointer) int
 
 type Routine struct {
     name    string
@@ -20,24 +20,24 @@ type RoutineIf interface {
     Monitor() int
 }
 
-func (f MainFunc) Start(cycle *Cycle) int {
-    if f == nil {
-        return Error
-    }
+func NewRoutine() *Routine {
+    return &Routine{}
+}
 
-    go f(cycle)
+func (r *Routine) Go(flag int, rf RoutineFunc, p unsafe.Pointer) int {
+    go rf(p)
 
     return Ok
 }
 
-func (f MainFunc) Stop() int {
+func (r *Routine) Start(cycle *Cycle) int {
+    return Ok
+}
+
+func (r *Routine) Stop() int {
     return Ok
 }
 
 func (r *Routine) Monitor() int {
-    return Ok
-}
-
-func (r *Routine) Go(flag int, r RoutineFunc, p unsafe.Pointer) int {
     return Ok
 }

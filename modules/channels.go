@@ -35,7 +35,14 @@ var channelCommands = []Command{
 }
 
 func channelsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(CHANNEL_MODULE, USER_CONFIG|CONFIG_ARRAY)
+    if nil == cycle {
+        cycle.Error("channels block error")
+        return Error
+    }
+
+    flag := USER_CONFIG|CONFIG_ARRAY
+    cycle.Block(cycle, CHANNEL_MODULE, flag)
+
     return Ok
 }
 

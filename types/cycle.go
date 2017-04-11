@@ -20,6 +20,7 @@ type Cycle struct {
 
      context  [1024]*unsafe.Pointer
      modules  []*Module
+    Not chan int
 
      cycle    CycleIf
 }

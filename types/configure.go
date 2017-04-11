@@ -12,15 +12,13 @@ var (
 )
 
 type Configure struct {
-    *Cycle
-    *Log
     *AbstractFile
 
      commandType  int
      moduleType   int64
      value        interface{}
 
-     notice       chan int
+     Event        chan *Event
 
      Handle
      Parser
@@ -33,9 +31,8 @@ type Parser interface {
 
 func NewConfigure(cycle *Cycle) *Configure {
     return &Configure{
-        Cycle        : cycle,
         AbstractFile : NewAbstractFile(cycle.Log),
-        notice       : make(chan int),
+        Event        : make(chan *Event),
     }
 }
 
@@ -69,15 +66,6 @@ func (c *Configure) SetValue(value interface{}) int {
 
 func (c *Configure) GetValue() interface{} {
     return c.value
-}
-
-func (c *Configure) SetNotice(n int) {
-    c.notice <- n
-}
-
-func (c *Configure) GetNotice() int {
-    n := <- c.notice
-    return n
 }
 
 func (c *Configure) SetHandle(handle Handle) int {
@@ -209,10 +197,10 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
     return ConfigOk
 }
 
-func (c *Configure)Block(module int64, config int) int {
+func (c *Configure) Block(cycle *Cycle, module int64, config int) int {
     var modules []*Module
 
-    if cycle := c.Cycle; cycle == nil {
+    if cycle == nil {
         return Error
     } else {
         modules = cycle.GetModules()
@@ -221,7 +209,7 @@ func (c *Configure)Block(module int64, config int) int {
         }
     }
 
-    if Block(c.Cycle, modules, module, config) == Error {
+    if Block(cycle, modules, module, config) == Error {
         return Error
     }
 

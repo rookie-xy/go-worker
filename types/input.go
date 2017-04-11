@@ -5,8 +5,10 @@
 package types
 
 type Input struct {
-    *Cycle
+    //*Log
+    //*Cycle
     *AbstractFile
+
      input  InputIf
 }
 
@@ -14,4 +16,8 @@ type InputIf interface {}
 
 func NewInput() *Input {
     return &Input{}
+}
+
+func (i *Input) SetInput() {
+
 }

@@ -35,7 +35,13 @@ var codecCommands = []Command{
 }
 
 func codecBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(CODEC_MODULE, CODEC_CONFIG|CONFIG_MAP)
+    if cycle == nil {
+        return Error
+    }
+
+    flag := CODEC_CONFIG|CONFIG_MAP
+    cycle.Block(cycle, CODEC_MODULE, flag)
+
     return Ok
 }
 

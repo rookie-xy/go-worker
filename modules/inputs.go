@@ -35,7 +35,13 @@ var inputCommands = []Command{
 }
 
 func inputsBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(INPUT_MODULE, USER_CONFIG|CONFIG_ARRAY)
+    if nil == cycle {
+        return Error
+    }
+
+    flag := USER_CONFIG|CONFIG_ARRAY
+    cycle.Block(cycle, INPUT_MODULE, flag)
+
     return Ok
 }
 

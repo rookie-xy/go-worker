@@ -30,7 +30,7 @@ const (
 )
 
 const (
-    START = iota
+    START int = 1 << iota
     STOP
     RELOAD
 )

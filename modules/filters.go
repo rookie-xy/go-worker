@@ -35,7 +35,13 @@ var filterCommands = []Command{
 }
 
 func filterBlock(cycle *Cycle, _ *Command, _ *unsafe.Pointer) int {
-    cycle.Configure.Block(FILTER_MODULE, FILTER_CONFIG|CONFIG_ARRAY)
+    if nil == cycle {
+        return Error
+    }
+
+    flag := FILTER_CONFIG|CONFIG_ARRAY
+    cycle.Block(cycle, FILTER_MODULE, flag)
+
     return Ok
 }
 
