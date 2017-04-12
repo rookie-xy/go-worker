@@ -4,7 +4,10 @@
 
 package types
 
-import . "os"
+import (
+    . "os"
+    "fmt"
+)
 
 type AbstractFile struct {
     *Log
@@ -94,6 +97,7 @@ func (f *AbstractFile) Open(name string) int {
 }
 
 func (f *AbstractFile) Closer() int {
+    fmt.Println("abcccccccccccccccccccc")
     if error := f.Close(); error != nil {
         f.Info("close file error: %s", error)
         return Error

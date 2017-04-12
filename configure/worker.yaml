@@ -14,7 +14,7 @@ inputs:
           channel: "input_channel_name_2"
 
     - httpd:
-          listen: 127.0.0.1:8200
+          listen: 127.0.0.1:2801000
           timeout: 10
 
           location:

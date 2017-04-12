@@ -58,7 +58,6 @@ func (f MainFunc) Start(cycle *Cycle) int {
     }
 
     go f(cycle)
-    //cycle.Routine.Go(0, f, cycle)
 
     return Ok
 }
