@@ -146,7 +146,7 @@ func (c *Configure) Materialized(cycle *Cycle) int {
 func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cycle) int {
     flag := Ok
 
-    modules := cycle.GetModule(c.moduleType)
+    modules := cycle.GetPartModules(c.moduleType)
     if modules == nil {
         return Error
     }

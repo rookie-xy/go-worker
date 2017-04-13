@@ -6,7 +6,6 @@ package types
 
 import (
     . "os"
-    "fmt"
 )
 
 type AbstractFile struct {
@@ -97,7 +96,6 @@ func (f *AbstractFile) Open(name string) int {
 }
 
 func (f *AbstractFile) Closer() int {
-    fmt.Println("abcccccccccccccccccccc")
     if error := f.Close(); error != nil {
         f.Info("close file error: %s", error)
         return Error

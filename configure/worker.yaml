@@ -10,11 +10,11 @@ inputs:
           #codec: "plain"
 
     - stdin:
-          status: off
+          status: on
           channel: "input_channel_name_2"
 
     - httpd:
-          listen: 127.0.0.1:2801000
+          listen: 127.0.0.1:7200
           timeout: 10
 
           location:
@@ -23,7 +23,7 @@ inputs:
 
 channels:
     - memory:
-          name: "test_memory_1"
+          name: "test_memory_2"
           size: 2048
 
     - memory:

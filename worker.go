@@ -18,22 +18,17 @@ import (
     _ "github.com/rookie-xy/modules/inputs/httpd/src"
     _ "github.com/rookie-xy/modules/channels/memory/src"
     _ "github.com/rookie-xy/modules/outputs/stdout/src"
-    "fmt"
 )
 
 
 func systemInit(cycle *Cycle) int {
-    modules:= cycle.GetModules()
+    modules:= cycle.GetSomeModules(SYSTEM_MODULE)
     if modules == nil {
         return Error
     }
 
     for m := 0; modules[m] != nil; m++ {
         module := modules[m]
-
-        if module.Type != SYSTEM_MODULE {
-            continue
-        }
 
         if module.Init != nil {
             if module.Init(cycle) == Error {
@@ -51,15 +46,25 @@ func systemInit(cycle *Cycle) int {
     return Ok
 }
 
-func configureInit(configure *Configure, cycle *Cycle) int {
+func configureInit(c *Cycle) int {
+    /*
     if e := <- configure.Event; e != nil {
         opcode := e.GetOpcode()
         if opcode != Ok {
             return Ignore
         }
     }
+    */
 
-    if configure.Block(cycle, CONFIG_MODULE, CONFIG_BLOCK) == Error {
+    select {
+
+    case e := <- c.Event:
+        if op := e.GetOpcode(); op != Ok {
+            return Ignore
+        }
+    }
+
+    if c.Block(c, CONFIG_MODULE, CONFIG_BLOCK) == Error {
         return Error
     }
 
@@ -71,7 +76,7 @@ func run(cycle *Cycle) int {
         cycle.Routine = NewRoutine()
     }
 
-    modules := cycle.GetModules()
+    modules := cycle.GetSpacModules()
     if modules == nil && cycle == nil {
         return Error
     }
@@ -86,7 +91,7 @@ func run(cycle *Cycle) int {
         }
     }
 
-    if cycle.Start() == Error {
+    if cycle.Start(modules) == Error {
         return Error
     }
 
@@ -108,8 +113,8 @@ var sigset = [...]int{
 }
 */
 
-func monitor(cycle *Cycle) int {
-    modules := cycle.GetModules()
+func monitor(c *Cycle) int {
+    modules := c.GetModules()
     if modules == nil {
         return Error
     }
@@ -117,7 +122,7 @@ func monitor(cycle *Cycle) int {
     for {
         select {
 
-        case event := <- cycle.Event:
+        case event := <- c.Event:
             opcode := event.GetOpcode()
 
             switch opcode {
@@ -133,20 +138,14 @@ func monitor(cycle *Cycle) int {
                 }
 
             case RELOAD:
-                if Reload(modules) == Error {
+                if c.Reload() == Error {
                     return Error
                 }
-
-            default:
-                fmt.Println("ddddddddddddddddddd")
             }
-
-        default:
-            //fmt.Println("aaaaaaaaaaaaaaaaa")
         }
     }
 
-    if routine := cycle.Routine; routine != nil {
+    if routine := c.Routine; routine != nil {
         if routine.Monitor() == Error {
             return Error
         }
@@ -156,6 +155,10 @@ func monitor(cycle *Cycle) int {
 //    signal.Notify(signalChan, sigset)
 
     return Ok
+}
+
+func exit(cycle *Cycle) {
+    return
 }
 
 func main() {
@@ -194,7 +197,7 @@ func main() {
         configure = NewConfigure(cycle)
     }
 
-    if configureInit(configure, cycle) == Error {
+    if configureInit(cycle) == Error {
         return
     }
 
@@ -204,9 +207,7 @@ func main() {
 
     monitor(cycle)
 
-    if stop(cycle) == Error {
-        return
-    }
+    exit(cycle)
 
     return
 }
