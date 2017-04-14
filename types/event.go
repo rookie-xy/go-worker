@@ -7,6 +7,8 @@ package types
 type Event struct {
     name    string
     opcode  int
+    gid     uint64
+    notice  chan *Event
 }
 
 func NewEvent() *Event {
