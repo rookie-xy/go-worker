@@ -9,8 +9,6 @@ import (
     "fmt"
     "sync"
     "math/rand"
-    "strings"
-    "strconv"
 )
 
 type RoutineFunc func(p unsafe.Pointer) int
@@ -38,7 +36,7 @@ func NewRoutine() *Routine {
 func (r *Routine) Go(name string, fn interface{}, args ...interface{}) {
     go func(this *Routine, n string, fn interface{}, args ...interface{} ) {
         if this.register(name) == Error {
-            return Error
+            r.Warn("error")
         }
 
         switch len(args) {
@@ -130,12 +128,11 @@ func (r *Routine) Monitor(name string) {
 
             case KILL:
                 r.unregister(name)
-                r.Warn("gid[" + gid + "] quit")
+                r.Warn("gid is :%d\n", gid)
                 return
 
             default:
                 r.Info("unknown signal")
-
             }
         }
 

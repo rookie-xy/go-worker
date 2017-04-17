@@ -8,11 +8,14 @@ type Event struct {
     name    string
     opcode  int
     gid     uint64
+
     notice  chan *Event
 }
 
 func NewEvent() *Event {
-    return &Event{}
+    return &Event{
+        notice:make(chan *Event),
+    }
 }
 
 func (e *Event) SetName(name string) int {
@@ -36,4 +39,12 @@ func (e *Event) SetOpcode(opcode int) int {
 
 func (e *Event) GetOpcode() int {
     return e.opcode
+}
+
+func (e *Event) GetNotice() chan *Event {
+    return e.notice
+}
+
+func (e *Event) SetNotice() {
+    e.notice <- e
 }

@@ -143,6 +143,6 @@ func (f MainFunc) Start(cycle *Cycle) int {
 }
 
 func (f MainFunc) Stop(c *Cycle, e *Event) int {
-    c.Event <- e
+    c.Event = e
     return Ok
 }

@@ -245,7 +245,7 @@ func (c *Cycle) System() int {
 func (c *Cycle) ConfigureInit() int {
     select {
 
-    case e := <- c.Event:
+    case e := <- c.Configure.Event.GetNotice():
         if op := e.GetOpcode(); op != Ok {
             return Ignore
         }

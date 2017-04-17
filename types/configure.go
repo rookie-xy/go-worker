@@ -18,7 +18,7 @@ type Configure struct {
      moduleType   int64
      value        interface{}
 
-     Event        chan *Event
+     Event       *Event
 
      Handle
      Parser
@@ -32,7 +32,7 @@ type Parser interface {
 func NewConfigure(cycle *Cycle) *Configure {
     return &Configure{
         AbstractFile : NewAbstractFile(cycle.Log),
-        Event        : make(chan *Event),
+        Event        : NewEvent(),
     }
 }
 

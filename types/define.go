@@ -32,5 +32,7 @@ const (
 const (
     START int = 1 << iota
     STOP
+    LOAD
     RELOAD
+    KILL
 )

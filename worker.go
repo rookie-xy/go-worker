@@ -59,7 +59,7 @@ func configureInit(c *Cycle) int {
     select {
 
     case e := <- c.Event:
-        if op := e.GetOpcode(); op != Ok {
+        if op := e.GetOpcode(); op != LOAD {
             return Ignore
         }
     }
@@ -122,7 +122,7 @@ func monitor(c *Cycle) int {
     for {
         select {
 
-        case event := <- c.Event:
+        case event := <- c.GetNotice():
             opcode := event.GetOpcode()
 
             switch opcode {
