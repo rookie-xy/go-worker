@@ -53,6 +53,7 @@ var filterModule = Module{
     CONFIG_MODULE,
     nil,
     nil,
+    nil,
 }
 
 func init() {

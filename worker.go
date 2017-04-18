@@ -114,42 +114,43 @@ var sigset = [...]int{
 */
 
 func monitor(c *Cycle) int {
-    modules := c.GetModules()
-    if modules == nil {
+    m := c.GetModules()
+    if m == nil {
         return Error
     }
 
     for {
         select {
 
-        case event := <- c.GetNotice():
+        case event := <- c.Event:
             opcode := event.GetOpcode()
 
             switch opcode {
 
             case START:
-                if Start(modules) == Error {
+                if Start(m, c) == Error {
                     return Error
                 }
 
             case STOP:
-                if Stop(modules) == Error {
+                if Stop(m, c) == Error {
                     return Error
                 }
 
             case RELOAD:
-                if c.Reload() == Error {
+                if Reload(m, c) == Error {
                     return Error
                 }
             }
         }
     }
-
+/*
     if routine := c.Routine; routine != nil {
         if routine.Monitor() == Error {
             return Error
         }
     }
+    */
 
 //    signalChan := make(chan os.Signal, 1)
 //    signal.Notify(signalChan, sigset)
@@ -162,24 +163,25 @@ func exit(cycle *Cycle) {
 }
 
 func main() {
-    n   := 0
-    log := NewLog()
-
+    count := 0
+    log   := NewLog()
+/*
     if log.Set(log) == Error {
         return
     }
+    */
 
     Modules = Load(Modules, nil)
-    for /* nil */; Modules[n] != nil; n++ {
-        Modules[n].Index = uint(n)
+    for /* nil */; Modules[count] != nil; count++ {
+        Modules[count].Index = uint(count)
     }
 
-    if n <= 0 {
+    if count <= 0 {
         log.Info("no module to load")
     }
 
     cycle := NewCycle(log)
-    cycle.SetModules(Modules)
+    //cycle.SetModules(Modules)
 
     option := NewOption(log)
     if option.SetArgs(len(os.Args), os.Args) == Error {
@@ -188,6 +190,15 @@ func main() {
 
     cycle.Option = option
 
+    cycle.Init(Modules)
+
+    cycle.Main(Modules)
+
+    cycle.Monitor(Modules)
+
+    cycle.Exit(Modules)
+
+/*
     if systemInit(cycle) == Error {
         return
     }
@@ -208,6 +219,6 @@ func main() {
     monitor(cycle)
 
     exit(cycle)
-
+*/
     return
 }

@@ -18,7 +18,7 @@ type Configure struct {
      moduleType   int64
      value        interface{}
 
-     Event       *Event
+     Event        chan *Event
 
      Handle
      Parser
@@ -32,7 +32,7 @@ type Parser interface {
 func NewConfigure(cycle *Cycle) *Configure {
     return &Configure{
         AbstractFile : NewAbstractFile(cycle.Log),
-        Event        : NewEvent(),
+        Event        : make(chan *Event),
     }
 }
 
@@ -104,7 +104,7 @@ func (c *Configure) GetParser() Parser {
     return c.Parser
 }
 
-func (c *Configure) Materialized(cycle *Cycle) int {
+func (c *Configure) Materialized(cycle *Cycle, modules []*Module) int {
     if c.value == nil {
         content := c.GetBytes()
         if content == nil {
@@ -128,11 +128,11 @@ func (c *Configure) Materialized(cycle *Cycle) int {
     case []interface{} :
         for _, value := range v {
             c.value = value
-            c.Materialized(cycle)
+            c.Materialized(cycle, modules)
         }
 
     case map[interface{}]interface{}:
-        if c.doParse(v, cycle) == Error {
+        if c.doParse(v, cycle, modules) == Error {
             return Error
         }
 
@@ -143,10 +143,10 @@ func (c *Configure) Materialized(cycle *Cycle) int {
     return Ok
 }
 
-func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cycle) int {
+func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cycle, m []*Module) int {
     flag := Ok
 
-    modules := cycle.GetPartModules(c.moduleType)
+    modules := GetPartModules(m, c.moduleType)
     if modules == nil {
         return Error
     }
@@ -196,7 +196,7 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
 
     return ConfigOk
 }
-
+/*
 func (c *Configure) Block(cycle *Cycle, module int64, config int) int {
     var modules []*Module
 
@@ -215,6 +215,7 @@ func (c *Configure) Block(cycle *Cycle, module int64, config int) int {
 
     return Ok
 }
+*/
 
 func SetFlag(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
     if cycle == nil || p == nil {

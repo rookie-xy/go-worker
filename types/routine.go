@@ -15,11 +15,9 @@ type RoutineFunc func(p unsafe.Pointer) int
 
 type Routine struct {
     *Log
-     sync.Mutex
 
-     name     string
-     number   int
-     events   map[string]*Event
+     sync.Mutex
+     events   map[int64]*Event
 }
 
 type RoutineIf interface {
@@ -30,15 +28,18 @@ type RoutineIf interface {
 }
 
 func NewRoutine() *Routine {
-    return &Routine{}
+    return &Routine{
+        events: make(map[int64]*Event),
+    }
 }
 
-func (r *Routine) Go(name string, fn interface{}, args ...interface{}) {
-    go func(this *Routine, n string, fn interface{}, args ...interface{} ) {
-        if this.register(name) == Error {
-            r.Warn("error")
-        }
+func (r *Routine) Go(name string, fn interface{}, args ...interface{}) int64 {
+    gid, flag := r.register(name)
+    if flag == Error {
+        return gid
+    }
 
+    go func(this *Routine, n string, fn interface{}, args ...interface{} ) {
         switch len(args) {
 
         case 0:
@@ -55,52 +56,44 @@ func (r *Routine) Go(name string, fn interface{}, args ...interface{}) {
             fn.(func(...interface{}) int)(args)
         }
 
-        /*
-        if len(args) > 1 {
-            fn.(func(...interface{}) int)(args)
-        } else if len(args) == 1 {
-            fn.(func(interface{}) int)(args[0])
-        } else {
-            fn.(func() int)()
-        }
-        */
-
     }(r, name, fn, args...)
+
+    return gid
 }
 
-func (r *Routine) register(name string) int {
-    event := NewEvent()
+func (r *Routine) register(name string) (int64, int) {
+    routine := NewEvent()
 
-    event.name = name
-    event.gid = uint64(rand.Int63())
-    event.notice = make(chan *Event)
+    routine.id = rand.Int63()
+    routine.name = name
+    routine.magic = NOTICE
+
+    //routine.notice = make(chan *Event)
 
     r.Lock()
     defer r.Unlock()
 
-    if r.events == nil {
-        r.events = make(map[string]*Event)
-
-    } else if _, ok := r.events[event.name]; ok {
-        r.Warn("goroutine channel already defined: %q", event.name)
-        return Ignore
+    if _, ok := r.events[routine.id]; ok {
+        r.Warn("goroutine channel already defined: %s, %d",
+                name, routine.id)
+        return routine.id, Ignore
     }
 
-    r.events[event.name] = event
+    r.events[routine.id] = routine
 
-    return Ok
+    return routine.id, Ok
 }
 
-func (r *Routine) unregister(name string) int {
+func (r *Routine) unregister(id int64) int {
     r.Lock()
     defer r.Unlock()
 
-    if _, ok := r.events[name]; !ok {
-        r.Warn("goroutine channel not find: %q", name)
+    if _, ok := r.events[id]; !ok {
+        r.Warn("goroutine id not find: %d", id)
         return Error
     }
 
-    delete(r.events, name)
+    delete(r.events, id)
 
     return Ok
 }
@@ -113,10 +106,13 @@ func (r *Routine) Stop() int {
     return Ok
 }
 
-func (r *Routine) Monitor(name string) {
+func (r *Routine) Check(name string) {
+    if name == "" {
+        r.Warn("The name not found, is null")
+    }
 
     select {
-
+/*
     case notice := <-r.events[name].notice:
 
         gid := notice.gid
@@ -135,6 +131,7 @@ func (r *Routine) Monitor(name string) {
                 r.Info("unknown signal")
             }
         }
+        */
 
     default:
         fmt.Println("no signal")

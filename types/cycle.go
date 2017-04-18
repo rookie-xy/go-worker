@@ -7,7 +7,7 @@ package types
 import (
     "unsafe"
     "os"
-    "fmt"
+    "sync"
 )
 
 type Cycle struct {
@@ -22,8 +22,10 @@ type Cycle struct {
     *Codec
     *Filter
 
+     sync.Mutex
+
      context  [1024]*unsafe.Pointer
-     modules  []*Module
+     //modules  []*Module
 
      cycle    CycleIf
 }
@@ -105,7 +107,7 @@ func (c *Cycle) GetContext(index uint) *unsafe.Pointer {
 
     return c.context[index]
 }
-
+/*
 func (c *Cycle) SetModules(modules []*Module) int {
     if modules == nil || len(modules) <= 0 {
         return Error
@@ -135,7 +137,7 @@ func (c *Cycle) GetSomeModules(moduleType int64) []*Module {
 func (c *Cycle) GetPartModules(moduleType int64) []*Module {
     return GetPartModules(c.modules, moduleType)
 }
-
+*/
 func (c *Cycle) Start(modules []*Module) int {
     if cycle := c.cycle; cycle != nil {
         if cycle.Start(modules) == Error {
@@ -157,7 +159,7 @@ func (c *Cycle) Start(modules []*Module) int {
 
     return Ok
 }
-
+/*
 func (c *Cycle) Stop() int {
     if cycle := c.cycle; cycle != nil {
         if cycle.Stop() == Error {
@@ -167,15 +169,15 @@ func (c *Cycle) Stop() int {
         return Ok
     }
 
-    kill := NewEvent()
+    //kill := NewEvent()
 
     for m := 0; c.modules[m] != nil; m++ {
         module := c.modules[m]
 
         if main := module.Main; main != nil {
-            fmt.Printf("WANGWANGSSSSSSSSSSSSSSSSSSSSSSSS: %X\n", module.Type)
-            kill.SetOpcode(int(module.Type))
-            main.Stop(c, kill)
+            //fmt.Printf("WANGWANGSSSSSSSSSSSSSSSSSSSSSSSS: %X\n", module.Type)
+            //kill.SetOpcode(int(module.Type))
+            //main.Stop(c, kill)
         }
     }
 
@@ -216,7 +218,116 @@ fmt.Println("stop")
 
     return Ok
 }
+*/
 
+func (c *Cycle) Init(m []*Module) int {
+    modules:= GetSomeModules(m, SYSTEM_MODULE)
+    if modules == nil {
+        return Error
+    }
+
+    for m := 0; modules[m] != nil; m++ {
+        module := modules[m]
+
+        if module.Init != nil {
+            if module.Init(c) == Error {
+                os.Exit(1)
+            }
+        }
+
+        if main := module.Main; main != nil {
+	           if main.Start(c) == Error {
+                os.Exit(2)
+            }
+        }
+    }
+
+    //configure := c.Configure
+    if c.Configure == nil {
+        c.Configure = NewConfigure(c)
+    }
+
+    select {
+
+    case e := <- c.Event:
+        if op := e.GetOpcode(); op != LOAD {
+            return Ignore
+        }
+    }
+
+    if Block(c, m, CONFIG_MODULE, CONFIG_BLOCK) == Error {
+        return Error
+    }
+
+    return Ok
+}
+
+func (c *Cycle) Main(m []*Module) int {
+    if c.Routine == nil {
+        c.Routine = NewRoutine()
+    }
+
+    modules := GetSpacModules(m)
+    if modules == nil && c == nil {
+        return Error
+    }
+
+    for m := 0; modules[m] != nil; m++ {
+        module := modules[m]
+
+        if init := module.Init; init != nil {
+            if init(c) == Error {
+                return Error
+            }
+        }
+    }
+
+    if c.Start(modules) == Error {
+        return Error
+    }
+
+    return Ok
+}
+
+func (c *Cycle) Monitor(m []*Module) int {
+    for {
+        select {
+
+        case event := <- c.Event:
+            opcode := event.GetOpcode()
+
+            switch opcode {
+
+            case START:
+                if Start(m, c) == Error {
+                    return Error
+                }
+
+            case STOP:
+                if Stop(m, c) == Error {
+                    return Error
+                }
+
+            case RELOAD:
+                if Reload(m, c) == Error {
+                    return Error
+                }
+            }
+        }
+    }
+/*
+    if routine := c.Routine; routine != nil {
+        if routine.Monitor() == Error {
+            return Error
+        }
+    }
+    */
+}
+
+func (c *Cycle) Exit() {
+    return
+}
+/*
 func (c *Cycle) System() int {
     modules:= c.GetSomeModules(SYSTEM_MODULE)
     if modules == nil {
@@ -241,12 +352,13 @@ func (c *Cycle) System() int {
 
     return Ok
 }
-
+*/
+/*
 func (c *Cycle) ConfigureInit() int {
     select {
 
-    case e := <- c.Configure.Event.GetNotice():
-        if op := e.GetOpcode(); op != Ok {
+    case e := <- c.Event:
+        if op := e.GetOpcode(); op != LOAD {
             return Ignore
         }
     }
@@ -257,3 +369,4 @@ func (c *Cycle) ConfigureInit() int {
 
     return Ok
 }
+*/

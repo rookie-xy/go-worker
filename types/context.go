@@ -63,7 +63,7 @@ func Block(cycle *Cycle, modules []*Module, modType int64, cfgType int) int {
         return Error
     }
 
-    if configure.Materialized(cycle) == Error {
+    if configure.Materialized(cycle, modules) == Error {
         return Error
     }
 

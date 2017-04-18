@@ -29,8 +29,16 @@ const (
     USER_CONFIG  = 0x0F000000
 )
 
+/* magic */
 const (
-    START int = 1 << iota
+    MESSAGE = 0x01
+    NOTICE  = 0x02
+    PACKAGE = 0X03
+)
+
+/* opcode */
+const (
+    START uint8 = iota
     STOP
     LOAD
     RELOAD
