@@ -6,7 +6,6 @@ package types
 
 import (
     "unsafe"
-    "os"
     "sync"
 )
 
@@ -25,8 +24,6 @@ type Cycle struct {
      sync.Mutex
 
      context  [1024]*unsafe.Pointer
-     //modules  []*Module
-
      cycle    CycleIf
 }
 
@@ -107,37 +104,7 @@ func (c *Cycle) GetContext(index uint) *unsafe.Pointer {
 
     return c.context[index]
 }
-/*
-func (c *Cycle) SetModules(modules []*Module) int {
-    if modules == nil || len(modules) <= 0 {
-        return Error
-    }
 
-    c.modules = modules
-
-    return Ok
-}
-
-func (c *Cycle) GetModules() []*Module {
-    if c.modules == nil || len(c.modules) <= 0 {
-        return nil
-    }
-
-    return c.modules
-}
-
-func (c *Cycle) GetSpacModules() []*Module {
-    return GetSpacModules(c.modules)
-}
-
-func (c *Cycle) GetSomeModules(moduleType int64) []*Module {
-    return GetSomeModules(c.modules, moduleType)
-}
-
-func (c *Cycle) GetPartModules(moduleType int64) []*Module {
-    return GetPartModules(c.modules, moduleType)
-}
-*/
 func (c *Cycle) Start(modules []*Module) int {
     if cycle := c.cycle; cycle != nil {
         if cycle.Start(modules) == Error {
@@ -147,78 +114,10 @@ func (c *Cycle) Start(modules []*Module) int {
         return Ok
     }
 
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
-
-        if main := module.Main; main != nil {
-            if main.Start(c) == Error {
-                return Error
-            }
-        }
-    }
+    Main(modules, c)
 
     return Ok
 }
-/*
-func (c *Cycle) Stop() int {
-    if cycle := c.cycle; cycle != nil {
-        if cycle.Stop() == Error {
-            return Error
-        }
-
-        return Ok
-    }
-
-    //kill := NewEvent()
-
-    for m := 0; c.modules[m] != nil; m++ {
-        module := c.modules[m]
-
-        if main := module.Main; main != nil {
-            //fmt.Printf("WANGWANGSSSSSSSSSSSSSSSSSSSSSSSS: %X\n", module.Type)
-            //kill.SetOpcode(int(module.Type))
-            //main.Stop(c, kill)
-        }
-    }
-
-    return Ok
-}
-
-func (c *Cycle) Reload() int {
-    c.Stop()
-fmt.Println("stop")
-    c.System()
-    fmt.Println("system")
-
-    c.ConfigureInit()
-    fmt.Println("configure init")
-
-    if c.Routine == nil {
-        c.Routine = NewRoutine()
-    }
-
-    modules := c.GetSomeModules(CONFIG_MODULE)
-    if modules == nil {
-        return Error
-    }
-
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
-
-        if init := module.Init; init != nil {
-            if init(c) == Error {
-                return Error
-            }
-        }
-    }
-
-    if c.Start(modules) == Error {
-        return Error
-    }
-
-    return Ok
-}
-*/
 
 func (c *Cycle) Init(m []*Module) int {
     modules:= GetSomeModules(m, SYSTEM_MODULE)
@@ -226,23 +125,10 @@ func (c *Cycle) Init(m []*Module) int {
         return Error
     }
 
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
+    Init(modules, c)
 
-        if module.Init != nil {
-            if module.Init(c) == Error {
-                os.Exit(1)
-            }
-        }
+    Main(modules, c)
 
-        if main := module.Main; main != nil {
-	           if main.Start(c) == Error {
-                os.Exit(2)
-            }
-        }
-    }
-
-    //configure := c.Configure
     if c.Configure == nil {
         c.Configure = NewConfigure(c)
     }
@@ -272,15 +158,7 @@ func (c *Cycle) Main(m []*Module) int {
         return Error
     }
 
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
-
-        if init := module.Init; init != nil {
-            if init(c) == Error {
-                return Error
-            }
-        }
-    }
+    Init(modules, c)
 
     if c.Start(modules) == Error {
         return Error
@@ -299,17 +177,17 @@ func (c *Cycle) Monitor(m []*Module) int {
             switch opcode {
 
             case START:
-                if Start(m, c) == Error {
+                if StartConfigModules(m, c) == Error {
                     return Error
                 }
 
             case STOP:
-                if Stop(m, c) == Error {
+                if StopConfigModules(m, c) == Error {
                     return Error
                 }
 
             case RELOAD:
-                if Reload(m, c) == Error {
+                if ReloadModules(m, c, CONFIG_MODULE) == Error {
                     return Error
                 }
             }
@@ -322,51 +200,11 @@ func (c *Cycle) Monitor(m []*Module) int {
         }
     }
     */
+
+    return Ok
 }
 
-func (c *Cycle) Exit() {
+func (c *Cycle) Exit(m []*Module) {
+    Exit(m, c)
     return
 }
-/*
-func (c *Cycle) System() int {
-    modules:= c.GetSomeModules(SYSTEM_MODULE)
-    if modules == nil {
-        return Error
-    }
-
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
-
-        if module.Init != nil {
-            if module.Init(c) == Error {
-                os.Exit(1)
-            }
-        }
-
-        if main := module.Main; main != nil {
-	           if main.Start(c) == Error {
-                os.Exit(2)
-            }
-        }
-    }
-
-    return Ok
-}
-*/
-/*
-func (c *Cycle) ConfigureInit() int {
-    select {
-
-    case e := <- c.Event:
-        if op := e.GetOpcode(); op != LOAD {
-            return Ignore
-        }
-    }
-
-    if c.Block(c, CONFIG_MODULE, CONFIG_BLOCK) == Error {
-        return Error
-    }
-
-    return Ok
-}
-*/

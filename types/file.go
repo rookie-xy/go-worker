@@ -4,13 +4,11 @@
 
 package types
 
-import (
-    . "os"
-)
+import "os"
 
 type AbstractFile struct {
     *Log
-    *File
+    *os.File
 
      name     string
      size     int64
@@ -29,7 +27,7 @@ type IO interface {
 func NewAbstractFile(log *Log) *AbstractFile {
     return &AbstractFile{
         Log  : log,
-        File : Stdout,
+        File : os.Stdout,
     }
 }
 
@@ -78,7 +76,7 @@ func (f *AbstractFile) GetBytes() []byte {
 func (f *AbstractFile) Open(name string) int {
     var error error
 
-    f.File, error = OpenFile(name, O_RDWR, 0777)
+    f.File, error = os.OpenFile(name, os.O_RDWR, 0777)
     if error != nil {
         f.Info("open file error: %s", error)
         return Error

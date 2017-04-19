@@ -6,7 +6,6 @@ package types
 
 import (
     "unsafe"
-    "fmt"
     "sync"
     "math/rand"
 )
@@ -34,34 +33,38 @@ func NewRoutine() *Routine {
 }
 
 func (r *Routine) Go(name string, fn interface{}, args ...interface{}) int64 {
-    gid, flag := r.register(name)
-    if flag == Error {
-        return gid
-    }
+    flag := Ok
 
     go func(this *Routine, n string, fn interface{}, args ...interface{} ) {
+
         switch len(args) {
 
         case 0:
-            if fn.(func() int)() == Error {
-               r.Warn("f")
-            }
+            flag = fn.(func() int)()
 
         case 1:
-            if fn.(func(interface{}) int)(args[0]) == Error {
-                r.Warn("f")
-            }
+            flag = fn.(func(interface{}) int)(args[0])
 
         default:
-            fn.(func(...interface{}) int)(args)
+            flag = fn.(func(...interface{}) int)(args)
         }
 
     }(r, name, fn, args...)
 
+    if flag == Error {
+        r.Warn(name)
+        return -1
+    }
+
+    gid, rv := r.register(name)
+    if rv != Ok  {
+        return -1
+    }
+
     return gid
 }
 
-func (r *Routine) register(name string) (int64, int) {
+func (r *Routine) Register(name string) (int64, int) {
     routine := NewEvent()
 
     routine.id = rand.Int63()
@@ -84,7 +87,7 @@ func (r *Routine) register(name string) (int64, int) {
     return routine.id, Ok
 }
 
-func (r *Routine) unregister(id int64) int {
+func (r *Routine) Unregister(id int64) int {
     r.Lock()
     defer r.Unlock()
 
@@ -106,34 +109,36 @@ func (r *Routine) Stop() int {
     return Ok
 }
 
-func (r *Routine) Check(name string) {
+func (r *Routine) Check(id int64, flag uint8) int {
     if name == "" {
         r.Warn("The name not found, is null")
     }
 
-    select {
-/*
-    case notice := <-r.events[name].notice:
+    switch flag {
 
-        gid := notice.gid
-        op  := notice.opcode
+    case BLOCKING:
+        //<-r.events[name].notice
 
-        if gid == r.events[name].gid {
+    case NONBLOCKING:
+        /*
+        select {
 
-            switch op {
+        case 1://<-r.events[name].notice:
 
-            case KILL:
-                r.unregister(name)
-                r.Warn("gid is :%d\n", gid)
-                return
-
-            default:
-                r.Info("unknown signal")
-            }
+        default:
+            return -1
         }
         */
-
-    default:
-        fmt.Println("no signal")
+        return -1
     }
+
+    return 1
+}
+
+func (r *Routine) GetEvent(id int64) *Event {
+    if e, ok := r.events[id]; ok {
+        return e
+    }
+
+    return nil
 }

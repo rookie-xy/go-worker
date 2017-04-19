@@ -21,12 +21,15 @@ type Event struct {
     timestamp  int64   /* 合并event */
 
     data       []byte
+
+    This       chan *Event
 }
 
 func NewEvent() *Event {
     return &Event{
         name:      "event",
         timestamp: time.Now().Unix(),
+        this:      make(chan *Event),
     }
 }
 

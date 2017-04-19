@@ -196,26 +196,14 @@ func (c *Configure) doParse(materialized map[interface{}]interface{}, cycle *Cyc
 
     return ConfigOk
 }
-/*
+
 func (c *Configure) Block(cycle *Cycle, module int64, config int) int {
-    var modules []*Module
-
-    if cycle == nil {
-        return Error
-    } else {
-        modules = cycle.GetModules()
-        if modules == nil || len(modules) <= 0 {
-            return Error
-        }
-    }
-
-    if Block(cycle, modules, module, config) == Error {
+    if Block(cycle, Modules, module, config) == Error {
         return Error
     }
 
     return Ok
 }
-*/
 
 func SetFlag(cycle *Cycle, command *Command, p *unsafe.Pointer) int {
     if cycle == nil || p == nil {

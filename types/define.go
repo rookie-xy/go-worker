@@ -44,3 +44,9 @@ const (
     RELOAD
     KILL
 )
+
+/* status */
+const (
+    NONBLOCKING uint8 = iota
+    BLOCKING
+)

@@ -20,156 +20,19 @@ import (
     _ "github.com/rookie-xy/modules/outputs/stdout/src"
 )
 
-
-func systemInit(cycle *Cycle) int {
-    modules:= cycle.GetSomeModules(SYSTEM_MODULE)
-    if modules == nil {
-        return Error
-    }
-
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
-
-        if module.Init != nil {
-            if module.Init(cycle) == Error {
-                os.Exit(1)
-            }
-        }
-
-        if main := module.Main; main != nil {
-	           if main.Start(cycle) == Error {
-                os.Exit(2)
-            }
-        }
-    }
-
-    return Ok
-}
-
-func configureInit(c *Cycle) int {
-    /*
-    if e := <- configure.Event; e != nil {
-        opcode := e.GetOpcode()
-        if opcode != Ok {
-            return Ignore
-        }
-    }
-    */
-
-    select {
-
-    case e := <- c.Event:
-        if op := e.GetOpcode(); op != LOAD {
-            return Ignore
-        }
-    }
-
-    if c.Block(c, CONFIG_MODULE, CONFIG_BLOCK) == Error {
-        return Error
-    }
-
-    return Ok
-}
-
-func run(cycle *Cycle) int {
-    if cycle.Routine == nil {
-        cycle.Routine = NewRoutine()
-    }
-
-    modules := cycle.GetSpacModules()
-    if modules == nil && cycle == nil {
-        return Error
-    }
-
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
-
-        if init := module.Init; init != nil {
-            if init(cycle) == Error {
-                return Error
-            }
-        }
-    }
-
-    if cycle.Start(modules) == Error {
-        return Error
-    }
-
-    return Ok
-}
-
-func stop(cycle *Cycle) int {
-    if cycle.Stop() == Error {
-        return Error
-    }
-
-    return Ok
-}
-
 /*
 var sigset = [...]int{
     syscall.SIGHUP,
     syscall.SIGTERM,
 }
+
+    signalChan := make(chan os.Signal, 1)
+    signal.Notify(signalChan, sigset)
 */
-
-func monitor(c *Cycle) int {
-    m := c.GetModules()
-    if m == nil {
-        return Error
-    }
-
-    for {
-        select {
-
-        case event := <- c.Event:
-            opcode := event.GetOpcode()
-
-            switch opcode {
-
-            case START:
-                if Start(m, c) == Error {
-                    return Error
-                }
-
-            case STOP:
-                if Stop(m, c) == Error {
-                    return Error
-                }
-
-            case RELOAD:
-                if Reload(m, c) == Error {
-                    return Error
-                }
-            }
-        }
-    }
-/*
-    if routine := c.Routine; routine != nil {
-        if routine.Monitor() == Error {
-            return Error
-        }
-    }
-    */
-
-//    signalChan := make(chan os.Signal, 1)
-//    signal.Notify(signalChan, sigset)
-
-    return Ok
-}
-
-func exit(cycle *Cycle) {
-    return
-}
 
 func main() {
     count := 0
     log   := NewLog()
-/*
-    if log.Set(log) == Error {
-        return
-    }
-    */
 
     Modules = Load(Modules, nil)
     for /* nil */; Modules[count] != nil; count++ {
@@ -181,7 +44,6 @@ func main() {
     }
 
     cycle := NewCycle(log)
-    //cycle.SetModules(Modules)
 
     option := NewOption(log)
     if option.SetArgs(len(os.Args), os.Args) == Error {
@@ -198,27 +60,5 @@ func main() {
 
     cycle.Exit(Modules)
 
-/*
-    if systemInit(cycle) == Error {
-        return
-    }
-
-    configure := cycle.Configure
-    if configure == nil {
-        configure = NewConfigure(cycle)
-    }
-
-    if configureInit(cycle) == Error {
-        return
-    }
-
-    if run(cycle) == Error {
-        return
-    }
-
-    monitor(cycle)
-
-    exit(cycle)
-*/
     return
 }

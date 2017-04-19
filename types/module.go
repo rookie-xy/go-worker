@@ -50,10 +50,7 @@ func Init(m []*Module, c *Cycle) int {
     return Ok
 }
 
-func Start(m []*Module, c *Cycle) int {
-
-    Init(m, c)
-
+func Main(m []*Module, c *Cycle) int {
     for i := 0; m[i] != nil; i++ {
         module := m[i]
 
@@ -62,39 +59,61 @@ func Start(m []*Module, c *Cycle) int {
                 return Error
             }
         }
-
-        // TODO clear context and other data
     }
 
     return Ok
 }
 
-func Stop(modules []*Module, c *Cycle) int {
-    for m := 0; modules[m] != nil; m++ {
-        module := modules[m]
+func Exit(m []*Module, c *Cycle) int {
+    for i := 0; m[i] != nil; i++ {
+        module := m[i]
 
         if module.Exit != nil {
             if module.Exit(c) == Error {
-                return ERROR
+                return Error
             }
         }
-
-        // TODO clear context and other data
     }
 
     return Ok
 }
 
-func Reload(m []*Module, c *Cycle) int {
-    if Stop(m, c) == Error {
+func StartConfigModules(m []*Module, c *Cycle) int {
+    modules := GetSomeModules(m, CONFIG_MODULE)
+    if modules == nil {
         return Error
     }
 
-    if Init(m, c) == Error {
+    Main(modules, c)
+
+    return Ok
+}
+
+func StopConfigModules(m []*Module, c *Cycle) int {
+    modules := GetSomeModules(m, CONFIG_MODULE)
+    if modules == nil {
         return Error
     }
 
-    Start(m, c)
+    Exit(modules, c)
+    // TODO clear context and other data
+
+    return Ok
+}
+
+func ReloadModules(m []*Module, c *Cycle, flag int64) int {
+    modules := GetSomeModules(m, flag)
+    if modules == nil {
+        return Error
+    }
+
+    Exit(modules, c)
+
+    if Init(modules, c) == Error {
+        return Error
+    }
+
+    Main(modules, c)
 
     fmt.Println("reload")
 
@@ -189,10 +208,3 @@ func (f MainFunc) Start(cycle *Cycle) int {
 
     return Ok
 }
-
-/*
-func (f MainFunc) Stop(c *Cycle, e *Event) int {
-    c.Event = e
-    return Ok
-}
-*/
