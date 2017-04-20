@@ -42,6 +42,7 @@ const (
     STOP
     LOAD
     RELOAD
+    RESTART
     KILL
 )
 

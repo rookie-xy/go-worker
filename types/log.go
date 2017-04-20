@@ -4,8 +4,12 @@
 
 package types
 
+import "sync"
+
 type Log struct {
     *AbstractFile
+
+     sync.Mutex
 
      level  int
      path   string
@@ -38,8 +42,8 @@ var Levels = [...]string{
 
 func NewLog() *Log {
     return &Log{
-        AbstractFile : NewAbstractFile(nil),
-        level : INFO,
+        AbstractFile: NewAbstractFile(nil),
+        level:        INFO,
     }
 }
 
@@ -159,5 +163,6 @@ func (l *Log) Fatal(format string, d ...interface{}) {
 }
 
 func (l *Log) Dump() int {
+    //log.
     return Ok
 }

@@ -15,6 +15,7 @@ type Channel struct {
 }
 
 type ChannelIf interface {
+    LifeCycle
     push(name string, data string) int
     pull(name string) int
 }

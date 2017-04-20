@@ -24,7 +24,7 @@ type Cycle struct {
      sync.Mutex
 
      context  [1024]*unsafe.Pointer
-     cycle    CycleIf
+     cycle    LifeCycle
 }
 
 type Handle interface {
@@ -34,8 +34,12 @@ type Handle interface {
     GetType() unsafe.Pointer
 }
 
-type CycleIf interface {
-    Start(module []*Module) int
+type Void interface{}
+
+type LifeCycle interface {
+    //Start(module []*Module) int
+    //Stop() int
+    Start(args ...Void) int
     Stop() int
 }
 
@@ -187,13 +191,17 @@ func (c *Cycle) Monitor(m []*Module) int {
                 }
 
             case RELOAD:
+                Reload(c.Log)
+                /*
                 if ReloadModules(m, c, CONFIG_MODULE) == Error {
                     return Error
                 }
+                */
             }
         }
     }
-/*
+
+    /*
     if routine := c.Routine; routine != nil {
         if routine.Monitor() == Error {
             return Error

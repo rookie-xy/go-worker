@@ -18,6 +18,7 @@ import (
     _ "github.com/rookie-xy/modules/inputs/httpd/src"
     _ "github.com/rookie-xy/modules/channels/memory/src"
     _ "github.com/rookie-xy/modules/outputs/stdout/src"
+    "fmt"
 )
 
 /*
@@ -31,9 +32,13 @@ var sigset = [...]int{
 */
 
 func main() {
-    count := 0
     log   := NewLog()
 
+    if os.Getenv("_GRACEFUL_RESTART") == "true" {
+        fmt.Println("_GRACEFUL_RESTART")
+    }
+
+    count := 0
     Modules = Load(Modules, nil)
     for /* nil */; Modules[count] != nil; count++ {
         Modules[count].Index = uint(count)

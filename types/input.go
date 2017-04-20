@@ -5,8 +5,6 @@
 package types
 
 type Input struct {
-    //*Log
-    //*Cycle
     *AbstractFile
 
      input  InputIf

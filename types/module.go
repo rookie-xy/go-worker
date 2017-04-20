@@ -7,10 +7,12 @@ package types
 import (
     "unsafe"
     "fmt"
+    "os"
+    "syscall"
 )
 
 type InitFunc func(cycle *Cycle) int
-type MainFunc func(cycle *Cycle) int
+type MainFunc func(args ...interface{}) int
 type ExitFunc func(cycle *Cycle) int
 
 type Module struct {
@@ -36,6 +38,37 @@ func Load(modules []*Module, module *Module) []*Module {
     return modules
 }
 
+func Reload(log *Log) {
+    if error := os.Setenv("_GRACEFUL_RESTART", "true"); error != nil {
+        log.Warn("set env")
+        return
+    }
+
+    execSpec := &syscall.ProcAttr{
+        Env:   os.Environ(),
+        Files: []uintptr{ os.Stdin.Fd(),
+                          os.Stdout.Fd(), os.Stderr.Fd() },
+    }
+
+    // Fork exec the new version of your server
+    _, err := syscall.ForkExec(os.Args[0], os.Args, execSpec)
+    if err != nil {
+        log.Warn("Fail to fork")
+        //log.Fatalln("Fail to fork", err)
+    }
+
+    //log.Println("SIGHUP received: fork-exec to", fork)
+
+    /* Wait for all conections to be finished */
+    //log.Println(os.Getpid(), "Server gracefully shutdown")
+
+    /*
+     * Stop the old server, all the connections
+     * have been closed and the new one is running
+     */
+    os.Exit(0)
+}
+
 func Init(m []*Module, c *Cycle) int {
     for i := 0; m[i] != nil; i++ {
         module := m[i]
@@ -51,11 +84,23 @@ func Init(m []*Module, c *Cycle) int {
 }
 
 func Main(m []*Module, c *Cycle) int {
+    name := "name"
+
     for i := 0; m[i] != nil; i++ {
         module := m[i]
 
         if main := module.Main; main != nil {
-	           if main.Start(c) == Error {
+            if this := module.Context; this != nil {
+                context := (*Context)(unsafe.Pointer(uintptr(this)))
+                fmt.Println(context.Name.Data.(string))
+                name = context.Name.Data.(string)
+
+            } else {
+                fmt.Println(module.Type)
+                return Error
+            }
+
+	           if main.Start(c, name) == Error {
                 return Error
             }
         }
@@ -197,14 +242,14 @@ func GetPartModules(mod []*Module, modType int64) []*Module {
     return modules
 }
 
-func (f MainFunc) Start(cycle *Cycle) int {
+func (f MainFunc) Start(cycle *Cycle, name string) int {
     if f == nil {
         return Error
     }
 
-//    cycle.Routine.Go()
+    cycle.Routine.Go(name, f, cycle)
 
-    go f(cycle)
+    //go f(cycle)
 
     return Ok
 }

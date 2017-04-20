@@ -56,7 +56,7 @@ func (r *Routine) Go(name string, fn interface{}, args ...interface{}) int64 {
         return -1
     }
 
-    gid, rv := r.register(name)
+    gid, rv := r.Register(name)
     if rv != Ok  {
         return -1
     }
@@ -110,8 +110,8 @@ func (r *Routine) Stop() int {
 }
 
 func (r *Routine) Check(id int64, flag uint8) int {
-    if name == "" {
-        r.Warn("The name not found, is null")
+    if id < 0 {
+        r.Warn("The id error")
     }
 
     switch flag {

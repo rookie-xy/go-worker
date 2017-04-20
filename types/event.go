@@ -29,7 +29,7 @@ func NewEvent() *Event {
     return &Event{
         name:      "event",
         timestamp: time.Now().Unix(),
-        this:      make(chan *Event),
+        This:      make(chan *Event),
     }
 }
 
